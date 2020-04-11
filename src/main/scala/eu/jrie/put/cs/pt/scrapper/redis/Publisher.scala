@@ -16,7 +16,7 @@ object Publisher {
   def apply(client: RedisClient): Behavior[PublisherMsg] = Behaviors.receive { (context, message) =>
     message match {
       case Publish(channel, msg) =>
-        context.log.info("publishing {} on {}", asJson(msg), channel)
+        context.log.trace("publishing {} on {}", asJson(msg), channel)
         client.publish(channel, asJson(msg))
         Behaviors.same
       case EndPublish() =>

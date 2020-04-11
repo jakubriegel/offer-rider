@@ -44,7 +44,7 @@ object SearchExecutor {
       Duration.Inf
     )
 
-    context.log.info("searches ended")
+    context.log.trace("searches ended")
     Behaviors.same
   }
 
