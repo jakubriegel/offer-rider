@@ -1,0 +1,1 @@
+ docker run --name pt-mysql -e MYSQL_ROOT_PASSWORD=pt-secret -p 30000:3306 -d hypriot/rpi-mysql:latest
