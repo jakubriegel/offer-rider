@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit
 import akka.actor.typed.ActorSystem
 import com.redis.RedisClient
 import com.typesafe.config.ConfigFactory
+import eu.jrie.put.cs.pt.scrapper.api.RestApi
 import eu.jrie.put.cs.pt.scrapper.redis.Subscriber
 import eu.jrie.put.cs.pt.scrapper.redis.Subscriber.Subscribe
 import eu.jrie.put.cs.pt.scrapper.search.SearchExecutor
@@ -24,6 +25,7 @@ class SearchService {
   def start(): Unit = {
     scheduleSearches()
     subscribeForEvents()
+    initializeApi()
   }
 
   private def scheduleSearches(): Unit = {
@@ -37,6 +39,10 @@ class SearchService {
 
   private def subscribeForEvents(): Unit = {
     subscriber ! Subscribe("pt-scraper-results")
+  }
+
+  private def initializeApi(): Unit = {
+    RestApi.run
   }
 }
 

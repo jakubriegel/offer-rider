@@ -5,6 +5,7 @@ scalaVersion := "2.13.1"
 mainClass in assembly := Some("eu.jrie.put.cs.pt.scrapper.SearchService")
 
 // akka
+libraryDependencies += "com.typesafe.akka" %% "akka-typed" % "2.6.4"
 libraryDependencies += "com.typesafe.akka" %% "akka-actor-typed" % "2.6.4"
 libraryDependencies += "com.typesafe.akka" %% "akka-stream" % "2.6.4"
 libraryDependencies += "com.lightbend.akka" %% "akka-stream-alpakka-slick" % "2.0.0-RC1"

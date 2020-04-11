@@ -1,0 +1,78 @@
+package eu.jrie.put.cs.pt.scrapper.api
+
+import akka.Done
+import akka.actor.typed.scaladsl.Behaviors
+import akka.actor.typed.{ActorRef, ActorSystem, Behavior, Scheduler}
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.model._
+import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.Route
+import akka.util.Timeout
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import com.typesafe.config.ConfigFactory
+import eu.jrie.put.cs.pt.scrapper.api.DummyGetData.{DummyData, DummyGet}
+
+import scala.concurrent.duration._
+import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.util.{Failure, Success}
+
+
+object DummyGetData {
+  sealed trait Dummy
+  case class DummyGet(text: String, replyTo: ActorRef[DummyData]) extends Dummy
+  case class DummyData(text: String) extends Dummy
+
+  def apply(): Behavior[DummyGet] = Behaviors.receive { (context, msg) =>
+    msg.replyTo ! DummyData(msg.text + " cool")
+    Behaviors.same
+  }
+}
+
+
+object RestApi {
+
+  private def routes(actorSystem: ActorSystem[_], abc: ActorRef[DummyGet]): Route = {
+
+    import akka.actor.typed.scaladsl.AskPattern._
+    implicit val timeout: Timeout = 5.seconds
+    implicit val scheduler: Scheduler = actorSystem.scheduler
+    implicit val executionContext: ExecutionContextExecutor = actorSystem.executionContext
+
+    val mapper = new ObjectMapper().registerModule(new DefaultScalaModule)
+    path("search") {
+      get {
+        val data: Future[DummyData] = abc ? (DummyGet("test", _))
+        complete(
+          data.map(d => mapper.writeValueAsString(d))
+            .map(d => HttpEntity(ContentTypes.`application/json`, d))
+        )
+      }
+    }
+  }
+
+
+  def run: ActorSystem[Done] = ActorSystem[Done](Behaviors.setup[Done] { ctx =>
+
+    import akka.actor.typed.scaladsl.adapter._
+    implicit val system: akka.actor.ActorSystem = ctx.system.toClassic
+    implicit val ec: ExecutionContextExecutor = ctx.system.executionContext
+
+    val config = ConfigFactory.load().getConfig("service.api")
+    val db = ctx.spawn(DummyGetData(), "getdata")
+
+    Http().bindAndHandle(routes(ctx.system, db), config.getString("host"), config.getInt("port"))
+      .onComplete {
+        case Success(bound) =>
+          ctx.log.info(s"Api online at http://${bound.localAddress.getHostString}:${bound.localAddress.getPort}/")
+        case Failure(e) =>
+          Console.err.println(s"Server could not start!")
+          e.printStackTrace()
+          ctx.self ! Done
+      }
+    Behaviors.receiveMessage {
+      case Done =>
+        Behaviors.stopped
+    }
+  }, "apiSystem")
+}
