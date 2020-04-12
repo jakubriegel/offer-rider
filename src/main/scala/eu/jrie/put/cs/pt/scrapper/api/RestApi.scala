@@ -28,7 +28,7 @@ object RestApi {
   private def routes(implicit actorSystem: ActorSystem[_], searchesRepo: ActorRef[SearchRepoMsg]): Route = {
 
     import akka.actor.typed.scaladsl.AskPattern._
-    implicit val timeout: Timeout = 5.seconds
+    implicit val timeout: Timeout = 15.seconds
     implicit val executionContext: ExecutionContextExecutor = actorSystem.executionContext
 
     val mapper = new ObjectMapper().registerModule(new DefaultScalaModule)
