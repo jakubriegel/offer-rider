@@ -21,8 +21,15 @@ def mock():
 def publish_result(id, n, last=False):
     msg = {
         'taskId': id,
-        'name': f'good car {n}',
-        'link': f'www.abc.moto/some_{n}',
+        'title': f'good car {n}',
+        'subtitle': f'buy it',
+        'url': f'www.abc.moto/some_{n}',
+        'imgUrl': f'www.img.abc.moto/some_img_{n}',
+        'params': {
+            'fuel': 'petrol',
+            'mileage': '10000',
+            'engineSize': 1500
+        },
         'last': last
     }
     data = json.dumps(msg)

@@ -50,6 +50,3 @@ object SearchService extends App {
   val service = new SearchService()
   service.start()
 }
-
-//val tasks = TableQuery[Tasks]
-//            (tasks returning tasks.map(_.id)) += (uuid, searchId, timestamp, None)

@@ -24,7 +24,7 @@ object Subscriber {
       m match {
         case M(channel, rawMsg) =>
           val msg: ResultMessage = asMsg(rawMsg)
-          context.log.trace ("received {} from {}", msg.name, channel)
+          context.log.trace ("received {} for task {} from {}", msg.title, msg.taskId, channel)
           resultsWriter ! WriteResult(msg)
         case _ =>
       }
