@@ -126,3 +126,5 @@ SELECT * FROM result_param;
 SELECT s.id, p.name, p.value
 FROM search as s, search_param as p
 WHERE s.active = true AND s.id = p.search_id;
+
+SELECT * FROM search WHERE user_id = 1 AND active = active;
