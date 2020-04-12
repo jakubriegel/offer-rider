@@ -25,7 +25,7 @@ object SearchExecutor {
   final case class StartSearch()
   final val SEARCH_TASKS_CHANNEL = "pt-scraper-search-tasks"
 
-  implicit val session: SlickSession = SlickSession.forConfig("slick-mysql")
+  private implicit val session: SlickSession = SlickSession.forConfig("slick-mysql")
   import session.profile.api._
 
   def apply(redis: RedisClient): Behavior[StartSearch] = Behaviors.receive { (context, _) =>

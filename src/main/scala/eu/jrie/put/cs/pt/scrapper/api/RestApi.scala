@@ -12,7 +12,7 @@ import akka.util.Timeout
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.typesafe.config.ConfigFactory
-import eu.jrie.put.cs.pt.scrapper.model.db.Tables.SearchesTable.SearchRow
+import eu.jrie.put.cs.pt.scrapper.model.Search
 import eu.jrie.put.cs.pt.scrapper.search.SearchRepository
 import eu.jrie.put.cs.pt.scrapper.search.SearchRepository.{GetSearches, SearchRepoMsg, SearchesAnswer}
 
@@ -23,8 +23,7 @@ import scala.util.{Failure, Success}
 
 object RestApi {
 
-  case class SearchMessage(id: Int, userId: Int, params: Map[String, String], active: Boolean)
-  case class SearchesMessage(userId: Long, searches: Seq[SearchMessage])
+  case class SearchesMessage(userId: Long, searches: Seq[Search])
 
   private def routes(implicit actorSystem: ActorSystem[_], searchesRepo: ActorRef[SearchRepoMsg]): Route = {
 
@@ -39,11 +38,10 @@ object RestApi {
           val data: Future[SearchesAnswer] = searchesRepo ? (GetSearches(userId, active, _))
           complete(
             data.map { _.searches }
-              .flatMap { _.runWith(Sink.seq[SearchRow]) }
-              .map { _.map { r => SearchMessage(r.id, r.userId, Map.empty, r.active) } }
+              .flatMap { _.runWith(Sink.seq) }
               .map { SearchesMessage(userId, _) }
-              .map(d => mapper.writeValueAsString(d))
-              .map(d => HttpEntity(ContentTypes.`application/json`, d))
+              .map { mapper.writeValueAsString(_) }
+              .map { HttpEntity(ContentTypes.`application/json`, _) }
           )
         }
       }
