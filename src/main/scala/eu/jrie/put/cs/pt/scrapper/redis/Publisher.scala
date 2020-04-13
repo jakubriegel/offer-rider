@@ -9,25 +9,25 @@ import eu.jrie.put.cs.pt.scrapper.redis.Message.RedisMessage
 
 
 object Publisher {
+
   trait PublisherMsg
   case class Publish(channel: String, msg: RedisMessage) extends PublisherMsg
   case class EndPublish() extends PublisherMsg
 
-  def apply(client: RedisClient): Behavior[PublisherMsg] = Behaviors.receive { (context, message) =>
+  private val mapper = new ObjectMapper().registerModule(new DefaultScalaModule())
+
+  def apply(implicit client: RedisClient): Behavior[PublisherMsg] = Behaviors.receive { (ctx, message) =>
     message match {
       case Publish(channel, msg) =>
-        context.log.trace("publishing {} on {}", asJson(msg), channel)
-        client.publish(channel, asJson(msg))
+        ctx.log.debug("publishing {} on {}", msg, channel)
+        client.publish(channel, msg)
         Behaviors.same
       case EndPublish() =>
         Behaviors.stopped
     }
   }
 
-  def asJson(message: RedisMessage): String = {
-    val mapper = new ObjectMapper()
-    mapper.registerModule(new DefaultScalaModule())
-
+  private implicit def asJson(message: RedisMessage): String = {
     mapper.writeValueAsString(message)
   }
 }

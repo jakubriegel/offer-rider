@@ -8,19 +8,35 @@ import slick.lifted.Tag
 
 object Tables {
   object SearchesTable {
-    case class SearchRow(
-                          id: Int,
-                          userId: Int,
-                          brand: String,
-                          model: Option[String],
-                          minMileage: Option[Int],
-                          maxMileage: Option[Int],
-                          active: Boolean
-                        )
+    case class SearchRow(id: Int, userId: Int, active: Boolean)
 
     implicit val getSearchRow: AnyRef with GetResult[SearchRow] = GetResult(r => {
-      SearchRow(r.nextInt, r.nextInt, r.nextString, Option(r.nextString), Option(r.nextInt), Option(r.nextInt), r.nextBoolean)
+      SearchRow(r.nextInt, r.nextInt, r.nextBoolean)
     })
+
+    class Searches (tag: Tag) extends Table[(Option[Int], Int, Boolean)](tag, "search") {
+      def id = column[Option[Int]]("id", O.PrimaryKey, O.AutoInc)
+      def userId = column[Int]("user_id")
+      def active = column[Boolean]("active")
+
+      def * = (id, userId, active)
+    }
+  }
+
+  object SearchesParamsTable {
+    case class SearchParamRow(searchId: Int, name: String, value: String)
+
+    implicit val getSearchRow: AnyRef with GetResult[SearchParamRow] = GetResult(r => {
+      SearchParamRow(r.nextInt, r.nextString, r.nextString)
+    })
+
+    class SearchesParams (tag: Tag) extends Table[(Int, String, String)](tag, "search_param") {
+      def searchId = column[Int]("search_id")
+      def name = column[String]("name")
+      def value = column[String]("value")
+
+      def * = (searchId, name, value)
+    }
   }
 
   object TasksTable {
@@ -35,14 +51,40 @@ object Tables {
   }
 
   object ResultsTable {
-    case class ResultRow (taskId: String, name: String, link: String)
+    case class ResultRow (
+                           id: Long,
+                           taskId: String,
+                           title: String,
+                           subtitle: Option[String],
+                           url: Option[String],
+                           imgUrl: Option[String]
+                         )
 
-    class Results (tag: Tag) extends Table[(String, String, String)](tag, "result") {
+    class Results (tag: Tag) extends Table[(Option[Long], String, String, Option[String], Option[String], Option[String])](tag, "result") {
+      def id = column[Option[Long]]("id", O.PrimaryKey, O.AutoInc)
       def taskId = column[String]("task_id")
-      def name = column[String]("name")
-      def link = column[String]("link")
+      def title = column[String]("title")
+      def subtitle = column[Option[String]]("subtitle")
+      def url = column[Option[String]]("url")
+      def imgUrl = column[Option[String]]("imgUrl")
 
-      def * = (taskId, name, link)
+      def * = (id, taskId, title, subtitle, url, imgUrl)
+    }
+  }
+
+  object ResultsParamsTable {
+    case class ResultParamRow(resultId: Long, name: String, value: String)
+
+    implicit val getSearchRow: AnyRef with GetResult[ResultParamRow] = GetResult(r => {
+      ResultParamRow(r.nextLong, r.nextString, r.nextString)
+    })
+
+    class ResultParams (tag: Tag) extends Table[(Long, String, String)](tag, "result_param") {
+      def resultId = column[Long]("result_id")
+      def name = column[String]("name")
+      def value = column[String]("value")
+
+      def * = (resultId, name, value)
     }
   }
 }
