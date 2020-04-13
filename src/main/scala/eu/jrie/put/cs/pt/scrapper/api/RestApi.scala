@@ -14,7 +14,7 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.typesafe.config.ConfigFactory
 import eu.jrie.put.cs.pt.scrapper.model.Search
 import eu.jrie.put.cs.pt.scrapper.search.SearchRepository
-import eu.jrie.put.cs.pt.scrapper.search.SearchRepository.{GetSearches, SearchRepoMsg, SearchesAnswer}
+import eu.jrie.put.cs.pt.scrapper.search.SearchRepository.{AddSearch, GetSearches, SearchAnswer, SearchRepoMsg, SearchesAnswer}
 
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContextExecutor, Future}
@@ -32,19 +32,33 @@ object RestApi {
     implicit val executionContext: ExecutionContextExecutor = actorSystem.executionContext
 
     val mapper = new ObjectMapper().registerModule(new DefaultScalaModule)
+    implicit def parseRequest(search: String): Search = { mapper.readValue(search, classOf[Search]) }
+    implicit def parseResponse(search: Search): String = { mapper.writeValueAsString(search) }
+
     path("search") {
-      get {
-        parameters(Symbol("userId").as[Int], Symbol("active").as[Boolean].?) { (userId, active) =>
-          val data: Future[SearchesAnswer] = searchesRepo ? (GetSearches(userId, active, _))
-          complete(
-            data.map { _.searches }
-              .flatMap { _.runWith(Sink.seq) }
-              .map { SearchesMessage(userId, _) }
-              .map { mapper.writeValueAsString(_) }
-              .map { HttpEntity(ContentTypes.`application/json`, _) }
-          )
+      concat(
+        get {
+          parameters(Symbol("userId").as[Int], Symbol("active").as[Boolean].?) { (userId, active) =>
+            val data: Future[SearchesAnswer] = searchesRepo ? (GetSearches(userId, active, _))
+            complete(
+              data.map { _.searches }
+                .flatMap { _.runWith(Sink.seq) }
+                .map { SearchesMessage(userId, _) }
+                .map { mapper.writeValueAsString(_) }
+                .map { HttpEntity(ContentTypes.`application/json`, _) }
+            )
+          }
+        },
+        post {
+          entity(as[String]) { request =>
+            val created: Future[SearchAnswer] = searchesRepo ? (AddSearch(request, _))
+            complete(
+              created.map { _.search }
+                .map { HttpEntity(ContentTypes.`application/json`, _) }
+            )
+          }
         }
-      }
+      )
     }
   }
 

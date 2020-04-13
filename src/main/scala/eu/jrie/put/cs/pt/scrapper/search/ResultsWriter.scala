@@ -13,7 +13,7 @@ import scala.concurrent.duration.Duration
 object ResultsWriter {
   case class WriteResult(result: ResultMessage)
 
-  implicit val session: SlickSession = SlickSession.forConfig("slick-mysql")
+  private implicit val session: SlickSession = SlickSession.forConfig("slick-mysql")
   import session.profile.api._
 
   def apply(): Behavior[WriteResult] = Behaviors.receive { (context, msg) =>
@@ -37,6 +37,3 @@ object ResultsWriter {
     Behaviors.same
   }
 }
-
-//val tasks = TableQuery[Tasks]
-//            (tasks returning tasks.map(_.id)) += (uuid, searchId, timestamp, None)

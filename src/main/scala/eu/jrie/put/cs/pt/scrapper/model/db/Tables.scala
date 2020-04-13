@@ -13,6 +13,14 @@ object Tables {
     implicit val getSearchRow: AnyRef with GetResult[SearchRow] = GetResult(r => {
       SearchRow(r.nextInt, r.nextInt, r.nextBoolean)
     })
+
+    class Searches (tag: Tag) extends Table[(Option[Int], Int, Boolean)](tag, "search") {
+      def id = column[Option[Int]]("id", O.PrimaryKey, O.AutoInc)
+      def userId = column[Int]("user_id")
+      def active = column[Boolean]("active")
+
+      def * = (id, userId, active)
+    }
   }
 
   object SearchesParamsTable {
@@ -21,6 +29,14 @@ object Tables {
     implicit val getSearchRow: AnyRef with GetResult[SearchParamRow] = GetResult(r => {
       SearchParamRow(r.nextInt, r.nextString, r.nextString)
     })
+
+    class SearchesParams (tag: Tag) extends Table[(Int, String, String)](tag, "search_param") {
+      def searchId = column[Int]("search_id")
+      def name = column[String]("name")
+      def value = column[String]("value")
+
+      def * = (searchId, name, value)
+    }
   }
 
   object TasksTable {
