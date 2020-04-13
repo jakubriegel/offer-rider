@@ -38,7 +38,7 @@ class SearchService {
   }
 
   private def subscribeForEvents(): Unit = {
-    subscriber ! Subscribe("pt-scraper-results")
+    subscriber ! Subscribe(Subscriber.SEARCH_RESULTS_CHANNEL)
   }
 
   private def initializeApi(): Unit = {
