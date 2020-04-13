@@ -74,17 +74,5 @@ object SearchExecutor {
           }
         )
       }
-
-
-
-//    val searches: Future[SearchesAnswer] = searchesRepo ? GetActiveSearches
-//    Await.result(searches.map { _.searches }, Duration.Inf)
-//      .map { s => (s.id, s.params, randomUUID.toString, Timestamp.from(Instant.now())) }
-//      .via (
-//        Slick.flowWithPassThrough { case (searchId: Int, params: Map[String, String], taskId: String, timestamp: Timestamp) =>
-//          sqlu"INSERT INTO task (id, search_id, start_time) VALUES($taskId, $searchId, $timestamp)"
-//            .map(_ => (taskId, params))
-//        }
-//      )
   }
 }
