@@ -4,11 +4,14 @@
 This service manages data flows in system for automatic searching advertisements on e-commerce web sites
 
 ## build
-tba
+To generate fat executable jar use `sbt assembly`. The jar will be a available in `target/scala-2.13/scrapper-search-service-assembly-0.1.jar`.
 
 ## run
-### shell
-tba
+### jar
+To run it use:
+```shell script
+java -jar target/scala-2.13/scrapper-search-service-assembly-0.1.jar
+```
 
 ### docker
 tba
@@ -51,7 +54,9 @@ Awaited message:
 ### REST API
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/7f7fdb04e7e9c1973e26)
 
-The rest api allows clients to see and manage searches, tasks and results. To discover and perform sample requests use the Postman collections from `docs/scraper-search-service.postman_collection.json`.
+The rest api allows clients to see and manage searches, tasks and results. 
+
+To discover and perform sample requests use the Postman collections from `docs/scraper-search-service.postman_collection.json`. In order to run the collections environment variable `HOST` must be defined.
 
 ## credits
 tba

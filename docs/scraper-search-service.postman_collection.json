@@ -108,7 +108,56 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "create search",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": 1,\n    \"params\": {\n        \"minYear\": \"1999\",\n        \"maxYear\": 2003,\n        \"maxMileage\": \"250000\",\n        \"model\": \"golf\",\n        \"brand\": \"vw\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SERVICE}}/search",
+							"host": [
+								"{{SERVICE}}"
+							],
+							"path": [
+								"search"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "akka-http/10.1.11"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 13 Apr 2020 08:01:27 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "129"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 12,\n    \"userId\": 1,\n    \"params\": {\n        \"brand\": \"vw\",\n        \"maxYear\": \"2003\",\n        \"maxMileage\": \"250000\",\n        \"minYear\": \"1999\",\n        \"model\": \"golf\"\n    },\n    \"active\": true\n}"
+				}
+			]
 		}
 	],
 	"event": [
@@ -135,9 +184,9 @@
 	],
 	"variable": [
 		{
-			"id": "8cf28771-ef29-4d81-8397-a4f73dea53a9",
+			"id": "b572d881-4fcd-4594-b27a-95acc17f4cca",
 			"key": "SERVICE",
-			"value": "localhost:30001",
+			"value": "{{HOST}}:30001",
 			"type": "string"
 		}
 	],
