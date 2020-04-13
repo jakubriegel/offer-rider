@@ -54,7 +54,9 @@ object RestApi {
             val created: Future[SearchAnswer] = searchesRepo ? (AddSearch(request, _))
             complete(
               created.map { _.search }
-                .map { HttpEntity(ContentTypes.`application/json`, _) }
+                .map { search =>
+                  HttpResponse(StatusCodes.Created, Seq.empty, HttpEntity(ContentTypes.`application/json`, search))
+                }
             )
           }
         }
