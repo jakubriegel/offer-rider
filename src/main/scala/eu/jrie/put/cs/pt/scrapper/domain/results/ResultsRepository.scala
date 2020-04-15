@@ -7,8 +7,7 @@ import eu.jrie.put.cs.pt.scrapper.model.Result
 import eu.jrie.put.cs.pt.scrapper.model.db.Tables.ResultsParamsTable.ResultParams
 import eu.jrie.put.cs.pt.scrapper.model.db.Tables.ResultsTable.Results
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContextExecutor}
+import scala.concurrent.{ExecutionContextExecutor, Future}
 
 object ResultsRepository {
   sealed trait ResultsRepoMsg
@@ -22,17 +21,20 @@ object ResultsRepository {
     implicit val executionContext: ExecutionContextExecutor = ctx.executionContext
     msg match {
       case AddResult(result) =>
-        val resultRow = (None, result.taskId, result.title, result.subtitle, result.url, result.imgUrl) //ResultRow(None, result.taskId, result.title, result.subtitle, result.url, result.imgUrl)
-        val results = TableQuery[Results]
-        val resultId = Await.result(
-          session.db.run((results returning results.map(_.id)) += resultRow ),
-          Duration.Inf
-        ).get
+        Future {
+          (None, result.taskId, result.title, result.subtitle, result.url, result.imgUrl)
+        }.map { (_, TableQuery[Results]) }
+          .flatMap { case (row, table) =>
+            session.db.run((table returning table.map(_.id)) += row)
+          }
+          .map { _.get }
+          .map { (_, TableQuery[ResultParams]) }
+          .map { case (resultId, table) =>
+            result.params foreach { case (name: String, value: String) =>
+              session.db.run(table += (resultId, name, value))
+            }
+          }
 
-        val resultParams = TableQuery[ResultParams]
-        result.params foreach { case (name: String, value: String) =>
-          session.db.run(resultParams += (resultId, name, value))
-        }
         Behaviors.same
       case _ =>
         ctx.log.info("unsupported repo msg")
