@@ -1,4 +1,4 @@
-package eu.jrie.put.cs.pt.scrapper.search
+package eu.jrie.put.cs.pt.scrapper.domain.search
 
 import akka.NotUsed
 import akka.actor.typed.scaladsl.Behaviors

@@ -52,7 +52,7 @@ object Tables {
 
   object ResultsTable {
     case class ResultRow (
-                           id: Long,
+                           id: Option[Long],
                            taskId: String,
                            title: String,
                            subtitle: Option[String],
