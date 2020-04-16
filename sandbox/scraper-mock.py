@@ -27,8 +27,8 @@ def publish_result(id, n, last=False):
         'imgUrl': f'www.img.abc.moto/some_img_{n}',
         'params': {
             'fuel': 'petrol',
-            'mileage': '10000',
-            'engineSize': 1500
+            'mileage': int(random() * 500000),
+            'engineSize': int((random() + .3) * 3000)
         },
         'last': last
     }

@@ -6,9 +6,10 @@ import akka.stream.alpakka.slick.scaladsl.{Slick, SlickSession}
 import akka.stream.scaladsl.Sink
 import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.{ResultsAnswer, ResultsRepoMsg}
 import eu.jrie.put.cs.pt.scrapper.model.Result
-import eu.jrie.put.cs.pt.scrapper.model.db.Tables.ResultsParamsTable.ResultParams
+import eu.jrie.put.cs.pt.scrapper.model.db.Tables.ResultsParamsTable.{ResultParamRow, ResultParams}
 import eu.jrie.put.cs.pt.scrapper.model.db.Tables.ResultsTable.{ResultRow, Results}
 
+import scala.collection.immutable.ListMap
 import scala.concurrent.{ExecutionContextExecutor, Future}
 
 object ResultsRepository {
@@ -59,11 +60,23 @@ class ResultsRepository(implicit context: ActorContext[ResultsRepoMsg]) extends 
 
   private def findResults(searchId: Long, taskId: Option[String], replyTo: ActorRef[ResultsAnswer]): Behavior[ResultsRepoMsg] = {
     Slick.source {
-      sql"SELECT * FROM result WHERE task_id IN (SELECT id FROM task WHERE search_id = 1)".as[ResultRow]
-    }.map { r => Result(r.id, r.taskId, r.title, r.subtitle, r.url, r.imgUrl, Map.empty) }
-        .runWith(Sink.seq)
-        .map { ResultsAnswer }
-        .andThen { replyTo ! _.get }
+      sql"SELECT * FROM result WHERE task_id IN (SELECT id FROM task WHERE search_id = $searchId)".as[ResultRow]
+    }.map { row =>
+      Slick.source {
+        sql"SELECT * FROM result_param WHERE result_id = ${row.id.get}".as[ResultParamRow]
+      } .runWith(Sink.seq)
+        .map { _.map(p => p.name -> p.value) }
+        .map { _.sortWith(_._1 > _._2) }
+        .map { ListMap.newBuilder.addAll(_).result }
+        .map {
+          Result(row.id, row.taskId, row.title, row.subtitle, row.url, row.imgUrl, _)
+        }
+    }
+      .runWith(Sink.seq)
+      .flatMap { a => Future.sequence(a) }
+      .map { ResultsAnswer }
+      .andThen { replyTo ! _.get }
+
     Behaviors.same
   }
 }
