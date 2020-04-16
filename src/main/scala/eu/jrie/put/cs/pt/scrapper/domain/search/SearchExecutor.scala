@@ -1,4 +1,4 @@
-package eu.jrie.put.cs.pt.scrapper.search
+package eu.jrie.put.cs.pt.scrapper.domain.search
 
 
 import java.sql.Timestamp
@@ -12,10 +12,10 @@ import akka.stream.alpakka.slick.scaladsl.{Slick, SlickSession}
 import akka.stream.scaladsl.Source
 import akka.util.Timeout
 import com.redis.RedisClient
+import eu.jrie.put.cs.pt.scrapper.domain.search.SearchRepository.{EndSearchRepo, FindActiveSearches, SearchRepoMsg, SearchesAnswer}
 import eu.jrie.put.cs.pt.scrapper.redis.Message.TaskMessage
 import eu.jrie.put.cs.pt.scrapper.redis.Publisher
 import eu.jrie.put.cs.pt.scrapper.redis.Publisher.{EndPublish, Publish}
-import eu.jrie.put.cs.pt.scrapper.search.SearchRepository.{EndSearchRepo, GetActiveSearches, SearchRepoMsg, SearchesAnswer}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
@@ -63,7 +63,7 @@ object SearchExecutor {
     implicit val timeout: Timeout = 15.seconds
 
 
-    val searches: Future[SearchesAnswer] = searchesRepo ? GetActiveSearches
+    val searches: Future[SearchesAnswer] = searchesRepo ? FindActiveSearches
     searches.map { _.searches }
       .map { source =>
         source.map { s => (s.id.get, s.params, randomUUID.toString, Timestamp.from(Instant.now())) }

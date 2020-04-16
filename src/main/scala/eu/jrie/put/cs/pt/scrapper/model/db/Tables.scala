@@ -52,13 +52,17 @@ object Tables {
 
   object ResultsTable {
     case class ResultRow (
-                           id: Long,
+                           id: Option[Long],
                            taskId: String,
                            title: String,
                            subtitle: Option[String],
                            url: Option[String],
                            imgUrl: Option[String]
                          )
+
+    implicit val getResultRow: AnyRef with GetResult[ResultRow] = GetResult(r => {
+      ResultRow(r.nextLongOption, r.nextString, r.nextString, r.nextStringOption, r.nextStringOption, r.nextStringOption)
+    })
 
     class Results (tag: Tag) extends Table[(Option[Long], String, String, Option[String], Option[String], Option[String])](tag, "result") {
       def id = column[Option[Long]]("id", O.PrimaryKey, O.AutoInc)

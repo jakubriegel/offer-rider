@@ -5,9 +5,10 @@ import akka.actor.typed.scaladsl.Behaviors
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.redis.{M, PubSubMessage, RedisClient}
+import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsWriter.WriteResult
+import eu.jrie.put.cs.pt.scrapper.domain.results.{ResultsRepository, ResultsWriter}
+import eu.jrie.put.cs.pt.scrapper.model.Result
 import eu.jrie.put.cs.pt.scrapper.redis.Message.ResultMessage
-import eu.jrie.put.cs.pt.scrapper.search.ResultsWriter
-import eu.jrie.put.cs.pt.scrapper.search.ResultsWriter.WriteResult
 
 
 object Subscriber {
@@ -18,14 +19,16 @@ object Subscriber {
   def apply(client: RedisClient): Behavior[Subscribe] = Behaviors.receive { (context, msg) =>
     context.log.info("subscribing {}", msg.channel)
 
-    val resultsWriter = context.spawn(ResultsWriter(), "resultsWriter")
+    val resultsRepo = context.spawn(ResultsRepository(), "resultsRepoResultsWriter")
+    val resultsWriter = context.spawn(ResultsWriter(resultsRepo), "resultsWriter")
 
     client.subscribe(msg.channel) { m: PubSubMessage =>
       m match {
         case M(channel, rawMsg) =>
           val msg: ResultMessage = asMsg(rawMsg)
           context.log.debug ("received {} for task {} from {}", msg.title, msg.taskId, channel)
-          resultsWriter ! WriteResult(msg)
+          val result = Result(None, msg.taskId, msg.title, msg.subtitle, msg.url, msg.imgUrl, msg.params)
+          resultsWriter ! WriteResult(result, msg.last)
         case _ =>
       }
     }

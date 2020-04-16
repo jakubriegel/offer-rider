@@ -6,10 +6,10 @@ import akka.actor.typed.ActorSystem
 import com.redis.RedisClient
 import com.typesafe.config.ConfigFactory
 import eu.jrie.put.cs.pt.scrapper.api.RestApi
+import eu.jrie.put.cs.pt.scrapper.domain.search.SearchExecutor
+import eu.jrie.put.cs.pt.scrapper.domain.search.SearchExecutor.StartSearch
 import eu.jrie.put.cs.pt.scrapper.redis.Subscriber
 import eu.jrie.put.cs.pt.scrapper.redis.Subscriber.Subscribe
-import eu.jrie.put.cs.pt.scrapper.search.SearchExecutor
-import eu.jrie.put.cs.pt.scrapper.search.SearchExecutor.StartSearch
 
 import scala.concurrent.duration.Duration
 

@@ -1,4 +1,4 @@
-package eu.jrie.put.cs.pt.scrapper.search
+package eu.jrie.put.cs.pt.scrapper.domain.search
 
 import akka.NotUsed
 import akka.actor.typed.scaladsl.Behaviors
@@ -12,7 +12,7 @@ import slick.jdbc.SQLActionBuilder
 
 import scala.collection.immutable.ListMap
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContextExecutor}
+import scala.concurrent.{Await, ExecutionContextExecutor, Future}
 
 object SearchRepository {
 
@@ -21,8 +21,8 @@ object SearchRepository {
 
   sealed trait SearchRepoMsg
   case class AddSearch(search: Search, replyTo: ActorRef[SearchAnswer]) extends SearchRepoMsg
-  case class GetSearches(userId: Int, active: Option[Boolean], replyTo: ActorRef[SearchesAnswer]) extends SearchRepoMsg
-  case class GetActiveSearches(replyTo: ActorRef[SearchesAnswer]) extends SearchRepoMsg
+  case class FindSearches(userId: Int, active: Option[Boolean], replyTo: ActorRef[SearchesAnswer]) extends SearchRepoMsg
+  case class FindActiveSearches(replyTo: ActorRef[SearchesAnswer]) extends SearchRepoMsg
 
   case class SearchAnswer(search: Search) extends SearchRepoMsg
   case class SearchesAnswer(searches: Source[Search, NotUsed]) extends SearchRepoMsg
@@ -34,26 +34,34 @@ object SearchRepository {
     implicit val executionContext: ExecutionContextExecutor = ctx.executionContext
     msg match {
       case AddSearch(search, replyTo) =>
-        val searches = TableQuery[Searches]
-        val id = Await.result(
-          session.db.run((searches returning searches.map(_.id)) += (None, search.userId, true)),
-          Duration.Inf
-        ).get
-        search.params foreach { case (name: String, value: String) =>
-          session.db.run(TableQuery[SearchesParams] += (id, name, value))
-        }
-
-        findSearches(sql"SELECT * FROM search WHERE id = $id").map { SearchAnswer }
-          .runWith(Sink.head)
+        Future {
+          (None, search.userId, true)
+        }.map { (_, TableQuery[Searches]) }
+          .flatMap { case (row, table) =>
+            session.db.run((table returning table.map(_.id)) += row)
+          }
+          .map { _.get }
+          .map { (_, TableQuery[SearchesParams]) }
+          .flatMap { case (searchId, table) =>
+            Future.sequence(
+              search.params.map { case (name, value) =>
+                session.db.run(table += (searchId, name, value))
+              }
+            ).map { (searchId, _) }
+          }
+          .map { case (searchId, _) =>
+            findSearches(sql"SELECT * FROM search WHERE id = $searchId").map { SearchAnswer }
+          }
+          .flatMap { _.runWith(Sink.head) }
           .andThen { replyTo ! _.get }
 
         Behaviors.same
-      case GetSearches(userId, active, replyTo) =>
+      case FindSearches(userId, active, replyTo) =>
         val filtered = Slick.source(sql"SELECT * FROM search WHERE user_id = $userId".as[SearchRow])
           .filter { s => active forall (s.active == _) }
         replyTo ! SearchesAnswer(findSearches(filtered))
         Behaviors.same
-      case GetActiveSearches(replyTo) =>
+      case FindActiveSearches(replyTo) =>
         replyTo ! SearchesAnswer(findSearches(sql"SELECT * FROM search WHERE active = true"))
         Behaviors.same
       case EndSearchRepo() =>

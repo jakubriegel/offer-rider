@@ -19,6 +19,8 @@ libraryDependencies += "net.debasishg" %% "redisclient" % "3.20"
 
 // jackson
 libraryDependencies += "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.10.3"
+libraryDependencies += "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8" % "2.10.3"
+libraryDependencies += "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % "2.10.3"
 
 // util
 libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.2.3"
