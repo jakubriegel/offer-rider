@@ -16,7 +16,7 @@ object ResultsRepository {
   sealed trait ResultsRepoMsg
 
   case class AddResult(result: Result) extends ResultsRepoMsg
-  case class FindResults(searchId: Long, taskId: Option[String], replyTo: ActorRef[ResultsAnswer]) extends ResultsRepoMsg
+  case class FindResults(userId: Int, searchId: Long, taskId: Option[String], replyTo: ActorRef[ResultsAnswer]) extends ResultsRepoMsg
 
   case class ResultsAnswer(results: Seq[Result]) extends ResultsRepoMsg
 
@@ -34,7 +34,7 @@ class ResultsRepository(implicit context: ActorContext[ResultsRepoMsg]) extends 
   override def onMessage(msg: ResultsRepoMsg): Behavior[ResultsRepoMsg] = {
     msg match {
       case AddResult(result) => addNewResult(result)
-      case FindResults(searchId, taskId, replyTo) => findResults(searchId, taskId, replyTo)
+      case FindResults(userId, searchId, taskId, replyTo) => findResults(userId, searchId, taskId, replyTo)
       case _ =>
         context.log.info("unsupported repo msg")
         Behaviors.stopped
@@ -60,9 +60,14 @@ class ResultsRepository(implicit context: ActorContext[ResultsRepoMsg]) extends 
     Behaviors.same
   }
 
-  private def findResults(searchId: Long, taskId: Option[String], replyTo: ActorRef[ResultsAnswer]): Behavior[ResultsRepoMsg] = {
+  private def findResults(userId: Int, searchId: Long, taskId: Option[String], replyTo: ActorRef[ResultsAnswer]): Behavior[ResultsRepoMsg] = {
     Slick.source {
-      sql"SELECT * FROM result WHERE task_id IN (SELECT id FROM task WHERE search_id = $searchId)".as[ResultRow]
+      taskId match {
+        case Some(id) =>
+          sql"SELECT * FROM result WHERE task_id = $id AND task_id IN (SELECT id FROM task WHERE search_id = $searchId AND search_id IN (SELECT id FROM search WHERE user_id = $userId))".as[ResultRow]
+        case None =>
+          sql"SELECT * FROM result WHERE task_id IN (SELECT id FROM task WHERE search_id = $searchId AND search_id IN (SELECT id FROM search WHERE user_id = $userId))".as[ResultRow]
+      }
     }.map { row =>
       Slick.source {
         sql"SELECT * FROM result_param WHERE result_id = ${row.id.get}".as[ResultParamRow]

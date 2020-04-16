@@ -83,7 +83,7 @@ object RestApi {
           parameters(
             Symbol("userId").as[Int], Symbol("searchId").as[Int], Symbol("taskId").as[String].?, Symbol("query").as[String].?
           ) { (userId, searchId, taskId, query) =>
-            val data: Future[ResultsAnswer] = resultsRepo ? (FindResults(searchId, taskId, _))
+            val data: Future[ResultsAnswer] = resultsRepo ? (FindResults(userId, searchId, taskId, _))
             complete(
               data.map { _.results }
                 .map { ResultsMessage(userId, searchId, taskId, query, _, Instant.now) }
