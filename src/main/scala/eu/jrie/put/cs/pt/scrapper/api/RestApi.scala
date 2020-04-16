@@ -60,6 +60,7 @@ object RestApi {
                 .map { SearchesMessage(userId, _) }
                 .map { mapper.writeValueAsString(_) }
                 .map { HttpEntity(ContentTypes.`application/json`, _) }
+                .map { HttpResponse(StatusCodes.OK, Seq.empty, _) }
             )
           }
         },
@@ -68,9 +69,8 @@ object RestApi {
             val created: Future[SearchAnswer] = searchesRepo ? (AddSearch(request, _))
             complete(
               created.map { _.search }
-                .map { search =>
-                  HttpResponse(StatusCodes.Created, Seq.empty, HttpEntity(ContentTypes.`application/json`, search))
-                }
+                .map { HttpEntity(ContentTypes.`application/json`, _) }
+                .map { HttpResponse(StatusCodes.Created, Seq.empty, _) }
             )
           }
         }
