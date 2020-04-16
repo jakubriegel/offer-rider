@@ -21,8 +21,8 @@ object SearchRepository {
 
   sealed trait SearchRepoMsg
   case class AddSearch(search: Search, replyTo: ActorRef[SearchAnswer]) extends SearchRepoMsg
-  case class GetSearches(userId: Int, active: Option[Boolean], replyTo: ActorRef[SearchesAnswer]) extends SearchRepoMsg
-  case class GetActiveSearches(replyTo: ActorRef[SearchesAnswer]) extends SearchRepoMsg
+  case class FindSearches(userId: Int, active: Option[Boolean], replyTo: ActorRef[SearchesAnswer]) extends SearchRepoMsg
+  case class FindActiveSearches(replyTo: ActorRef[SearchesAnswer]) extends SearchRepoMsg
 
   case class SearchAnswer(search: Search) extends SearchRepoMsg
   case class SearchesAnswer(searches: Source[Search, NotUsed]) extends SearchRepoMsg
@@ -48,12 +48,12 @@ object SearchRepository {
           .andThen { replyTo ! _.get }
 
         Behaviors.same
-      case GetSearches(userId, active, replyTo) =>
+      case FindSearches(userId, active, replyTo) =>
         val filtered = Slick.source(sql"SELECT * FROM search WHERE user_id = $userId".as[SearchRow])
           .filter { s => active forall (s.active == _) }
         replyTo ! SearchesAnswer(findSearches(filtered))
         Behaviors.same
-      case GetActiveSearches(replyTo) =>
+      case FindActiveSearches(replyTo) =>
         replyTo ! SearchesAnswer(findSearches(sql"SELECT * FROM search WHERE active = true"))
         Behaviors.same
       case EndSearchRepo() =>
