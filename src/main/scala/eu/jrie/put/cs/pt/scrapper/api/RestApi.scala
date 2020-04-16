@@ -1,5 +1,7 @@
 package eu.jrie.put.cs.pt.scrapper.api
 
+import java.time.Instant
+
 import akka.Done
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, ActorSystem}
@@ -10,11 +12,15 @@ import akka.http.scaladsl.server.Route
 import akka.stream.scaladsl.Sink
 import akka.util.Timeout
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.typesafe.config.ConfigFactory
-import eu.jrie.put.cs.pt.scrapper.model.Search
-import eu.jrie.put.cs.pt.scrapper.search.SearchRepository
-import eu.jrie.put.cs.pt.scrapper.search.SearchRepository.{AddSearch, GetSearches, SearchAnswer, SearchRepoMsg, SearchesAnswer}
+import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository
+import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.{FindResults, ResultsAnswer, ResultsRepoMsg}
+import eu.jrie.put.cs.pt.scrapper.domain.search.SearchRepository
+import eu.jrie.put.cs.pt.scrapper.domain.search.SearchRepository.{AddSearch, FindSearches, SearchAnswer, SearchRepoMsg, SearchesAnswer}
+import eu.jrie.put.cs.pt.scrapper.model.{Result, Search}
 
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContextExecutor, Future}
@@ -24,22 +30,30 @@ import scala.util.{Failure, Success}
 object RestApi {
 
   case class SearchesMessage(userId: Long, searches: Seq[Search])
+  case class ResultsMessage(userId: Long, searchId: Int, taskId: Option[String], query: Option[String], results: Seq[Result], date: Instant)
 
-  private def routes(implicit actorSystem: ActorSystem[_], searchesRepo: ActorRef[SearchRepoMsg]): Route = {
+  private def routes(
+                      implicit actorSystem: ActorSystem[_],
+                      searchesRepo: ActorRef[SearchRepoMsg],
+                      resultsRepo: ActorRef[ResultsRepoMsg]
+                    ): Route = {
 
     import akka.actor.typed.scaladsl.AskPattern._
     implicit val timeout: Timeout = 15.seconds
     implicit val executionContext: ExecutionContextExecutor = actorSystem.executionContext
 
-    val mapper = new ObjectMapper().registerModule(new DefaultScalaModule)
+    val mapper = new ObjectMapper()
+      .registerModule(new DefaultScalaModule)
+      .registerModule(new JavaTimeModule)
+      .registerModule(new Jdk8Module)
     implicit def parseRequest(search: String): Search = { mapper.readValue(search, classOf[Search]) }
     implicit def parseResponse(search: Search): String = { mapper.writeValueAsString(search) }
 
-    path("search") {
+    val searchRoutes = path("search") {
       concat(
         get {
           parameters(Symbol("userId").as[Int], Symbol("active").as[Boolean].?) { (userId, active) =>
-            val data: Future[SearchesAnswer] = searchesRepo ? (GetSearches(userId, active, _))
+            val data: Future[SearchesAnswer] = searchesRepo ? (FindSearches(userId, active, _))
             complete(
               data.map { _.searches }
                 .flatMap { _.runWith(Sink.seq) }
@@ -62,6 +76,27 @@ object RestApi {
         }
       )
     }
+
+    val resultsRoutes = path("results") {
+      concat(
+        get {
+          parameters(
+            Symbol("userId").as[Int], Symbol("searchId").as[Int], Symbol("taskId").as[String].?, Symbol("query").as[String].?
+          ) { (userId, searchId, taskId, query) =>
+            val data: Future[ResultsAnswer] = resultsRepo ? (FindResults(searchId, taskId, _))
+            complete(
+              data.map { _.results }
+                .map { ResultsMessage(userId, searchId, taskId, query, _, Instant.now) }
+                .map { mapper.writeValueAsString }
+                .map { HttpEntity(ContentTypes.`application/json`, _) }
+                .map { HttpResponse(StatusCodes.OK, Seq.empty, _) }
+            )
+          }
+        }
+      )
+    }
+
+    concat(searchRoutes, resultsRoutes)
   }
 
 
@@ -72,20 +107,23 @@ object RestApi {
     implicit val ec: ExecutionContextExecutor = ctx.system.executionContext
 
     val config = ConfigFactory.load().getConfig("service.api")
-    val db = ctx.spawn(SearchRepository(), "searchRepoAPI")
+    val searchesRepo = ctx.spawn(SearchRepository(), "searchRepoAPI")
+    val resultsRepo = ctx.spawn(ResultsRepository(), "resultRepoAPI")
 
-    Http().bindAndHandle(routes(ctx.system, db), config.getString("host"), config.getInt("port"))
-      .onComplete {
-        case Success(bound) =>
-          ctx.log.info(s"Api online at http://${bound.localAddress.getHostString}:${bound.localAddress.getPort}/")
-        case Failure(e) =>
-          Console.err.println(s"Server could not start!")
-          e.printStackTrace()
-          ctx.self ! Done
-      }
+    Http().bindAndHandle(
+      routes(ctx.system, searchesRepo, resultsRepo),
+      config.getString("host"), config.getInt("port")
+    ).onComplete {
+      case Success(bound) =>
+        ctx.log.info(s"Api online at http://${bound.localAddress.getHostString}:${bound.localAddress.getPort}/")
+      case Failure(e) =>
+        Console.err.println(s"Server could not start!")
+        e.printStackTrace()
+        ctx.self ! Done
+    }
+
     Behaviors.receiveMessage {
-      case Done =>
-        Behaviors.stopped
+      case Done => Behaviors.stopped
     }
   }, "apiSystem")
 }
