@@ -42,13 +42,14 @@ object SearchRepository {
           }
           .map { _.get }
           .map { (_, TableQuery[SearchesParams]) }
-          .map { case (searchId, table) =>
-            search.params foreach { case (name: String, value: String) =>
-              session.db.run(table += (searchId, name, value))
-            }
-            searchId
+          .flatMap { case (searchId, table) =>
+            Future.sequence(
+              search.params.map { case (name, value) =>
+                session.db.run(table += (searchId, name, value))
+              }
+            ).map { (searchId, _) }
           }
-          .map { searchId =>
+          .map { case (searchId, _) =>
             findSearches(sql"SELECT * FROM search WHERE id = $searchId").map { SearchAnswer }
           }
           .flatMap { _.runWith(Sink.head) }

@@ -50,10 +50,12 @@ class ResultsRepository(implicit context: ActorContext[ResultsRepoMsg]) extends 
       }
       .map { _.get }
       .map { (_, TableQuery[ResultParams]) }
-      .map { case (resultId, table) =>
-        result.params foreach { case (name: String, value: String) =>
-          session.db.run(table += (resultId, name, value))
-        }
+      .flatMap { case (resultId, table) =>
+        Future.sequence(
+          result.params.map { case (name: String, value: String) =>
+            session.db.run(table += (resultId, name, value))
+          }
+        )
       }
     Behaviors.same
   }
