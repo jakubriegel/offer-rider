@@ -52,6 +52,14 @@ Awaited message:
 ``` 
 
 ### REST API
+#### endpoints
+```
+POST /search
+GET /search
+GET /results
+```
+
+#### postman
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/7f7fdb04e7e9c1973e26)
 
 The rest api allows clients to see and manage searches, tasks and results. 
