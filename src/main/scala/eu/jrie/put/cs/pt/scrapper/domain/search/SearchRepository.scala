@@ -12,7 +12,7 @@ import slick.jdbc.SQLActionBuilder
 
 import scala.collection.immutable.ListMap
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContextExecutor}
+import scala.concurrent.{Await, ExecutionContextExecutor, Future}
 
 object SearchRepository {
 
@@ -34,17 +34,24 @@ object SearchRepository {
     implicit val executionContext: ExecutionContextExecutor = ctx.executionContext
     msg match {
       case AddSearch(search, replyTo) =>
-        val searches = TableQuery[Searches]
-        val id = Await.result(
-          session.db.run((searches returning searches.map(_.id)) += (None, search.userId, true)),
-          Duration.Inf
-        ).get
-        search.params foreach { case (name: String, value: String) =>
-          session.db.run(TableQuery[SearchesParams] += (id, name, value))
-        }
-
-        findSearches(sql"SELECT * FROM search WHERE id = $id").map { SearchAnswer }
-          .runWith(Sink.head)
+        Future {
+          (None, search.userId, true)
+        }.map { (_, TableQuery[Searches]) }
+          .flatMap { case (row, table) =>
+            session.db.run((table returning table.map(_.id)) += row)
+          }
+          .map { _.get }
+          .map { (_, TableQuery[SearchesParams]) }
+          .map { case (searchId, table) =>
+            search.params foreach { case (name: String, value: String) =>
+              session.db.run(table += (searchId, name, value))
+            }
+            searchId
+          }
+          .map { searchId =>
+            findSearches(sql"SELECT * FROM search WHERE id = $searchId").map { SearchAnswer }
+          }
+          .flatMap { _.runWith(Sink.head) }
           .andThen { replyTo ! _.get }
 
         Behaviors.same
