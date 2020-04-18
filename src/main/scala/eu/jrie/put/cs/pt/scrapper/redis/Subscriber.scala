@@ -11,7 +11,6 @@ import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsWriter.WriteResult
 import eu.jrie.put.cs.pt.scrapper.model.Result
 import eu.jrie.put.cs.pt.scrapper.redis.Message.ResultMessage
 
-
 object Subscriber {
   case class Subscribe(channel: String)
 
