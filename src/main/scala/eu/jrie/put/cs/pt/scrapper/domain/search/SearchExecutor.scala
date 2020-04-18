@@ -12,7 +12,8 @@ import akka.stream.alpakka.slick.scaladsl.{Slick, SlickSession}
 import akka.stream.scaladsl.Source
 import akka.util.Timeout
 import com.redis.RedisClient
-import eu.jrie.put.cs.pt.scrapper.domain.search.SearchRepository.{EndSearchRepo, FindActiveSearches, SearchRepoMsg, SearchesAnswer}
+import eu.jrie.put.cs.pt.scrapper.domain.repository.SearchRepository
+import eu.jrie.put.cs.pt.scrapper.domain.repository.SearchRepository.{EndSearchRepo, FindActiveSearches, SearchRepoMsg, SearchesAnswer}
 import eu.jrie.put.cs.pt.scrapper.redis.Message.TaskMessage
 import eu.jrie.put.cs.pt.scrapper.redis.Publisher
 import eu.jrie.put.cs.pt.scrapper.redis.Publisher.{EndPublish, Publish}

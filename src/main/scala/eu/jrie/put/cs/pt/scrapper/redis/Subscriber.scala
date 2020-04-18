@@ -5,8 +5,9 @@ import akka.actor.typed.scaladsl.Behaviors
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.redis.{M, PubSubMessage, RedisClient}
+import eu.jrie.put.cs.pt.scrapper.domain.repository.ResultsRepository
+import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsWriter
 import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsWriter.WriteResult
-import eu.jrie.put.cs.pt.scrapper.domain.results.{ResultsRepository, ResultsWriter}
 import eu.jrie.put.cs.pt.scrapper.model.Result
 import eu.jrie.put.cs.pt.scrapper.redis.Message.ResultMessage
 

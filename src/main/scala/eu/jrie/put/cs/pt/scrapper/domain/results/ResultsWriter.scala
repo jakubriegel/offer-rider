@@ -3,7 +3,7 @@ package eu.jrie.put.cs.pt.scrapper.domain.results
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior}
 import akka.stream.alpakka.slick.scaladsl.SlickSession
-import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.{AddResult, ResultsRepoMsg}
+import eu.jrie.put.cs.pt.scrapper.domain.repository.ResultsRepository.{AddResult, ResultsRepoMsg}
 import eu.jrie.put.cs.pt.scrapper.model.Result
 
 object ResultsWriter {

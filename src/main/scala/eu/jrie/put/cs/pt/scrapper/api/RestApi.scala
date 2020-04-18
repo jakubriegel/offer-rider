@@ -16,10 +16,9 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.typesafe.config.ConfigFactory
-import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository
-import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.{FindResults, ResultsAnswer, ResultsRepoMsg}
-import eu.jrie.put.cs.pt.scrapper.domain.search.SearchRepository
-import eu.jrie.put.cs.pt.scrapper.domain.search.SearchRepository.{AddSearch, FindSearches, SearchAnswer, SearchRepoMsg, SearchesAnswer}
+import eu.jrie.put.cs.pt.scrapper.domain.repository.ResultsRepository.{FindResults, ResultsAnswer, ResultsRepoMsg}
+import eu.jrie.put.cs.pt.scrapper.domain.repository.SearchRepository.{AddSearch, FindSearches, SearchAnswer, SearchRepoMsg, SearchesAnswer}
+import eu.jrie.put.cs.pt.scrapper.domain.repository.{ResultsRepository, SearchRepository}
 import eu.jrie.put.cs.pt.scrapper.model.{Result, Search}
 
 import scala.concurrent.duration._

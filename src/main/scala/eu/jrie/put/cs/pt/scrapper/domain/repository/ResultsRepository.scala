@@ -1,10 +1,10 @@
-package eu.jrie.put.cs.pt.scrapper.domain.results
+package eu.jrie.put.cs.pt.scrapper.domain.repository
 
 import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
 import akka.stream.alpakka.slick.scaladsl.{Slick, SlickSession}
 import akka.stream.scaladsl.Sink
-import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.{ResultsAnswer, ResultsRepoMsg}
+import eu.jrie.put.cs.pt.scrapper.domain.repository.ResultsRepository.{AddResult, FindResults, ResultsAnswer, ResultsRepoMsg}
 import eu.jrie.put.cs.pt.scrapper.model.Result
 import eu.jrie.put.cs.pt.scrapper.model.db.Tables.ResultsParamsTable.{ResultParamRow, ResultParams}
 import eu.jrie.put.cs.pt.scrapper.model.db.Tables.ResultsTable.{ResultRow, Results}
@@ -24,7 +24,6 @@ object ResultsRepository {
 }
 
 class ResultsRepository(implicit context: ActorContext[ResultsRepoMsg]) extends AbstractBehavior[ResultsRepoMsg](context) {
-  import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.{AddResult, FindResults, ResultsRepoMsg}
 
   private implicit val system: ActorSystem[_] = context.system
   private implicit val executionContext: ExecutionContextExecutor = context.executionContext
