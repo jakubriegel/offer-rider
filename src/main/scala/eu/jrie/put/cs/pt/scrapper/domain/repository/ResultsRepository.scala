@@ -23,7 +23,7 @@ object ResultsRepository {
   def apply(): Behavior[ResultsRepoMsg] =  Behaviors.setup[ResultsRepoMsg](implicit context => new ResultsRepository)
 }
 
-class ResultsRepository(implicit context: ActorContext[ResultsRepoMsg]) extends AbstractBehavior[ResultsRepoMsg](context) {
+private class ResultsRepository(implicit context: ActorContext[ResultsRepoMsg]) extends AbstractBehavior[ResultsRepoMsg](context) {
 
   private implicit val system: ActorSystem[_] = context.system
   private implicit val executionContext: ExecutionContextExecutor = context.executionContext
