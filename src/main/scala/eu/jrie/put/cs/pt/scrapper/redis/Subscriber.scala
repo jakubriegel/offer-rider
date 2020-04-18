@@ -5,7 +5,7 @@ import akka.actor.typed.scaladsl.Behaviors
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.redis.{M, PubSubMessage, RedisClient}
-import eu.jrie.put.cs.pt.scrapper.domain.repository.ResultsRepository
+import eu.jrie.put.cs.pt.scrapper.domain.repository.{ResultsRepository, TasksRepository}
 import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsWriter
 import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsWriter.WriteResult
 import eu.jrie.put.cs.pt.scrapper.model.Result
@@ -21,7 +21,8 @@ object Subscriber {
     context.log.info("subscribing {}", msg.channel)
 
     val resultsRepo = context.spawn(ResultsRepository(), "resultsRepoResultsWriter")
-    val resultsWriter = context.spawn(ResultsWriter(resultsRepo), "resultsWriter")
+    val tasksRepo = context.spawn(TasksRepository(), "tasksRepoResultsWriter")
+    val resultsWriter = context.spawn(ResultsWriter(resultsRepo, tasksRepo), "resultsWriter")
 
     client.subscribe(msg.channel) { m: PubSubMessage =>
       m match {
