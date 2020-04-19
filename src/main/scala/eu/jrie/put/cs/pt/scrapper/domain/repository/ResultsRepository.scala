@@ -1,34 +1,34 @@
-package eu.jrie.put.cs.pt.scrapper.domain.results
+package eu.jrie.put.cs.pt.scrapper.domain.repository
 
-import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
-import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
+import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
+import akka.actor.typed.{ActorRef, Behavior}
 import akka.stream.alpakka.slick.scaladsl.{Slick, SlickSession}
 import akka.stream.scaladsl.Sink
-import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.{ResultsAnswer, ResultsRepoMsg}
+import eu.jrie.put.cs.pt.scrapper.domain.repository.Repository.RepoMsg
+import eu.jrie.put.cs.pt.scrapper.domain.repository.ResultsRepository.{AddResult, FindResults, ResultsAnswer, ResultsRepoMsg}
 import eu.jrie.put.cs.pt.scrapper.model.Result
 import eu.jrie.put.cs.pt.scrapper.model.db.Tables.ResultsParamsTable.{ResultParamRow, ResultParams}
 import eu.jrie.put.cs.pt.scrapper.model.db.Tables.ResultsTable.{ResultRow, Results}
 
 import scala.collection.immutable.ListMap
-import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.concurrent.Future
 
 object ResultsRepository {
-  sealed trait ResultsRepoMsg
+  sealed trait ResultsRepoMsg extends RepoMsg
 
   case class AddResult(result: Result) extends ResultsRepoMsg
   case class FindResults(userId: Int, searchId: Long, taskId: Option[String], replyTo: ActorRef[ResultsAnswer]) extends ResultsRepoMsg
 
   case class ResultsAnswer(results: Seq[Result]) extends ResultsRepoMsg
 
-  def apply(): Behavior[ResultsRepoMsg] =  Behaviors.setup[ResultsRepoMsg](implicit context => new ResultsRepository)
+  def apply()(implicit session: SlickSession): Behavior[ResultsRepoMsg] =
+    Behaviors.setup[ResultsRepoMsg](implicit context => new ResultsRepository)
 }
 
-class ResultsRepository(implicit context: ActorContext[ResultsRepoMsg]) extends AbstractBehavior[ResultsRepoMsg](context) {
-  import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.{AddResult, FindResults, ResultsRepoMsg}
-
-  private implicit val system: ActorSystem[_] = context.system
-  private implicit val executionContext: ExecutionContextExecutor = context.executionContext
-  private implicit val session: SlickSession = SlickSession.forConfig("slick-mysql")
+private class ResultsRepository(
+                                 implicit context: ActorContext[ResultsRepoMsg],
+                                 protected implicit val session: SlickSession
+                               ) extends Repository[ResultsRepoMsg] {
   import session.profile.api._
 
   override def onMessage(msg: ResultsRepoMsg): Behavior[ResultsRepoMsg] = {

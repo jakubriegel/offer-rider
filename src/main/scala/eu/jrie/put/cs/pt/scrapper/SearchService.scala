@@ -3,6 +3,7 @@ package eu.jrie.put.cs.pt.scrapper
 import java.util.concurrent.TimeUnit
 
 import akka.actor.typed.ActorSystem
+import akka.stream.alpakka.slick.scaladsl.SlickSession
 import com.redis.RedisClient
 import com.typesafe.config.ConfigFactory
 import eu.jrie.put.cs.pt.scrapper.api.RestApi
@@ -16,6 +17,7 @@ import scala.concurrent.duration.Duration
 class SearchService {
 
   private def redisClient = new RedisClient("jrie.eu", 6379)
+  private implicit val session: SlickSession = SlickSession.forConfig("slick-mysql")
 
   private val searchExecutor: ActorSystem[StartSearch] = ActorSystem(SearchExecutor(redisClient), "searchExecutor")
   private val subscriber: ActorSystem[Subscribe] = ActorSystem(Subscriber(redisClient), "subscriber")

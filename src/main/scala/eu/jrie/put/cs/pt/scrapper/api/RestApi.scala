@@ -9,18 +9,19 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
+import akka.stream.alpakka.slick.scaladsl.SlickSession
 import akka.stream.scaladsl.Sink
 import akka.util.Timeout
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.{ObjectMapper, SerializationFeature}
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.typesafe.config.ConfigFactory
-import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository
-import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.{FindResults, ResultsAnswer, ResultsRepoMsg}
-import eu.jrie.put.cs.pt.scrapper.domain.search.SearchRepository
-import eu.jrie.put.cs.pt.scrapper.domain.search.SearchRepository.{AddSearch, FindSearches, SearchAnswer, SearchRepoMsg, SearchesAnswer}
-import eu.jrie.put.cs.pt.scrapper.model.{Result, Search}
+import eu.jrie.put.cs.pt.scrapper.domain.repository.ResultsRepository.{FindResults, ResultsAnswer, ResultsRepoMsg}
+import eu.jrie.put.cs.pt.scrapper.domain.repository.SearchRepository._
+import eu.jrie.put.cs.pt.scrapper.domain.repository.TasksRepository.{FindTasks, TasksRepoMsg, TasksResponse}
+import eu.jrie.put.cs.pt.scrapper.domain.repository.{ResultsRepository, SearchRepository, TasksRepository}
+import eu.jrie.put.cs.pt.scrapper.model.{Result, Search, Task}
 
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContextExecutor, Future}
@@ -30,11 +31,13 @@ import scala.util.{Failure, Success}
 object RestApi {
 
   case class SearchesMessage(userId: Long, searches: Seq[Search])
+  case class TasksMessage(userId: Long, searchId: Int, tasks: Seq[Task])
   case class ResultsMessage(userId: Long, searchId: Int, taskId: Option[String], query: Option[String], results: Seq[Result], date: Instant)
 
   private def routes(
                       implicit actorSystem: ActorSystem[_],
                       searchesRepo: ActorRef[SearchRepoMsg],
+                      tasksRepo: ActorRef[TasksRepoMsg],
                       resultsRepo: ActorRef[ResultsRepoMsg]
                     ): Route = {
 
@@ -46,6 +49,8 @@ object RestApi {
       .registerModule(new DefaultScalaModule)
       .registerModule(new JavaTimeModule)
       .registerModule(new Jdk8Module)
+      .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+
     implicit def parseRequest(search: String): Search = { mapper.readValue(search, classOf[Search]) }
     implicit def parseResponse(search: Search): String = { mapper.writeValueAsString(search) }
 
@@ -58,7 +63,7 @@ object RestApi {
               data.map { _.searches }
                 .flatMap { _.runWith(Sink.seq) }
                 .map { SearchesMessage(userId, _) }
-                .map { mapper.writeValueAsString(_) }
+                .map { mapper.writeValueAsString }
                 .map { HttpEntity(ContentTypes.`application/json`, _) }
                 .map { HttpResponse(StatusCodes.OK, Seq.empty, _) }
             )
@@ -75,6 +80,21 @@ object RestApi {
           }
         }
       )
+    }
+
+    val tasksRoutes = path("tasks") {
+      get {
+        parameters(Symbol("userId").as[Int], Symbol("searchId").as[Int]) { (userId, searchId) =>
+          val tasks: Future[TasksResponse] = tasksRepo ? (FindTasks(userId, searchId, _))
+          complete(
+            tasks.map { _.tasks }
+              .map { TasksMessage(userId, searchId, _) }
+              .map { mapper.writeValueAsString }
+              .map { HttpEntity(ContentTypes.`application/json`, _) }
+              .map { HttpResponse(StatusCodes.OK, Seq.empty, _) }
+          )
+        }
+      }
     }
 
     val resultsRoutes = path("results") {
@@ -96,11 +116,11 @@ object RestApi {
       )
     }
 
-    concat(searchRoutes, resultsRoutes)
+    concat(searchRoutes, tasksRoutes, resultsRoutes)
   }
 
 
-  def run: ActorSystem[Done] = ActorSystem[Done](Behaviors.setup[Done] { ctx =>
+  def run(implicit session: SlickSession): ActorSystem[Done] = ActorSystem[Done](Behaviors.setup[Done] { ctx =>
 
     import akka.actor.typed.scaladsl.adapter._
     implicit val system: akka.actor.ActorSystem = ctx.system.toClassic
@@ -108,10 +128,11 @@ object RestApi {
 
     val config = ConfigFactory.load().getConfig("service.api")
     val searchesRepo = ctx.spawn(SearchRepository(), "searchRepoAPI")
+    val tasksRepo = ctx.spawn(TasksRepository(), "tasksRepoAPI")
     val resultsRepo = ctx.spawn(ResultsRepository(), "resultRepoAPI")
 
     Http().bindAndHandle(
-      routes(ctx.system, searchesRepo, resultsRepo),
+      routes(ctx.system, searchesRepo, tasksRepo, resultsRepo),
       config.getString("host"), config.getInt("port")
     ).onComplete {
       case Success(bound) =>

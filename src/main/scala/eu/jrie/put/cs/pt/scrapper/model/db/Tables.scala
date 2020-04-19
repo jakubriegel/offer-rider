@@ -2,6 +2,7 @@ package eu.jrie.put.cs.pt.scrapper.model.db
 
 import java.sql.Timestamp
 
+import eu.jrie.put.cs.pt.scrapper.model.Task
 import slick.jdbc.GetResult
 import slick.jdbc.MySQLProfile.api._
 import slick.lifted.Tag
@@ -40,6 +41,11 @@ object Tables {
   }
 
   object TasksTable {
+
+    implicit val getTaskRow: AnyRef with GetResult[Task] = GetResult(r => {
+      Task(r.nextString, r.nextInt, r.nextTimestamp.toInstant, r.nextTimestampOption.map { _.toInstant })
+    })
+
     class Tasks (tag: Tag) extends Table[(String, Int, Timestamp, Option[Timestamp])](tag, "task") {
       def id = column[String]("id")
       def searchId = column[Int]("search_id")

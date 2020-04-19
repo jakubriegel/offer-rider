@@ -1,10 +1,12 @@
-package eu.jrie.put.cs.pt.scrapper.domain.search
+package eu.jrie.put.cs.pt.scrapper.domain.repository
 
 import akka.NotUsed
-import akka.actor.typed.scaladsl.Behaviors
+import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
 import akka.stream.alpakka.slick.scaladsl.{Slick, SlickSession}
 import akka.stream.scaladsl.{Sink, Source}
+import eu.jrie.put.cs.pt.scrapper.domain.repository.Repository.RepoMsg
+import eu.jrie.put.cs.pt.scrapper.domain.repository.SearchRepository._
 import eu.jrie.put.cs.pt.scrapper.model.Search
 import eu.jrie.put.cs.pt.scrapper.model.db.Tables.SearchesParamsTable.{SearchParamRow, SearchesParams}
 import eu.jrie.put.cs.pt.scrapper.model.db.Tables.SearchesTable.{SearchRow, Searches}
@@ -15,11 +17,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContextExecutor, Future}
 
 object SearchRepository {
-
-  private implicit val session: SlickSession = SlickSession.forConfig("slick-mysql")
-  import session.profile.api._
-
-  sealed trait SearchRepoMsg
+  sealed trait SearchRepoMsg extends RepoMsg
   case class AddSearch(search: Search, replyTo: ActorRef[SearchAnswer]) extends SearchRepoMsg
   case class FindSearches(userId: Int, active: Option[Boolean], replyTo: ActorRef[SearchesAnswer]) extends SearchRepoMsg
   case class FindActiveSearches(replyTo: ActorRef[SearchesAnswer]) extends SearchRepoMsg
@@ -29,9 +27,17 @@ object SearchRepository {
 
   case class EndSearchRepo() extends SearchRepoMsg
 
-  def apply(): Behavior[SearchRepoMsg] = Behaviors.receive { (ctx, msg) =>
-    implicit val system: ActorSystem[_] = ctx.system
-    implicit val executionContext: ExecutionContextExecutor = ctx.executionContext
+  def apply()(implicit session: SlickSession): Behavior[SearchRepoMsg] =
+    Behaviors.setup(implicit context => new SearchRepository)
+}
+
+private class SearchRepository(
+                                implicit context: ActorContext[SearchRepoMsg],
+                                protected implicit val session: SlickSession
+                              ) extends Repository[SearchRepoMsg] {
+  import session.profile.api._
+
+  override def onMessage(msg: SearchRepoMsg): Behavior[SearchRepoMsg] = {
     msg match {
       case AddSearch(search, replyTo) =>
         Future {
@@ -67,7 +73,7 @@ object SearchRepository {
       case EndSearchRepo() =>
         Behaviors.stopped
       case _ =>
-        ctx.log.info("unsupported repo msg")
+        context.log.info("unsupported repo msg")
         Behaviors.stopped
     }
   }
