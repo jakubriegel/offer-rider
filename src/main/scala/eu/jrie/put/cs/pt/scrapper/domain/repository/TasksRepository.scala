@@ -4,9 +4,10 @@ import java.sql.Timestamp
 
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, Behavior}
-import akka.stream.alpakka.slick.scaladsl.SlickSession
+import akka.stream.alpakka.slick.scaladsl.{Slick, SlickSession}
+import akka.stream.scaladsl.Sink
 import eu.jrie.put.cs.pt.scrapper.domain.repository.Repository.RepoMsg
-import eu.jrie.put.cs.pt.scrapper.domain.repository.TasksRepository.{AddTask, EndTask, TaskResponse, TasksRepoMsg}
+import eu.jrie.put.cs.pt.scrapper.domain.repository.TasksRepository._
 import eu.jrie.put.cs.pt.scrapper.model.Task
 import eu.jrie.put.cs.pt.scrapper.model.db.Tables.TasksTable.Tasks
 
@@ -15,8 +16,10 @@ object TasksRepository {
 
   case class AddTask(task: Task, replyTo: ActorRef[TaskResponse]) extends TasksRepoMsg
   case class EndTask(id: String) extends TasksRepoMsg
+  case class FindTasks(userId: Int, searchId: Int, replyTo: ActorRef[TasksResponse]) extends TasksRepoMsg
 
   case class TaskResponse(id: String) extends TasksRepoMsg
+  case class TasksResponse(tasks: Seq[Task]) extends TasksRepoMsg
 
   def apply()(implicit session: SlickSession): Behavior[TasksRepoMsg] =
     Behaviors.setup(implicit context => new TasksRepository)
@@ -33,6 +36,7 @@ private class TasksRepository(
     msg match {
       case AddTask(result, replyTo) => addNewTask(result, replyTo)
       case EndTask(id) => endTask(id)
+      case FindTasks(userId, searchId, replyTo) => findTasks(userId, searchId, replyTo)
       case _ =>
         context.log.info("unsupported repo msg")
         Behaviors.stopped
@@ -49,6 +53,18 @@ private class TasksRepository(
 
   private def endTask(id: String): Behavior[TasksRepoMsg] = {
     session.db.run(sqlu"UPDATE task SET end_time = current_timestamp WHERE id = $id")
+    Behaviors.same
+  }
+
+  private def findTasks(userId: Int, searchId: Int, replyTo: ActorRef[TasksRepository.TasksResponse]): Behavior[TasksRepoMsg] = {
+    Slick.source {
+      import eu.jrie.put.cs.pt.scrapper.model.db.Tables.TasksTable.getTaskRow
+      sql"""SELECT * FROM task
+            WHERE search_id = $searchId
+            AND search_id IN (SELECT id FROM search WHERE user_id = $userId)""".as[Task]
+    } .runWith(Sink.seq)
+      .map { TasksResponse }
+      .andThen { replyTo ! _.get }
     Behaviors.same
   }
 }
