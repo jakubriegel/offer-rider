@@ -9,6 +9,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
+import akka.stream.alpakka.slick.scaladsl.SlickSession
 import akka.stream.scaladsl.Sink
 import akka.util.Timeout
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -17,7 +18,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.typesafe.config.ConfigFactory
 import eu.jrie.put.cs.pt.scrapper.domain.repository.ResultsRepository.{FindResults, ResultsAnswer, ResultsRepoMsg}
-import eu.jrie.put.cs.pt.scrapper.domain.repository.SearchRepository.{AddSearch, FindSearches, SearchAnswer, SearchRepoMsg, SearchesAnswer}
+import eu.jrie.put.cs.pt.scrapper.domain.repository.SearchRepository._
 import eu.jrie.put.cs.pt.scrapper.domain.repository.{ResultsRepository, SearchRepository}
 import eu.jrie.put.cs.pt.scrapper.model.{Result, Search}
 
@@ -99,7 +100,7 @@ object RestApi {
   }
 
 
-  def run: ActorSystem[Done] = ActorSystem[Done](Behaviors.setup[Done] { ctx =>
+  def run(implicit session: SlickSession): ActorSystem[Done] = ActorSystem[Done](Behaviors.setup[Done] { ctx =>
 
     import akka.actor.typed.scaladsl.adapter._
     implicit val system: akka.actor.ActorSystem = ctx.system.toClassic

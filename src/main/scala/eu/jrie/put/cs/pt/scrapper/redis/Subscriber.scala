@@ -2,6 +2,7 @@ package eu.jrie.put.cs.pt.scrapper.redis
 
 import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.Behaviors
+import akka.stream.alpakka.slick.scaladsl.SlickSession
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.redis.{M, PubSubMessage, RedisClient}
@@ -16,7 +17,7 @@ object Subscriber {
 
   val SEARCH_RESULTS_CHANNEL = "pt-scraper-results"
 
-  def apply(client: RedisClient): Behavior[Subscribe] = Behaviors.receive { (context, msg) =>
+  def apply(client: RedisClient)(implicit session: SlickSession): Behavior[Subscribe] = Behaviors.receive { (context, msg) =>
     context.log.info("subscribing {}", msg.channel)
 
     val resultsRepo = context.spawn(ResultsRepository(), "resultsRepoResultsWriter")

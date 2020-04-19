@@ -7,6 +7,7 @@ import java.util.UUID.randomUUID
 import akka.NotUsed
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
+import akka.stream.alpakka.slick.scaladsl.SlickSession
 import akka.stream.scaladsl.Source
 import akka.util.Timeout
 import com.redis.RedisClient
@@ -26,7 +27,7 @@ object SearchExecutor {
   final case class StartSearch()
   final val SEARCH_TASKS_CHANNEL = "pt-scraper-search-tasks"
 
-  def apply(redis: RedisClient): Behavior[StartSearch] = Behaviors.receive { (ctx, _) =>
+  def apply(redis: RedisClient)(implicit session: SlickSession): Behavior[StartSearch] = Behaviors.receive { (ctx, _) =>
     ctx.log.info("searches task creation started")
 
     implicit val system: ActorSystem[Nothing] = ctx.system

@@ -2,31 +2,31 @@ package eu.jrie.put.cs.pt.scrapper.domain.repository
 
 import java.sql.Timestamp
 
-import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
-import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
+import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
+import akka.actor.typed.{ActorRef, Behavior}
 import akka.stream.alpakka.slick.scaladsl.SlickSession
+import eu.jrie.put.cs.pt.scrapper.domain.repository.Repository.RepoMsg
 import eu.jrie.put.cs.pt.scrapper.domain.repository.TasksRepository.{AddTask, EndTask, TaskResponse, TasksRepoMsg}
 import eu.jrie.put.cs.pt.scrapper.model.Task
 import eu.jrie.put.cs.pt.scrapper.model.db.Tables.TasksTable.Tasks
 
-import scala.concurrent.ExecutionContextExecutor
-
 object TasksRepository {
-  sealed trait TasksRepoMsg
+  sealed trait TasksRepoMsg extends RepoMsg
 
   case class AddTask(task: Task, replyTo: ActorRef[TaskResponse]) extends TasksRepoMsg
   case class EndTask(id: String) extends TasksRepoMsg
 
   case class TaskResponse(id: String) extends TasksRepoMsg
 
-  def apply(): Behavior[TasksRepoMsg] =  Behaviors.setup[TasksRepoMsg](implicit context => new TasksRepository)
+  def apply()(implicit session: SlickSession): Behavior[TasksRepoMsg] =
+    Behaviors.setup(implicit context => new TasksRepository)
 }
 
-private class TasksRepository(implicit context: ActorContext[TasksRepoMsg]) extends AbstractBehavior[TasksRepoMsg](context) {
+private class TasksRepository(
+                               implicit context: ActorContext[TasksRepoMsg],
+                               protected implicit val session: SlickSession
+                             ) extends Repository[TasksRepoMsg] {
 
-  private implicit val system: ActorSystem[_] = context.system
-  private implicit val executionContext: ExecutionContextExecutor = context.executionContext
-  private implicit val session: SlickSession = SlickSession.forConfig("slick-mysql")
   import session.profile.api._
 
   override def onMessage(msg: TasksRepoMsg): Behavior[TasksRepoMsg] = {
@@ -51,5 +51,4 @@ private class TasksRepository(implicit context: ActorContext[TasksRepoMsg]) exte
     session.db.run(sqlu"UPDATE task SET end_time = current_timestamp WHERE id = $id")
     Behaviors.same
   }
-
 }
