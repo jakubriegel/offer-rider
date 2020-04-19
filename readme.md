@@ -56,6 +56,7 @@ Awaited message:
 ```
 POST /search
 GET /search
+GET /tasks
 GET /results
 ```
 

@@ -51,13 +51,14 @@
 							],
 							"query": [
 								{
-									"key": "active",
-									"value": "true",
-									"disabled": true
-								},
-								{
 									"key": "userId",
 									"value": "1"
+								},
+								{
+									"key": "active",
+									"value": "false",
+									"description": "optional",
+									"disabled": true
 								}
 							]
 						}
@@ -166,6 +167,79 @@
 			"protocolProfileBehavior": {}
 		},
 		{
+			"name": "tasks",
+			"item": [
+				{
+					"name": "tasks",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "31b9ec91-9784-40ed-9d4b-63a6736410a8",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Content-Type is present\", () => {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									"",
+									"pm.test(\"Content-Type is application/json\", () => {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.equal(\"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response contains tasks\", () => {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData.tasks).to.be.an('array');",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVICE}}/tasks?userId=1&searchId=1",
+							"host": [
+								"{{SERVICE}}"
+							],
+							"path": [
+								"tasks"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "1"
+								},
+								{
+									"key": "searchId",
+									"value": "1"
+								},
+								{
+									"key": "taskId",
+									"value": "73427a7b-3f6f-45b9-b397-8315676dd079",
+									"description": "optional",
+									"disabled": true
+								},
+								{
+									"key": "query",
+									"value": "diesel",
+									"description": "optional",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "results",
 			"item": [
 				{
@@ -202,7 +276,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{SERVICE}}/results?userId=1&searchId=1",
+							"raw": "{{SERVICE}}/results?userId=1&searchId=1&taskId=1eaddb44-5cf0-44a5-b48a-b37c7efb1d13",
 							"host": [
 								"{{SERVICE}}"
 							],
@@ -220,12 +294,13 @@
 								},
 								{
 									"key": "taskId",
-									"value": "abc",
-									"disabled": true
+									"value": "1eaddb44-5cf0-44a5-b48a-b37c7efb1d13",
+									"description": "optional"
 								},
 								{
 									"key": "query",
 									"value": "diesel",
+									"description": "optional",
 									"disabled": true
 								}
 							]
@@ -261,7 +336,7 @@
 	],
 	"variable": [
 		{
-			"id": "fb8bec10-0c22-4c58-b74d-317a4f0befae",
+			"id": "d83bf6f4-377b-4e58-952d-749fb86f37d2",
 			"key": "SERVICE",
 			"value": "{{HOST}}:30001",
 			"type": "string"
