@@ -1,4 +1,4 @@
-# pt-scrapper
+# offer-rider frontend
 
 ## about
 tba
