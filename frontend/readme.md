@@ -4,9 +4,15 @@
 tba
 
 ## build
-tba
+```
+npm install
+npm run build
+```
 
 ## run
+```
+npm run serve
+```
 ### shell
 tba
 
