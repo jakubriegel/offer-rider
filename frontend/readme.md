@@ -1,24 +1,26 @@
 # pt-scrapper
 
-## Project setup
+## about
+tba
+
+## build
 ```
 npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
 npm run build
 ```
 
-### Lints and fixes files
+## run
 ```
-npm run lint
+npm run serve
 ```
+### shell
+tba
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### docker
+tba
+
+## integrate
+tba
+
+## credits
+tba
