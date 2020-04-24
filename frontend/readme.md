@@ -1,20 +1,24 @@
-# offer-rider frontend
+# pt-scrapper
 
-## about
-tba
+## Project setup
+```
+npm install
+```
 
-## build
-tba
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
 
-## run
-### shell
-tba
+### Compiles and minifies for production
+```
+npm run build
+```
 
-### docker
-tba
+### Lints and fixes files
+```
+npm run lint
+```
 
-## integrate
-tba
-
-## credits
-tba
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
