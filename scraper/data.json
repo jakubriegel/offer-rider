@@ -1,0 +1,971 @@
+[
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Chevrolet Corvette C2 1964 Auto Gallery Wrocław",
+        "price": 315000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-chevrolet-corvette-c2-1964-auto-gallery-wroclaw-ID6D28DE.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6IjFieGo2YWNtdzR1MzItT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.EroosPALx8t3WlPxSPtJ1-S1qJJo11twzAg_WQNyetk/image;s=148x110",
+        "params": {
+            "year": 1964,
+            "mileage": "6 400 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Wrocław",
+            "region": "Dolnośląskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Stingray 1973 Auto Punkt",
+        "price": 45700,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-stingray-1973-auto-punkt-ID6C4NJD.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6ImF2eGU2Z25yeWo3YzItT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.-xqRO3FjG3EHbhyMMFsk7CSo9TWPRxadKmBTF2__e-c/image;s=148x110",
+        "params": {
+            "year": 1973,
+            "mileage": "28 188 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Mława",
+            "region": "Mazowieckie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Corvette C4 5.7 V8 ZAMIANA",
+        "price": 19900,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-corvette-c4-5-7-v8-zamiana-ID6D0Wnj.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6Im03bGYzaTg0N2l2bjMtT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.xeH5oL92086Id89EfD7W82qRLwWoV7gygsrgMGKdYL0/image;s=148x110",
+        "params": {
+            "year": 1984,
+            "mileage": "228 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Szczecin",
+            "region": "Zachodniopomorskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "ZR1! Targa! Super stan! Serwis! Mały Przebieg",
+        "price": 129900,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-zr1-targa-super-stan-serwis-maly-przebieg-ID6D09t8.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6ImcyN2M3cm9oMndoNS1PVE9NT1RPUEwiLCJ3IjpbeyJmbiI6IndnNGducXA2eTFmLU9UT01PVE9QTCIsInMiOiIxNiIsInAiOiIxMCwtMTAiLCJhIjoiMCJ9XX0.CqvvA4gxjLs6ZWBkOUl_b7p2qMgDJwr1YHiDwjYRg0g/image;s=148x110",
+        "params": {
+            "year": 1991,
+            "mileage": "22 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Warszawa",
+            "region": "Mazowieckie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "c4 1991 rok 5.7 EUROPA Francja !",
+        "price": 26600,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-c4-1991-rok-5-7-europa-francja-ID6BvH97.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6InN1bm9odnlod3lnMS1PVE9NT1RPUEwifQ.UC__rzcm3sKZ9vUMOomhPKRG9HsF-hU7Kh_14zbFt2Y/image;s=148x110",
+        "params": {
+            "year": 1991,
+            "mileage": "170 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Kraków",
+            "region": "Małopolskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "1977, 5.7 V8, 375hp! zabytek w świetnym stanie! lekko uszkodzony przód",
+        "price": 55000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-1977-5-7-v8-375hp-zabytek-w-swietnym-stanie-lekko-uszkodzony-przod-ID6D30Hm.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6IjNsd3oyMWQxbzU0NzItT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.6TSUXL4EXfgKAOJEIjRSF42LrhC8fLoXukH52p3b_FI/image;s=148x110",
+        "params": {
+            "year": 1977,
+            "mileage": "98 169 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Warszawa",
+            "region": "Mazowieckie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "C4 5.7 V8 249KM sprawny TARGA zarejestrowany BDB stan",
+        "price": 29900,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-c4-5-7-v8-249km-sprawny-targa-zarejestrowany-bdb-stan-ID6CYn3n.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6InFkNGg5MzRoeHk4aDItT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.EwuXS18uGYwPaiOuler6_KUbULMcqTuKGyMe4oED9hc/image;s=148x110",
+        "params": {
+            "year": 1985,
+            "mileage": "160 000 km",
+            "engine_capacity": "5 730 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Gdynia",
+            "region": "Pomorskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "ZR 1",
+        "price": 99630,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-zr-1-ID6D1yQ9.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6IjBzYmRudnk1MXAzMy1PVE9NT1RPUEwiLCJ3IjpbeyJmbiI6IndnNGducXA2eTFmLU9UT01PVE9QTCIsInMiOiIxNiIsInAiOiIxMCwtMTAiLCJhIjoiMCJ9XX0.CNni7fHTFtoh7d9K8wx18AtoiCjgOkvEDivViTBLyvg/image;s=148x110",
+        "params": {
+            "year": 1991,
+            "mileage": "134 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Żyrardów",
+            "region": "Mazowieckie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "cabrio automat",
+        "price": 36900,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-cabrio-automat-ID6CWMBt.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6InA5MzZjaDhwdWlqLU9UT01PVE9QTCIsInciOlt7ImZuIjoid2c0Z25xcDZ5MWYtT1RPTU9UT1BMIiwicyI6IjE2IiwicCI6IjEwLC0xMCIsImEiOiIwIn1dfQ.nZ5HWot4bk7EDgG8g3-IVKqrWol6xKN9O14Ije_lz1A/image;s=148x110",
+        "params": {
+            "year": 1987,
+            "mileage": "140 000 km",
+            "engine_capacity": "",
+            "fuel_type": "Benzyna",
+            "town": "Dawidy",
+            "region": "Mazowieckie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Optymalny egzemplarz-sprawny i ładny, Model '78",
+        "price": 49900,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-optymalny-egzemplarz-sprawny-i-ladny-model-78-ID6BLuZD.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6InUxZHl2ajFlZGdyZjItT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.W-pH2vAd02om7IxksNwVVy0yJ2KUGtnzk49O0cOsSBA/image;s=148x110",
+        "params": {
+            "year": 1977,
+            "mileage": "62 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Rzeszów",
+            "region": "Podkarpackie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Chevrolet CORVETTE C3 1980 5,7L V8 TARGA Super stan",
+        "price": 84900,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-chevrolet-corvette-c3-1980-5-7l-v8-targa-super-stan-ID6CSBvZ.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6Inc1c3Y4YmJleWJpcTMtT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.gts0RxeDZ4f4vAlxfZrwFSPGkhhTMzIX7ZmIPDiRWFU/image;s=148x110",
+        "params": {
+            "year": 1980,
+            "mileage": "70 100 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Skierniewice",
+            "region": "Łódzkie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "C4 5.7L V8 Targa ZAMIANA",
+        "price": 39900,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-c4-5-7l-v8-targa-zamiana-ID6CF4lS.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6Ing1YzloZ3UweXZ2MzEtT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.Gea8tAakVsAPhqYqhv8vfj-S285-uaWtOOJmV6Z-g5Y/image;s=148x110",
+        "params": {
+            "year": 1989,
+            "mileage": "120 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Bochnia",
+            "region": "Małopolskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "C4 Targa klima polift",
+        "price": 21500,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-c4-targa-klima-polift-ID6D2jiU.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6IjNndTNndm9xd2xubzItT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.ejAoP82snAvVBCWjtmeQlbFfbRfbWkDlhnBpuDn816M/image;s=148x110",
+        "params": {
+            "year": 1990,
+            "mileage": "133 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Ostróda",
+            "region": "Warmińsko-mazurskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "CHEVROLET CORVETTE 1988 California już w PL",
+        "price": 36900,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-chevrolet-corvette-1988-california-juz-w-pl-ID6D2j9n.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6InNnMjBmM3d6dWFhZTItT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.4Tc_29FMwdqv0tvgCH87nfkTxi6cum9C1PaKMcb-0kU/image;s=148x110",
+        "params": {
+            "year": 1988,
+            "mileage": "126 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Sulejów",
+            "region": "Łódzkie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Chevrolet Corvette ZR 1",
+        "price": 117000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-chevrolet-corvette-zr-1-ID6CXSk4.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6ImsycXh0dDlzZnBzMi1PVE9NT1RPUEwiLCJ3IjpbeyJmbiI6IndnNGducXA2eTFmLU9UT01PVE9QTCIsInMiOiIxNiIsInAiOiIxMCwtMTAiLCJhIjoiMCJ9XX0.enA1ydFJNQvNHw7fsrXqVjI0OBsDqKT39O86EZXvWCU/image;s=148x110",
+        "params": {
+            "year": 1991,
+            "mileage": "72 062 km",
+            "engine_capacity": "5 727 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Sidzina",
+            "region": "Małopolskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Piękny Klasyk/ CLASSIC CARS",
+        "price": 19500,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-piekny-klasyk-classic-cars-ID6C8Ce2.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6ImVwMGx4ZGE4cmNtYjItT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.niZCNBscXFjpu4ihHF-JaEiXXoATcF2XO3WI4HdJyTI/image;s=148x110",
+        "params": {
+            "year": 1986,
+            "mileage": "114 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Secemin",
+            "region": "Świętokrzyskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Corvette stingray C 3",
+        "price": 56000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-corvette-stingray-c-3-ID6D29rd.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6IjY2aDFqZWgwa3BxcTEtT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.h1ShFW4LUVnYB-le-dD4qakrmZDzGN2w2SIgaoyTs6o/image;s=148x110",
+        "params": {
+            "year": 1979,
+            "mileage": "62 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Rzezawa",
+            "region": "Małopolskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "1978 Chevrolet Corvette C3 Silnik 5.7 V8 Manual",
+        "price": 95000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-1978-chevrolet-corvette-c3-silnik-5-7-v8-manual-ID6CYvmf.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6Ijk0M2FzbDRsazV2NzItT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.pNiUlsraAFuBghdGjbQ9USZstGJwWPMthFj-G0IYa2w/image;s=148x110",
+        "params": {
+            "year": 1978,
+            "mileage": "168 576 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Ostrów Mazowiecka",
+            "region": "Mazowieckie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "C3 5.7L V8, automat, zdrowa, sprawna, zadbana, limitowana wersja!",
+        "price": 54999,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-c3-5-7l-v8-automat-zdrowa-sprawna-zadbana-limitowana-wersja-ID6CSBcY.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6IjY4NnZhNHN5bmZyZjItT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.8YlVRBV0i-0hb2NknxWq0udDmfgRY1JflmZMTx_xjYo/image;s=148x110",
+        "params": {
+            "year": 1978,
+            "mileage": "22 775 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Bochnia",
+            "region": "Małopolskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "# wydech Magnaflow # silnik LT1 V8 #",
+        "price": 62000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-wydech-magnaflow-silnik-lt1-v8-ID6CYSM2.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6Im1iZ2U3OHVtZjJiYTEtT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.9XzDYETT3s2-I77vNbqv7vBjOVz4IRtDg9jDRem49w8/image;s=148x110",
+        "params": {
+            "year": 1991,
+            "mileage": "170 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Tomaszów Mazowiecki",
+            "region": "Łódzkie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Auta Klasyczne",
+        "price": 105000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-auta-klasyczne-ID6CYOkz.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6Ims2cjhpZnEyODFvMjItT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.IyoETn4ZeLO6GQB7GbpyA1uvCbIIV7tkjXSzv2c8IMc/image;s=148x110",
+        "params": {
+            "year": 1978,
+            "mileage": "41 000 km",
+            "engine_capacity": "1 000 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Grudziądz",
+            "region": "Kujawsko-pomorskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Auta Klasyczne",
+        "price": 84000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-auta-klasyczne-ID6CYOhl.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6ImNvNmZpbjJlenRiaDMtT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.PF16a-LcgJ5LRrs89E5L_4ThJvYfhbCoEZ8MshFOs2I/image;s=148x110",
+        "params": {
+            "year": 1975,
+            "mileage": "74 000 km",
+            "engine_capacity": "1 000 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Grudziądz",
+            "region": "Kujawsko-pomorskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "5,7 AUT.",
+        "price": 62400,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-5-7-aut-ID6CNuI8.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6InQ3eHd6NnE2Mm53ZS1PVE9NT1RPUEwiLCJ3IjpbeyJmbiI6IndnNGducXA2eTFmLU9UT01PVE9QTCIsInMiOiIxNiIsInAiOiIxMCwtMTAiLCJhIjoiMCJ9XX0.tzgIj94_gEA2UWXfp5s48GIDoMl-Imdc6ik6PezwBwo/image;s=148x110",
+        "params": {
+            "year": 1979,
+            "mileage": "48 300 km",
+            "engine_capacity": "5 733 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Stalowa Wola",
+            "region": "Podkarpackie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "C3 opłacona",
+        "price": 33900,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-c3-oplacona-ID6C9F4H.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6IjJ0NW5weWN0ZDFrOS1PVE9NT1RPUEwiLCJ3IjpbeyJmbiI6IndnNGducXA2eTFmLU9UT01PVE9QTCIsInMiOiIxNiIsInAiOiIxMCwtMTAiLCJhIjoiMCJ9XX0.yxSt5qbOoXJyuYbFUDkbiDNAdJSWYFFTBZbm-V0bAcM/image;s=148x110",
+        "params": {
+            "year": 1977,
+            "mileage": "75 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Sułkowice",
+            "region": "Małopolskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Chevrolet Corvette Prywatnie",
+        "price": 55000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-chevrolet-corvette-prywatnie-ID6CYApY.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6Imx6Y3B2dTNpb3gzdC1PVE9NT1RPUEwiLCJ3IjpbeyJmbiI6IndnNGducXA2eTFmLU9UT01PVE9QTCIsInMiOiIxNiIsInAiOiIxMCwtMTAiLCJhIjoiMCJ9XX0.Ke1JJTrImGnew8SmQ_-As_v89Qm3Zky14mkhdoUP4ws/image;s=148x110",
+        "params": {
+            "year": 1987,
+            "mileage": "190 000 km",
+            "engine_capacity": "5 735 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Sochaczew",
+            "region": "Mazowieckie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "",
+        "price": 22900,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-ID6CYx5C.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6Ijhudm94ZTc2enFveS1PVE9NT1RPUEwiLCJ3IjpbeyJmbiI6IndnNGducXA2eTFmLU9UT01PVE9QTCIsInMiOiIxNiIsInAiOiIxMCwtMTAiLCJhIjoiMCJ9XX0.PrEdAzHX8Q1agL8L1tSZ5r89UyBtxeV4yCVuWVlG8rs/image;s=148x110",
+        "params": {
+            "year": 1984,
+            "mileage": "290 000 km",
+            "engine_capacity": "",
+            "fuel_type": "Benzyna",
+            "town": "Elbląg",
+            "region": "Warmińsko-mazurskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "1972 CHEVROLET Corvette 350 cui T top",
+        "price": 65000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-1972-chevrolet-corvette-350-cui-t-top-ID6CVmkY.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6IjVmdm9vcDFxeG9seS1PVE9NT1RPUEwiLCJ3IjpbeyJmbiI6IndnNGducXA2eTFmLU9UT01PVE9QTCIsInMiOiIxNiIsInAiOiIxMCwtMTAiLCJhIjoiMCJ9XX0.cx6vooywVkDFhkdL8HIqX1IOilnooZ2zrBklM67jlVo/image;s=148x110",
+        "params": {
+            "year": 1972,
+            "mileage": "20 228 km",
+            "engine_capacity": "7 443 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Kraków",
+            "region": "Małopolskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Śliczna Corvette C3 Klasyk w idealnym stanie 5.7 V8 cudowny dźwięk",
+        "price": 29000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-sliczna-corvette-c3-klasyk-w-idealnym-stanie-5-7-v8-cudowny-dzwiek-ID6D1ttV.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6ImtxZ3hsZnQ3d2dkNS1PVE9NT1RPUEwiLCJ3IjpbeyJmbiI6IndnNGducXA2eTFmLU9UT01PVE9QTCIsInMiOiIxNiIsInAiOiIxMCwtMTAiLCJhIjoiMCJ9XX0.3is0LM-CAqsjcqgXk4AnYCJ_ctf9cx_EVIeEXyevFK0/image;s=148x110",
+        "params": {
+            "year": 1981,
+            "mileage": "155 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Psary Wieś",
+            "region": "Świętokrzyskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Chevrolet Corvette C3 Stingray Cabrio 1968",
+        "price": 89990,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-chevrolet-corvette-c3-stingray-cabrio-1968-ID6D1naZ.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6ImkzMGNiMmtwa2ZwbjItT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.dcOypiXHKP0C1hCQyEdUK0eYslbeGaqMtN8wLCP-U-Q/image;s=148x110",
+        "params": {
+            "year": 1968,
+            "mileage": "65 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Maków Podhalański",
+            "region": "Małopolskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Chevrolet Corvette C3 Cabrio 1974 po renowacji, unikat!!",
+        "price": 119000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-chevrolet-corvette-c3-cabrio-1974-po-renowacji-unikat-ID6CWP92.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6ImdoaTl1eWN0bnhxcDItT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.ejfhJKMSTIqbp3DzU1kZ89wRE1RDqiM-5wwMFUsd6zA/image;s=148x110",
+        "params": {
+            "year": 1974,
+            "mileage": "76 800 km",
+            "engine_capacity": "5 733 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Warszawa",
+            "region": "Mazowieckie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "C4 , stan bardzo dobry ,po serwisie z fakturami",
+        "price": 41999,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-c4-stan-bardzo-dobry-po-serwisie-z-fakturami-ID6CGj3d.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6InJycHUzc3Bpc20yMzItT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.9imUNND8jAyFRUvcrN2Bu0clhBPB7gS-z-x1oxb2ayI/image;s=148x110",
+        "params": {
+            "year": 1984,
+            "mileage": "200 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Rybnik",
+            "region": "Śląskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "corvette stinger",
+        "price": 58000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-corvette-stinger-ID6CW7PX.html#965e68ce95",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6IjV6Y2RyYXl1enQ1dTEtT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.Gru1G6MYHm9ijid7RE-utCSUBcBJL7J-sdZ9nPL4Csc/image;s=148x110",
+        "params": {
+            "year": 1974,
+            "mileage": "61 000 km",
+            "engine_capacity": "5 600 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Piotrków Trybunalski",
+            "region": "Łódzkie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Chevrolet Corvette C3 5,7 V8 1982r",
+        "price": 34900,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-chevrolet-corvette-c3-5-7-v8-1982r-ID6CuXDT.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6Im9scjMxMGVnYTgxbS1PVE9NT1RPUEwiLCJ3IjpbeyJmbiI6IndnNGducXA2eTFmLU9UT01PVE9QTCIsInMiOiIxNiIsInAiOiIxMCwtMTAiLCJhIjoiMCJ9XX0.T6viL6-3NKaYHfx3T_17VKZMS6H4aqDEJcVofeaZeFM/image;s=148x110",
+        "params": {
+            "year": 1982,
+            "mileage": "149 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Mińsk Mazowiecki",
+            "region": "Mazowieckie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "1976 Corvette Stingray, do renowacji lub na części",
+        "price": 18000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-1976-corvette-stingray-do-renowacji-lub-na-czesci-ID6CRhzr.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6IjNhajZ6amozbjRjbTItT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.Ma3aJF8TPfGvBbj5KiCcK7CrZ1_f8e5RKY6m0RKtmJg/image;s=148x110",
+        "params": {
+            "year": 1976,
+            "mileage": "80 000 km",
+            "engine_capacity": "",
+            "fuel_type": "Benzyna",
+            "town": "Szczecin",
+            "region": "Zachodniopomorskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Chevrolet Corvette C3 stingray T top 1968r. 427ci/7,0L 390km BIG BLOCK",
+        "price": 82000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-chevrolet-corvette-c3-stingray-t-top-1968r-427ci-7-0l-390km-big-block-ID6CMaj0.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6InRldmNuenF2ZTV2NDEtT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.0k9-6eVSftwqB4p3Cd6CbPt88JHS8hsek1EawnTXWr4/image;s=148x110",
+        "params": {
+            "year": 1968,
+            "mileage": "133 900 km",
+            "engine_capacity": "7 000 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Maków Podhalański",
+            "region": "Małopolskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Chevrolet Corvette C3 1979 rok V8 5700 Small Block 225KM T TOP",
+        "price": 47500,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-chevrolet-corvette-c3-1979-rok-v8-5700-small-block-225km-t-top-ID6CXol4.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6InZpejQwaWNxdndlcjItT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.zvgNfWeQDDpy2zrxWQDpNGDL1F60t-8hLL6r1DtnsHY/image;s=148x110",
+        "params": {
+            "year": 1979,
+            "mileage": "80 160 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Lubaczów",
+            "region": "Podkarpackie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Auta Klasyczne",
+        "price": 49000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-auta-klasyczne-ID6CVMre.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6ImtpYmhicmdibG9wYzItT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.RNChXOR2n9VO3X-Yd20IJKD2xY4lW5Fbmb6CrEU60_g/image;s=148x110",
+        "params": {
+            "year": 1977,
+            "mileage": "10 000 km",
+            "engine_capacity": "1 000 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Grudziądz",
+            "region": "Kujawsko-pomorskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Auta Klasyczne",
+        "price": 59000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-auta-klasyczne-ID6CVM8d.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6InhwMGF5MmxpanJyYjEtT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.SeXsieKfmtcn7ytYXlbGkduZUJQa2UVcfrFiRB3_Vxg/image;s=148x110",
+        "params": {
+            "year": 1982,
+            "mileage": "66 533 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Grudziądz",
+            "region": "Kujawsko-pomorskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "5.7 V8 234KM sprawny CABRIO Możliwość naprawy",
+        "price": 20999,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-5-7-v8-234km-sprawny-cabrio-mozliwosc-naprawy-ID6CSnJn.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6ImpnanR1cmUyNmZqbi1PVE9NT1RPUEwiLCJ3IjpbeyJmbiI6IndnNGducXA2eTFmLU9UT01PVE9QTCIsInMiOiIxNiIsInAiOiIxMCwtMTAiLCJhIjoiMCJ9XX0.DXB9_PrEdG1ot_reYswYKW2YPYFUTKtY4UCoDVTngVI/image;s=148x110",
+        "params": {
+            "year": 1989,
+            "mileage": "160 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Warszawa",
+            "region": "Mazowieckie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Chevrolette Corvette C3 z 1981 r. targa, 5,7 l",
+        "price": 69900,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-chevrolette-corvette-c3-z-1981-r-targa-5-7-l-ID6CVDDN.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6IjUzaXRvczdlZjB3dTMtT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.onaiOz8t6LhoKlA473gZvuZtY2w_iSt213Ia1WksF6A/image;s=148x110",
+        "params": {
+            "year": 1981,
+            "mileage": "72 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Zielona Góra",
+            "region": "Lubuskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "L 82 manual",
+        "price": 47500,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-l-82-manual-ID6CypXQ.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6IngyamR4NDcxN2liMS1PVE9NT1RPUEwiLCJ3IjpbeyJmbiI6IndnNGducXA2eTFmLU9UT01PVE9QTCIsInMiOiIxNiIsInAiOiIxMCwtMTAiLCJhIjoiMCJ9XX0.YUvp_r-DNx0lqpFnd5GRN6qC9RFJZsOSIsH4acPw2Ck/image;s=148x110",
+        "params": {
+            "year": 1976,
+            "mileage": "100 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Dukla",
+            "region": "Podkarpackie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Chevrolet Corvette C3 Cabrio 1968 – 327 ci V8 5,3L 300 km",
+        "price": 99000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-chevrolet-corvette-c3-cabrio-1968-327-ci-v8-5-3l-300-km-ID6CdVzt.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6Inp1eWdnaWJqcTlsbjEtT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.39lHz9DQCmBJa2wsClBFUgWyInUNfxX_NKtshwNQKMw/image;s=148x110",
+        "params": {
+            "year": 1968,
+            "mileage": "72 000 km",
+            "engine_capacity": "5 300 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Maków Podhalański",
+            "region": "Małopolskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Auta Klasyczne",
+        "price": 71900,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-auta-klasyczne-ID6CVarp.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6Inl2Nmkwd3N3cGtwdC1PVE9NT1RPUEwiLCJ3IjpbeyJmbiI6IndnNGducXA2eTFmLU9UT01PVE9QTCIsInMiOiIxNiIsInAiOiIxMCwtMTAiLCJhIjoiMCJ9XX0.7xUC3yxSBrsGaCuXgB_WAkAxO75Jz1izQbRI9H6QEEE/image;s=148x110",
+        "params": {
+            "year": 1977,
+            "mileage": "56 000 km",
+            "engine_capacity": "1 000 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Grudziądz",
+            "region": "Kujawsko-pomorskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Chevrolet Corvette C3 z 1980r. silnik 5,7L 220km Auto Classic",
+        "price": 40000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-chevrolet-corvette-c3-z-1980r-silnik-5-7l-220km-auto-classic-ID6CV1qv.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6IjlrajFudGViN2ptMTMtT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.8Jr4810XYB1FB-aznkcbl2fESG1AqRizYbLlKCgVlM8/image;s=148x110",
+        "params": {
+            "year": 1980,
+            "mileage": "99 999 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Maków Podhalański",
+            "region": "Małopolskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "C3 Coupe 1976 5.7 V8 200KM Stingray Miedziane Złoto Brązowe Skóry",
+        "price": 49900,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-c3-coupe-1976-5-7-v8-200km-stingray-miedziane-zloto-brazowe-skory-ID6C4wD1.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6ImJ3dnR4cXc3NnR4ZS1PVE9NT1RPUEwiLCJ3IjpbeyJmbiI6IndnNGducXA2eTFmLU9UT01PVE9QTCIsInMiOiIxNiIsInAiOiIxMCwtMTAiLCJhIjoiMCJ9XX0.3gPXXSWv51bEF9jr9gFhrlQ3YrieLyMqzMb1k55HZqk/image;s=148x110",
+        "params": {
+            "year": 1979,
+            "mileage": "61 337 km",
+            "engine_capacity": "5 733 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Rogozino",
+            "region": "Mazowieckie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Corvette C3 427 Cabrio, Matching Numbers",
+        "price": 186000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-corvette-c3-427-cabrio-matching-numbers-ID6CWFTl.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6ImNwbWQ5enR3amRxNi1PVE9NT1RPUEwiLCJ3IjpbeyJmbiI6IndnNGducXA2eTFmLU9UT01PVE9QTCIsInMiOiIxNiIsInAiOiIxMCwtMTAiLCJhIjoiMCJ9XX0.6xCGAEBbm3FmQ2uHPw9cBapXZh8LHO7IF_R92iVahHQ/image;s=148x110",
+        "params": {
+            "year": 1968,
+            "mileage": "60 000 km",
+            "engine_capacity": "7 000 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Wrocław",
+            "region": "Dolnośląskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "1971, 5.8 V8, Stingray, 270hp, tylne lampy do montażu",
+        "price": 71000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-1971-5-8-v8-stingray-270hp-tylne-lampy-do-montazu-ID6CUB4D.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6Imlqbmg3dnN5bHlsaDEtT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.k5Lk1MjJRezJRqKtuTE5koVn6f2zkMRxhjU18hZlfRE/image;s=148x110",
+        "params": {
+            "year": 1971,
+            "mileage": "127 828 km",
+            "engine_capacity": "5 799 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Warszawa",
+            "region": "Mazowieckie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "C3, szklany T tops",
+        "price": 46500,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-c3-szklany-t-tops-ID6CEZbM.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6IjA2d29iY3lkZWZhMjEtT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.xo6gzZUtNj2tcDHWindY1gayfBUzd1y7SzYLdVuaJFg/image;s=148x110",
+        "params": {
+            "year": 1979,
+            "mileage": "9 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Rzezawa",
+            "region": "Małopolskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Stingray V8 5.7l, moc 200KM",
+        "price": 44500,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-stingray-v8-5-7l-moc-200km-ID6CKBeY.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6IjZxNjloeTVsZTRidjItT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.B98NWl-g1dlTwj1FsNAJZWlzSK6I8CiI7trh4bkppPo/image;s=148x110",
+        "params": {
+            "year": 1976,
+            "mileage": "90 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Rzezawa",
+            "region": "Małopolskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "427ci/390kM Matching numbers",
+        "price": 225000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-427ci-390km-matching-numbers-ID6CFXaY.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6IjN4cWg5Zmlpc212cDEtT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.obwL9pAzP0s7wg75szQTso_mjQ9zrRk8vGS_8aozSbw/image;s=148x110",
+        "params": {
+            "year": 1968,
+            "mileage": "11 111 111 km",
+            "engine_capacity": "7 000 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Warszawa",
+            "region": "Mazowieckie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Corvette C1 , Kompletny do renowacji",
+        "price": 174500,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-corvette-c1-kompletny-do-renowacji-ID6Cp6wt.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6InZsM3Fyazd4cGFiZy1PVE9NT1RPUEwiLCJ3IjpbeyJmbiI6IndnNGducXA2eTFmLU9UT01PVE9QTCIsInMiOiIxNiIsInAiOiIxMCwtMTAiLCJhIjoiMCJ9XX0.vJjpt7HKXvQKAmgKk__t6QG2TJuH-mKp0pYStehICnA/image;s=148x110",
+        "params": {
+            "year": 1960,
+            "mileage": "100 000 km",
+            "engine_capacity": "4 500 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Rzezawa",
+            "region": "Małopolskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Stingray 5.7l, 210 KM, automat",
+        "price": 44000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-stingray-5-7l-210-km-automat-ID6CCssP.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6Im1oOW43Z25pNDM2ZTItT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.5mJKPlxOc5-KRoF0c_rDahqO9W2r-f_sagzMuJQTW2w/image;s=148x110",
+        "params": {
+            "year": 1975,
+            "mileage": "90 000 km",
+            "engine_capacity": "",
+            "fuel_type": "Benzyna",
+            "town": "Rzezawa",
+            "region": "Małopolskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "Silnik 5.7 l, 190 KM",
+        "price": 48000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-silnik-5-7-l-190-km-ID6CkDgn.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6Imlka2wzaXhydnZ3cjMtT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.ddhhturXfXiNq9CXBH0L5M2KT3KieZjnAbLo9eg2nWo/image;s=148x110",
+        "params": {
+            "year": 1981,
+            "mileage": "90 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Rzezawa",
+            "region": "Małopolskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "CHEVROLET CORVETTE C3 auto do renowacji",
+        "price": 32500,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-chevrolet-corvette-c3-auto-do-renowacji-ID6BDWQm.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6IjY2b3cyOHc1d2Jnci1PVE9NT1RPUEwiLCJ3IjpbeyJmbiI6IndnNGducXA2eTFmLU9UT01PVE9QTCIsInMiOiIxNiIsInAiOiIxMCwtMTAiLCJhIjoiMCJ9XX0.X7Az-WaKea11CjiwFcZH6laKcUAFzrV36-WR-xOW_bQ/image;s=148x110",
+        "params": {
+            "year": 1975,
+            "mileage": "17 552 km",
+            "engine_capacity": "1 111 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Koszalin",
+            "region": "Zachodniopomorskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "C3 L82 383 STROKER 400HP 4B Manual zgodne# inwestycja oldtimer unikat",
+        "price": 109900,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-c3-l82-383-stroker-400hp-4b-manual-zgodne-inwestycja-oldtimer-unikat-ID6CHtOL.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6IjlxM3dyOXRpOTk0ZTMtT1RPTU9UT1BMIiwidyI6W3siZm4iOiJ3ZzRnbnFwNnkxZi1PVE9NT1RPUEwiLCJzIjoiMTYiLCJwIjoiMTAsLTEwIiwiYSI6IjAifV19.eWyXiRALPHrD1HGeUWETHz5A9kBTes6mvzd4DTE7DAs/image;s=148x110",
+        "params": {
+            "year": 1977,
+            "mileage": "90 500 km",
+            "engine_capacity": "6 300 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Szczecin",
+            "region": "Zachodniopomorskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "C3 Pro Street Drag prawdziwy potwór",
+        "price": 75000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-c3-pro-street-drag-prawdziwy-potwor-ID6CF3rw.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6ImE3aHc0M2p3aGZmby1PVE9NT1RPUEwiLCJ3IjpbeyJmbiI6IndnNGducXA2eTFmLU9UT01PVE9QTCIsInMiOiIxNiIsInAiOiIxMCwtMTAiLCJhIjoiMCJ9XX0.QIzrRqCfs0PLXBKs-xSdg4K9S-mhfiiUku-zpVSB63g/image;s=148x110",
+        "params": {
+            "year": 1975,
+            "mileage": "15 000 km",
+            "engine_capacity": "7 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Sulechów",
+            "region": "Lubuskie"
+        }
+    },
+    {
+        "taskId": null,
+        "title": "Chevrolet Corvette",
+        "subtitle": "C3 Stingray 1975r. stan perfekcyjny ORYGINALNY!!",
+        "price": 48000,
+        "currency": "PLN",
+        "url": "https://www.otomoto.pl/oferta/chevrolet-corvette-c3-stingray-1975r-stan-perfekcyjny-oryginalny-ID6yyrCl.html#7f4fe1429b",
+        "imgUrl": "https://apollo-ireland.akamaized.net/v1/files/eyJmbiI6Ijdnd2hvZGQ5emxkaC1PVE9NT1RPUEwifQ.SM7FzKbzpjrzVPWEHiWonAePeYFU8CjDDsAfTkJlPKI/image;s=148x110",
+        "params": {
+            "year": 1975,
+            "mileage": "130 000 km",
+            "engine_capacity": "5 700 cm3",
+            "fuel_type": "Benzyna",
+            "town": "Żywiec",
+            "region": "Śląskie"
+        }
+    }
+]
