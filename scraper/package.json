@@ -1,0 +1,30 @@
+{
+  "name": "offer-raider-scrapper",
+  "version": "1.0.0",
+  "description": "Scraps otomoto.pl cars from listing",
+  "main": "index.js",
+  "scripts": {
+    "start": "./node_modules/nodemon/bin/nodemon.js ./src/index.js"
+  },
+  "keywords": [
+    "scraping",
+    "otomoto"
+  ],
+  "author": "Wojciech Kasperski",
+  "license": "MIT",
+  "nodemonConfig": {
+    "ignore": [
+      "*.json"
+    ]
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "chalk": "^4.0.0",
+    "cheerio": "^1.0.0-rc.3",
+    "nodemon": "^2.0.3",
+    "redis": "^3.0.2"
+  },
+  "devDependencies": {
+    "prettier": "2.0.5"
+  }
+}
