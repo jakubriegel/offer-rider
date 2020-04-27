@@ -54,8 +54,8 @@ object RestApi {
     implicit def parseRequest(search: String): Search = { mapper.readValue(search, classOf[Search]) }
     implicit def parseResponse(search: Search): String = { mapper.writeValueAsString(search) }
 
-    val searchRoutes = path("search") {
-      concat(
+    import eu.jrie.put.cs.pt.scrapper.api.Cors.publicPath
+    val searchRoutes = publicPath("search")(
         get {
           parameters(Symbol("userId").as[Int], Symbol("active").as[Boolean].?) { (userId, active) =>
             val data: Future[SearchesAnswer] = searchesRepo ? (FindSearches(userId, active, _))
@@ -79,10 +79,9 @@ object RestApi {
             )
           }
         }
-      )
-    }
+    )
 
-    val tasksRoutes = path("tasks") {
+    val tasksRoutes = publicPath("tasks") {
       get {
         parameters(Symbol("userId").as[Int], Symbol("searchId").as[Int]) { (userId, searchId) =>
           val tasks: Future[TasksResponse] = tasksRepo ? (FindTasks(userId, searchId, _))
@@ -97,7 +96,7 @@ object RestApi {
       }
     }
 
-    val resultsRoutes = path("results") {
+    val resultsRoutes = publicPath("results") {
       concat(
         get {
           parameters(
