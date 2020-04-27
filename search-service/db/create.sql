@@ -32,6 +32,8 @@ CREATE TABLE result (
     task_id varchar(36) NOT NULL,
     title varchar(256) NOT NULL,
     subtitle text NULL,
+    price decimal(12, 2) NOT NULL,
+    currency varchar(5) NOT NULL default 'PLN',
     url text NULL,
     imgUrl text NULL,
 
