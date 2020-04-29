@@ -11,6 +11,10 @@ The system composes of three independent modules:
 
 See their readmes for more documentation
 
+## schema
+## schema
+![](./docs/schema/big-store-schema.png)
+
 ## deployment
 tba
 
