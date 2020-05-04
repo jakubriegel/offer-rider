@@ -1,6 +1,4 @@
-FROM node:13.13.0-alpine
-
-RUN npm install -g http-server
+FROM node:13.13.0-alpine as develop-stage
 
 RUN mkdir -p /frontend/
 WORKDIR /frontend/
@@ -8,9 +6,13 @@ WORKDIR /frontend/
 COPY package.json /frontend/
 COPY package-lock.json /frontend/
 
-RUN npm install
+RUN yarn install
 COPY . /frontend/
 
-RUN npm run build
+FROM develop-stage as build-stage
+RUN yarn build
+
+FROM nginx:1.15.7-alpine as production-stage
+COPY --from=build-stage /app/dist /usr/share/nginx/html
 EXPOSE 8080
-CMD [ "http-server", "dist" ]
+CMD ["nginx", "-g", "daemon off;"]

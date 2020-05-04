@@ -13,8 +13,6 @@ services:
             - redis
     scrapper:
         build: ./scraper
-        expose:
-            - "3000"
         ports:
             - "3000:3000"
         links:
@@ -23,12 +21,12 @@ services:
             - ./scraper:/scrapper
         command: npm start
     frontend:
-        build: ./frontend
-        expose:
-            - "8080"
+        build: 
+            context: ./frontend
+            target: 'develop-stage'
         ports:
             - "8080:8080"
         volumes:
             - ./frontend:/frontend
-        command: npm run serve
+        command: /bin/sh -c "yarn serve"
 
