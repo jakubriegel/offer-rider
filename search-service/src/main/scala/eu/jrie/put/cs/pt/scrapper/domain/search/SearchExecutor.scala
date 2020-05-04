@@ -12,7 +12,7 @@ import akka.stream.scaladsl.Source
 import akka.util.Timeout
 import com.redis.RedisClient
 import eu.jrie.put.cs.pt.scrapper.domain.repository.SearchRepository.{EndSearchRepo, FindActiveSearches, SearchRepoMsg, SearchesAnswer}
-import eu.jrie.put.cs.pt.scrapper.domain.repository.TasksRepository.{AddTask, TaskResponse, TasksRepoMsg}
+import eu.jrie.put.cs.pt.scrapper.domain.repository.TasksRepository.{AddTask, EndTasksRepo, TaskResponse, TasksRepoMsg}
 import eu.jrie.put.cs.pt.scrapper.domain.repository.{SearchRepository, TasksRepository}
 import eu.jrie.put.cs.pt.scrapper.model.Task
 import eu.jrie.put.cs.pt.scrapper.redis.Message.TaskMessage
@@ -45,6 +45,7 @@ object SearchExecutor {
           }.andThen(_ => {
             publisher ! EndPublish()
             searchRepo ! EndSearchRepo()
+            tasksRepo ! EndTasksRepo()
           })
         },
       Duration.Inf

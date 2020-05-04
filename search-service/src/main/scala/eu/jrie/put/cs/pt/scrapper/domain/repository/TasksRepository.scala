@@ -17,6 +17,7 @@ object TasksRepository {
   case class AddTask(task: Task, replyTo: ActorRef[TaskResponse]) extends TasksRepoMsg
   case class EndTask(id: String) extends TasksRepoMsg
   case class FindTasks(userId: Int, searchId: Int, replyTo: ActorRef[TasksResponse]) extends TasksRepoMsg
+  case class EndTasksRepo() extends TasksRepoMsg
 
   case class TaskResponse(id: String) extends TasksRepoMsg
   case class TasksResponse(tasks: Seq[Task]) extends TasksRepoMsg
