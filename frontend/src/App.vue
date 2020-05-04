@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar app color="yellow">
-      <v-toolbar-title>PT-Scrapper</v-toolbar-title>
+      <v-toolbar-title>Offer Rider</v-toolbar-title>
     </v-app-bar>
 
     <v-content>

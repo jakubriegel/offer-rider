@@ -15,14 +15,20 @@
 
     <v-data-table
       :headers="headers"
-      :items="items"
+      :items="results.results"
       :search="search"
       item-key="name"
       show-expand
     >
+      <template v-slot:item.imgUrl="{ item } ">
+        <a :href="item.url"><v-img :src="item.imgUrl"/></a>
+      </template>
+      <template v-slot:item.url="{ item } ">
+        <a :href="item.url"><v-icon color="black">mdi-open-in-new</v-icon></a>
+      </template>
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length">
-          Więcej informacji na temat {{ item.name }}
+          Więcej informacji na temat {{ item.params }}
         </td>
       </template>
     </v-data-table>
@@ -30,52 +36,60 @@
 </template>
 
 <script>
+import axios from "axios";
+var service = "http://jrie.eu:30001";
+
 export default {
   name: "table-result",
   data: () => ({
     search: "",
     headers: [
       {
-        text: "Marka",
-        value: "name"
+        text: "",
+        value: "imgUrl",
+        sortable: false
       },
       {
-        text: "Model",
-        value: "price"
+        text: "Tytuł",
+        value: "title",
+        width: 100
+      },
+      {
+        text: "Opis",
+        value: "subtitle",
+        width: 100
       },
       {
         text: "Cena",
-        value: "price"
+        value: "price",
+        width: 120,
+        align: "end"
       },
       {
-        text: "Przebieg",
-        value: "price"
+        text: "Waluta",
+        value: "currency",
+        sortable: false
       },
       {
-        text: "Rok",
-        value: "price"
+        text: "Link",
+        value: "url",
+        sortable: false
+      },
+      {
+        text: "Parametry",
+        value: 'data-table-expand'
       }
     ],
-    items: [
-      {
-        name: "Test",
-        price: 1234
-      },
-      {
-        name: "awdcaw",
-        price: 123344
-      },
-      {
-        name: "t3wc5",
-        price: 12634
-      },
-      {
-        name: "Tagcreb3",
-        price: 12534
-      }
-    ]
-  })
+    results: []
+  }),
+  mounted() {
+    axios.get(service + '/results?userId=1&searchId=1').then(response => (this.results = response.data))
+  }
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+  a {
+    text-decoration: none;
+  }
+</style>
