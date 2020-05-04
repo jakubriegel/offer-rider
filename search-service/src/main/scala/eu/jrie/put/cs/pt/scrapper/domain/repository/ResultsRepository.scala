@@ -43,7 +43,7 @@ private class ResultsRepository(
 
   private def addNewResult(result: Result): Behavior[ResultsRepoMsg] = {
     Future {
-      (None, result.taskId, result.title, result.subtitle, result.url, result.imgUrl)
+      (None, result.taskId, result.title, result.subtitle, result.price, result.currency, result.url, result.imgUrl)
     }.map { (_, TableQuery[Results]) }
       .flatMap { case (row, table) =>
         session.db.run((table returning table.map(_.id)) += row)
@@ -76,7 +76,7 @@ private class ResultsRepository(
         .map { _.sortWith(_._1 > _._2) }
         .map { ListMap.newBuilder.addAll(_).result }
         .map {
-          Result(row.id, row.taskId, row.title, row.subtitle, row.url, row.imgUrl, _)
+          Result(row.id, row.taskId, row.title, row.subtitle, row.price, row.currency, row.url, row.imgUrl, _)
         }
     }
       .runWith(Sink.seq)

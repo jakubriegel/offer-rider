@@ -5,6 +5,8 @@ case class Result (
                     taskId: String,
                     title: String,
                     subtitle: Option[String],
+                    price: Double,
+                    currency: String,
                     url: Option[String],
                     imgUrl: Option[String],
                     params: Map[String, String]
