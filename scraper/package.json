@@ -4,7 +4,7 @@
   "description": "Scraps otomoto.pl cars from listing",
   "main": "index.js",
   "scripts": {
-    "start": "./node_modules/nodemon/bin/nodemon.js ./src/index.js"
+    "start": "./node_modules/nodemon/bin/nodemon.js ./src/index.js localhost 3000"
   },
   "keywords": [
     "scraping",
