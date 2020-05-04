@@ -38,6 +38,8 @@ private class TasksRepository(
       case AddTask(result, replyTo) => addNewTask(result, replyTo)
       case EndTask(id) => endTask(id)
       case FindTasks(userId, searchId, replyTo) => findTasks(userId, searchId, replyTo)
+      case EndTasksRepo() =>
+        Behaviors.stopped
       case _ =>
         context.log.info("unsupported repo msg")
         Behaviors.stopped
