@@ -17,6 +17,7 @@ object TasksRepository {
   case class AddTask(task: Task, replyTo: ActorRef[TaskResponse]) extends TasksRepoMsg
   case class EndTask(id: String) extends TasksRepoMsg
   case class FindTasks(userId: Int, searchId: Int, replyTo: ActorRef[TasksResponse]) extends TasksRepoMsg
+  case class EndTasksRepo() extends TasksRepoMsg
 
   case class TaskResponse(id: String) extends TasksRepoMsg
   case class TasksResponse(tasks: Seq[Task]) extends TasksRepoMsg
@@ -37,6 +38,8 @@ private class TasksRepository(
       case AddTask(result, replyTo) => addNewTask(result, replyTo)
       case EndTask(id) => endTask(id)
       case FindTasks(userId, searchId, replyTo) => findTasks(userId, searchId, replyTo)
+      case EndTasksRepo() =>
+        Behaviors.stopped
       case _ =>
         context.log.info("unsupported repo msg")
         Behaviors.stopped

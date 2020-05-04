@@ -276,7 +276,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{SERVICE}}/results?userId=1&searchId=1&taskId=1eaddb44-5cf0-44a5-b48a-b37c7efb1d13",
+							"raw": "{{SERVICE}}/results?userId=1&searchId=1",
 							"host": [
 								"{{SERVICE}}"
 							],
@@ -295,7 +295,8 @@
 								{
 									"key": "taskId",
 									"value": "1eaddb44-5cf0-44a5-b48a-b37c7efb1d13",
-									"description": "optional"
+									"description": "optional",
+									"disabled": true
 								},
 								{
 									"key": "query",
@@ -329,6 +330,22 @@
 				"id": "bef8e102-0c8c-4717-85b9-8675bdeb9fe2",
 				"type": "text/javascript",
 				"exec": [
+					"// CORS",
+					"pm.test(\"Access-Control-Allow-Origin is present\", () => {",
+					"    pm.response.to.have.header(\"Access-Control-Allow-Origin\");",
+					"});",
+					"",
+					"pm.test(\"Access-Control-Allow-Origin equals *\", () => {",
+					"    pm.expect(pm.response.headers.get(\"Access-Control-Allow-Origin\")).to.equal(\"*\");",
+					"});",
+					"",
+					"pm.test(\"Access-Control-Allow-Headers is present\", () => {",
+					"    pm.response.to.have.header(\"Access-Control-Allow-Headers\");",
+					"});",
+					"",
+					"pm.test(\"Access-Control-Allow-Headers equals *\", () => {",
+					"    pm.expect(pm.response.headers.get(\"Access-Control-Allow-Headers\")).to.equal(\"Content-Type, Origin\");",
+					"});",
 					""
 				]
 			}
@@ -336,7 +353,7 @@
 	],
 	"variable": [
 		{
-			"id": "d83bf6f4-377b-4e58-952d-749fb86f37d2",
+			"id": "de04a8a6-a3fd-4b4e-ba02-a59bd93c327e",
 			"key": "SERVICE",
 			"value": "{{HOST}}:30001",
 			"type": "string"

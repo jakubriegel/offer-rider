@@ -10,6 +10,8 @@ object Message {
                             subtitle: Option[String],
                             url: Option[String],
                             imgUrl: Option[String],
+                            price: Double,
+                            currency: String,
                             params: Map[String, String],
                             last: Boolean
                           ) extends RedisMessage
