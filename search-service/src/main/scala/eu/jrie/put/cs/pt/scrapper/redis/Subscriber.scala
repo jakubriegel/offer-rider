@@ -29,7 +29,7 @@ object Subscriber {
         case M(channel, rawMsg) =>
           val msg: ResultMessage = asMsg(rawMsg)
           context.log.debug ("received {} for task {} from {}", msg.title, msg.taskId, channel)
-          val result = Result(None, msg.taskId, msg.title, msg.subtitle, msg.url, msg.imgUrl, msg.params)
+          val result = Result(None, msg.taskId, msg.title, msg.subtitle, msg.price, msg.currency, msg.url, msg.imgUrl, msg.params)
           resultsWriter ! WriteResult(result, msg.last)
         case _ =>
       }

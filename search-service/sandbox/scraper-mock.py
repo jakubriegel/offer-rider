@@ -23,6 +23,8 @@ def publish_result(id, n, last=False):
         'taskId': id,
         'title': f'good car {n}',
         'subtitle': f'buy it',
+        'price': int(random() * 500_000),
+        'currency': 'PLN',
         'url': f'www.abc.moto/some_{n}',
         'imgUrl': f'https://i.picsum.photos/id/{int(random()*1000)}/250/150.jpg',
         'params': {
