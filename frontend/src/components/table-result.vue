@@ -37,7 +37,7 @@
 
 <script>
 import axios from "axios";
-var service = "http://jrie.eu:30001";
+const service = "http://jrie.eu:30001";
 
 export default {
   name: "table-result",
