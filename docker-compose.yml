@@ -29,4 +29,13 @@ services:
         volumes:
             - ./frontend:/frontend
         command: /bin/sh -c "yarn serve"
-
+    search-service:
+        build: "./search-service"
+        ports:
+            - 30001:30001
+    search-db:
+        image: mysql:latest
+        environment: 
+            - MYSQL_ROOT_PASSWORD=ptsecret
+        ports: 
+            - 30000:3306
