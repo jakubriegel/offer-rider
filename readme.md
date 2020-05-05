@@ -11,8 +11,10 @@ The system composes of three independent modules:
 
 See their readmes for more documentation
 
-## deployment
-tba
+## deployment - Docker
+
+Run `docker-compose up --build` in your conosle, while running docker VM on your machine.
+If you want clean Docker after shuting down all containers type `docker-compose down -v --rmi all --remove-orphans`.
 
 ## credits
 tba
