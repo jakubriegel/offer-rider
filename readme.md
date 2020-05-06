@@ -13,7 +13,9 @@ See their readmes for more documentation
 
 ## deployment - Docker
 
-Run `docker-compose up --build` in your conosle, while running docker VM on your machine.
+Set `OFFER_RIDER_ARCHITECTURE` variable accordingly to your machine - `arm` or `x86`
+
+Run `docker-compose up --build` in your console, while running docker VM on your machine.
 If you want clean Docker after shuting down all containers type `docker-compose down -v --rmi all --remove-orphans`.
 
 ## credits
