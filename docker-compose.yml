@@ -34,7 +34,9 @@ services:
         ports:
             - 30001:30001
     search-db:
-        build: ./search-service/db/arm
+        build: 
+            context: ./search-service/db
+            dockerfile: ${OFFER_RIDER_ARCHITECTURE}/Dockerfile
         environment: 
             - CREATE_DB
         ports: 
