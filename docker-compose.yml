@@ -30,12 +30,12 @@ services:
             - ./frontend:/frontend
         command: /bin/sh -c "yarn serve"
     search-service:
-        build: "./search-service"
+        build: ./search-service
         ports:
             - 30001:30001
     search-db:
-        image: mysql:latest
+        build: ./search-service/db/arm
         environment: 
-            - MYSQL_ROOT_PASSWORD=ptsecret
+            - CREATE_DB
         ports: 
             - 30000:3306
