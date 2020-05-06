@@ -38,6 +38,6 @@ services:
             context: ./search-service/db
             dockerfile: ${OFFER_RIDER_ARCHITECTURE}/Dockerfile
         environment: 
-            - CREATE_DB
+            - CREATE_DB=1
         ports: 
             - 30000:3306
