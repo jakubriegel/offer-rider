@@ -31,12 +31,17 @@
       </v-row>
 
       <v-select label="Rodzaj paliwa"></v-select>
+      <v-btn @click="sendFilters">
+        Utwórz wyszukiwanie
+      </v-btn>
     </v-form>
   </v-card>
 </template>
 
 <script>
 import cars from "./cars.json"
+import axios from "axios";
+const service = "http://jrie.eu:30001";
 export default {
   name: "filters",
   data() {
@@ -50,21 +55,19 @@ export default {
       models: ["none"],
       disabled: true,
       params: {
-        brand: "",
-        model: "",
-        fuel: "",
-        maxPrice: "",
-        minPrice: "",
-        maxEngineSize: "",
-        minEngineSize: "1",
-        maxYear: "",
-        minYear: "",
-        minMileage: "",
-        maxMileage: "",
+        brand: null,
+        model: null,
+        fuel: null,
+        maxPrice: null,
+        minPrice: null,
+        maxEngineSize: null,
+        minEngineSize: null,
+        maxYear: null,
+        minYear: null,
+        minMileage: null,
+        maxMileage: null,
       }
     };
-  },
-  created() {
   },
   mounted() {
     var temp = []
@@ -80,6 +83,12 @@ export default {
       console.log(test)
       this.models = cars.cars[test].map(function (obj) {
         return obj.value
+      })
+    },
+    sendFilters() {
+      axios.post(service + '/search', {
+        userId: 1,
+        params: this.params
       })
     }
   }
