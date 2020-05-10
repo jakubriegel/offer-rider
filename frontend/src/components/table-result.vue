@@ -1,6 +1,6 @@
 <template>
   <v-card class="ma-4">
-    <v-select label="Task" class="pa-4" :items="tasks"/>
+    <v-select v-model="task" label="Task" class="pa-4" :items="tasks" item-text="startTime" item-value="id" @input="showTask"/>
     <v-card-title>
       Samochody
       <v-spacer></v-spacer>
@@ -82,22 +82,22 @@ export default {
       }
     ],
     results: [],
-    tasks: []
+    tasks: [],
+    task: null
   }),
   mounted() {
-    axios.get(service + '/results?userId=1&searchId=1').then(response => (this.results = response.data))
-    axios.get(service + '/tasks?userId=1&searchId=1').then(response => (
-            response.data.tasks.forEach(task => {
-                    const st = task.startTime.split('T')
-                    this.tasks.push(st[0] + " – " +st[1].slice(0,-1))
-            }
-            ),
-    this.tasks.sort().reverse()
+    axios.get(service + '/tasks?userId=1&searchId=1').then(response => (this.tasks = response.data.tasks,
+    this.tasks.sort(function(a,b){
+      if(a.startTime < b.startTime) { return 1; }
+      else if(a.startTime > b.startTime) {return -1;}
+      else return 0
+    }),
+    this.tasks = this.tasks.map(function(x){return x.startTime.replace(/[TZ]/g, ' ');})
     ))
   },
   methods: {
-    test() {
-      console.log(this.tasks)
+    showTask() {
+      axios.get(service + '/results?userId=1&searchId=1&taskId=' + this.task).then(response => (this.results = response.data))
     }
   }
 };
