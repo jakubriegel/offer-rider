@@ -2,29 +2,31 @@
   <v-card class="ma-4">
     <v-card-title>Filtry</v-card-title>
     <v-form class="ma-4">
-      <v-select label="Marka samochodu" :items="cars" @input="populateModels"/>
-      <v-select label="Model samochodu"  :items="models" :disabled="disabled"/>
+      <v-select v-model="params.brand" label="Marka samochodu" :items="cars" @input="populateModels"/>
+      <v-select v-model="params.model" label="Model samochodu"  :items="models" :disabled="disabled"/>
 
       <v-row class="">
-        <v-text-field type="number" label="Cena od" class="ma-4"></v-text-field>
-        <v-text-field type="number" label="Cena do" class="ma-4"></v-text-field>
+        <v-text-field v-model="params.minPrice" type="number" label="Cena od" class="ma-4"></v-text-field>
+        <v-text-field v-model="params.maxPrice" type="number" label="Cena do" class="ma-4"></v-text-field>
       </v-row>
 
       <v-row class="">
-        <v-text-field type="number" label="Rok od" class="ma-4"></v-text-field>
-        <v-text-field type="number" label="Rok do" class="ma-4"></v-text-field>
+        <v-text-field v-model="params.minYear" type="number" label="Rok od" class="ma-4"></v-text-field>
+        <v-text-field v-model="params.maxYear" type="number" label="Rok do" class="ma-4"></v-text-field>
       </v-row>
 
       <v-row class="">
         <v-text-field
-          type="number"
-          label="Przebieg od"
-          class="ma-4"
+                v-model="params.minMileage"
+                type="number"
+                label="Przebieg od"
+                class="ma-4"
         ></v-text-field>
         <v-text-field
-          type="number"
-          label="Przebieg do"
-          class="ma-4"
+                v-model="params.maxMileage"
+                type="number"
+                label="Przebieg do"
+                class="ma-4"
         ></v-text-field>
       </v-row>
 
@@ -46,7 +48,20 @@ export default {
       result: [],
       cars: [],
       models: ["none"],
-      disabled: true
+      disabled: true,
+      params: {
+        brand: "",
+        model: "",
+        fuel: "",
+        maxPrice: "",
+        minPrice: "",
+        maxEngineSize: "",
+        minEngineSize: "1",
+        maxYear: "",
+        minYear: "",
+        minMileage: "",
+        maxMileage: "",
+      }
     };
   },
   created() {
