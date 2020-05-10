@@ -1,5 +1,6 @@
 <template>
   <v-card class="ma-4">
+    <v-select label="Task" class="pa-4" :items="tasks"/>
     <v-card-title>
       Samochody
       <v-spacer></v-spacer>
@@ -80,10 +81,24 @@ export default {
         value: 'data-table-expand'
       }
     ],
-    results: []
+    results: [],
+    tasks: []
   }),
   mounted() {
     axios.get(service + '/results?userId=1&searchId=1').then(response => (this.results = response.data))
+    axios.get(service + '/tasks?userId=1&searchId=1').then(response => (
+            response.data.tasks.forEach(task => {
+                    const st = task.startTime.split('T')
+                    this.tasks.push(st[0] + " – " +st[1].slice(0,-1))
+            }
+            ),
+    this.tasks.sort().reverse()
+    ))
+  },
+  methods: {
+    test() {
+      console.log(this.tasks)
+    }
   }
 };
 </script>

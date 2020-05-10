@@ -2,8 +2,8 @@
   <v-card class="ma-4">
     <v-card-title>Filtry</v-card-title>
     <v-form class="ma-4">
-      <v-select v-model="params.brand" label="Marka samochodu" :items="cars" @input="populateModels"/>
-      <v-select v-model="params.model" label="Model samochodu"  :items="models" :disabled="disabled"/>
+      <v-select v-model="params.brand" label="Marka samochodu" :items="cars" @input="populateModels" clearable/>
+      <v-select v-model="params.model" label="Model samochodu"  :items="models" :disabled="disabled" clearable/>
 
       <v-row class="">
         <v-text-field v-model="params.minPrice" type="number" label="Cena od" class="ma-4"></v-text-field>
@@ -30,7 +30,7 @@
         ></v-text-field>
       </v-row>
 
-      <v-select label="Rodzaj paliwa"></v-select>
+      <v-select v-model="params.fuel" label="Rodzaj paliwa" :items="fuelType" clearable></v-select>
       <v-btn @click="sendFilters">
         Utwórz wyszukiwanie
       </v-btn>
@@ -52,6 +52,11 @@ export default {
       range: [1990, 2020],
       result: [],
       cars: [],
+      fuelType: [
+              "petrol",
+              "diesel",
+              "all"
+      ],
       models: ["none"],
       disabled: true,
       params: {
@@ -65,7 +70,7 @@ export default {
         maxYear: null,
         minYear: null,
         minMileage: null,
-        maxMileage: null,
+        maxMileage: null
       }
     };
   },
