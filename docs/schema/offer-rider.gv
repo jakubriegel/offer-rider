@@ -1,0 +1,46 @@
+digraph bigstore {
+    
+    label="offer-rider"
+    labelloc=t
+    fontname="JetBrains Mono Medium"
+
+    graph [fontsize=45 ranksep=2]
+    node [fontname="JetBrains Mono Medium" fontcolor=white]
+    edge [dir=both penwidth=7] 
+    nodesep=2
+
+    subgraph scraper {
+        node [padding=5 fontsize=24 shape=doubleoctagon style=filled color=cyan4 height=2]
+
+        "scraper"
+    }
+    
+    subgraph searchservice {
+        node [padding=5 fontsize=24 shape=octagon style=filled color=chocolate height=2 colorsheme=paired12]
+        edge [style=bold colorscheme="paired12"]
+
+        "search-service"
+    }
+
+    subgraph frontend {
+        node [padding=5 fontsize=24 shape=circle style=filled color=darkgoldenrod3 colorsheme=paired12]
+        edge [style=bold colorscheme="paired12"]
+
+        { rank=sink; "frontend" }
+    }
+
+    subgraph eventbroker {
+        node [fontsize=24 shape=doublecircle style=filled color=dodgerblue1]
+
+        { rank=sink; "Redis" }
+    }
+
+    subgraph backend_connections {
+        "scraper" -> "Redis" [color=grey11 style=dashed]
+        "search-service" -> "Redis" [color=grey11 style=dashed]
+    }
+
+    subgraph frontend_connections {
+        "frontend" -> "search-service" [color=grey11]
+    }
+}
