@@ -39,6 +39,8 @@
 <script>
 import axios from "axios";
 const service = "http://jrie.eu:30001";
+import moment from "moment";
+import 'moment/locale/pl'
 
 export default {
   name: "table-result",
@@ -86,18 +88,24 @@ export default {
     task: null
   }),
   mounted() {
+    moment().locale('pl');
     axios.get(service + '/tasks?userId=1&searchId=1').then(response => (this.tasks = response.data.tasks,
-    this.tasks.sort(function(a,b){
-      if(a.startTime < b.startTime) { return 1; }
-      else if(a.startTime > b.startTime) {return -1;}
-      else return 0
-    }),
-    this.tasks = this.tasks.map(function(x){return x.startTime.replace(/[TZ]/g, ' ');})
+                    this.tasks.sort(function(a,b){
+                      if(a.startTime < b.startTime) { return 1; }
+                      else if(a.startTime > b.startTime) {return -1;}
+                      else return 0;
+                    }),
+                    this.formatDate(this.tasks)
     ))
   },
   methods: {
     showTask() {
       axios.get(service + '/results?userId=1&searchId=1&taskId=' + this.task).then(response => (this.results = response.data))
+    },
+    formatDate(tasks){
+      for(const id in tasks) {
+        tasks[id].startTime = moment.utc(tasks[id].startTime).format("dddd D MMM YYYY, HH:mm ");
+      }
     }
   }
 };

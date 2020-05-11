@@ -75,8 +75,8 @@ export default {
     };
   },
   mounted() {
-    var temp = []
-            Object.keys(cars.cars).forEach(car => {
+    const temp = [];
+    Object.keys(cars.cars).forEach(car => {
       temp.push(car.charAt(0).toUpperCase() + car.slice(1))
     })
     this.cars = temp
