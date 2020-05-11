@@ -11,6 +11,9 @@ The system composes of three independent modules:
 
 See their readmes for more documentation
 
+## schema
+![](./docs/schema/offer-rider-schema.png)
+
 ## deployment - Docker
 
 Set `OFFER_RIDER_ARCHITECTURE` variable accordingly to your machine - `arm` or `x86`
