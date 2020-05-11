@@ -21,6 +21,7 @@ services:
         build: 
             context: ./frontend
             target: ${TARGET}
+            dockerfile: docker/${OFFER_RIDER_ARCHITECTURE}/Dockerfile
         ports:
             - "8080:8080"
         volumes:
