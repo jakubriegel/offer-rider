@@ -5,14 +5,11 @@ services:
         image: redis
         ports:
             - "6379:6379"
-    rebrow:
-        image: marian/rebrow
-        ports:
-            - "5001:5001"
-        links:
-            - redis
     scrapper:
-        build: ./scraper
+        build: 
+            context: ./scraper
+            target: ${TARGET}
+            dockerfile: docker/${OFFER_RIDER_ARCHITECTURE}/Dockerfile
         ports:
             - "3000:3000"
         links:
@@ -23,7 +20,7 @@ services:
     frontend:
         build: 
             context: ./frontend
-            target: 'develop-stage'
+            target: ${TARGET}
         ports:
             - "8080:8080"
         volumes:
