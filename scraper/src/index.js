@@ -10,7 +10,7 @@ import {
 } from "./urlBuilder.js";
 
 const parsedResults = [];
-const pageLimit = 5;
+const pageLimit = 10;
 let pageCounter = 0;
 let resultCount = 0;
 
@@ -78,7 +78,7 @@ const getWebsiteContent = (url, taskId, publisher) => {
                 .attr("href");
             pageCounter++;
 
-            if (pageCounter === pageLimit) {
+            if (pageCounter >= pageLimit) {
                 exportResults(parsedResults);
                 return false;
             }
