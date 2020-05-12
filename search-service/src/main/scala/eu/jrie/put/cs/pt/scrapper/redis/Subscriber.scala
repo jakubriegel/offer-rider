@@ -3,7 +3,8 @@ package eu.jrie.put.cs.pt.scrapper.redis
 import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.Behaviors
 import akka.stream.alpakka.slick.scaladsl.SlickSession
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
+import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.redis.{M, PubSubMessage, RedisClient}
 import eu.jrie.put.cs.pt.scrapper.domain.repository.{ResultsRepository, TasksRepository}
@@ -41,6 +42,7 @@ object Subscriber {
   private def asMsg(json: String): ResultMessage = {
     val mapper = new ObjectMapper()
     mapper.registerModule(new DefaultScalaModule())
+    mapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
     mapper.readValue(json, classOf[ResultMessage])
   }
 }
