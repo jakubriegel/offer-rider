@@ -28,7 +28,9 @@ services:
             - ./frontend:/frontend
         command: /bin/sh -c "yarn serve"
     search-service:
-        build: ./search-service
+        build: 
+            context: ./search-service
+            target: ${TARGET}
         ports:
             - 30001:30001
     search-db:
