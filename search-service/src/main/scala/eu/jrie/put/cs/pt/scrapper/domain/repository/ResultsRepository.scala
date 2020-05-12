@@ -1,5 +1,7 @@
 package eu.jrie.put.cs.pt.scrapper.domain.repository
 
+import java.util.concurrent.TimeUnit
+
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, Behavior}
 import akka.stream.alpakka.slick.scaladsl.{Slick, SlickSession}
@@ -11,7 +13,8 @@ import eu.jrie.put.cs.pt.scrapper.model.db.Tables.ResultsParamsTable.{ResultPara
 import eu.jrie.put.cs.pt.scrapper.model.db.Tables.ResultsTable.{ResultRow, Results}
 
 import scala.collection.immutable.ListMap
-import scala.concurrent.Future
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 
 object ResultsRepository {
   sealed trait ResultsRepoMsg extends RepoMsg
@@ -42,7 +45,7 @@ private class ResultsRepository(
   }
 
   private def addNewResult(result: Result): Behavior[ResultsRepoMsg] = {
-    Future {
+    val action = Future {
       (None, result.taskId, result.title, result.subtitle, result.price, result.currency, result.url, result.imgUrl)
     }.map { (_, TableQuery[Results]) }
       .flatMap { case (row, table) =>
@@ -57,6 +60,8 @@ private class ResultsRepository(
           }
         )
       }
+
+    Await.ready(action, Duration.create(15, TimeUnit.SECONDS))
     Behaviors.same
   }
 
