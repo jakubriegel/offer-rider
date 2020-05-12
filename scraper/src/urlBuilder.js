@@ -15,21 +15,21 @@ class urlBuilder {
             (this.params.model ? `${this.params.model}/` : "") +
             (this.params.year_from ? `od-${this.params.year_from}/` : "") +
             "?" +
-            (this.params.price_from
-                ? `&search%5Bfilter_float_price%3Afrom%5D=${this.params.price_from}`
-                : "") +
-            (this.params.price_to
-                ? `&search%5Bfilter_float_price%3Ato%5D=${this.params.price_to}`
-                : "") +
-            (this.params.year_to
-                ? `&search%5Bfilter_float_year%3Ato%5D=${this.params.year_to}`
-                : "") +
-            (this.params.mileage_from
-                ? `&search%5Bfilter_float_mileage%3Afrom%5D=${this.params.mileage_from}`
-                : "") +
-            (this.params.mileage_to
-                ? `&search%5Bfilter_float_mileage%3Ato%5D=${this.params.mileage_to}`
-                : "")
+            (this.params.price_from ?
+                `&search%5Bfilter_float_price%3Afrom%5D=${this.params.price_from}` :
+                "") +
+            (this.params.price_to ?
+                `&search%5Bfilter_float_price%3Ato%5D=${this.params.price_to}` :
+                "") +
+            (this.params.year_to ?
+                `&search%5Bfilter_float_year%3Ato%5D=${this.params.year_to}` :
+                "") +
+            (this.params.mileage_from ?
+                `&search%5Bfilter_float_mileage%3Afrom%5D=${this.params.mileage_from}` :
+                "") +
+            (this.params.mileage_to ?
+                `&search%5Bfilter_float_mileage%3Ato%5D=${this.params.mileage_to}` :
+                "")
         );
     }
 }
@@ -50,19 +50,19 @@ export const buildUrlFromParams = (params) => {
 
 // Testing script
 
-console.log(
-    buildUrlFromParams({
-        brand: "chevrolet",
-        model: "corvette",
-        enginge: "V8",
-        year_from: 1993,
-        year_to: 2017,
-        price_from: 10000,
-        price_to: 200000,
-        mileage_from: 10,
-        mileage_to: 300000
-    })
-);
+// console.log(
+//     buildUrlFromParams({
+//         brand: "chevrolet",
+//         model: "corvette",
+//         enginge: "V8",
+//         year_from: 1993,
+//         year_to: 2017,
+//         price_from: 10000,
+//         price_to: 200000,
+//         mileage_from: 10,
+//         mileage_to: 300000
+//     })
+// );
 
 // *************************************
 // Example decomposed otomoto search URL
