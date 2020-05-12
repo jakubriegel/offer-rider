@@ -119,7 +119,7 @@ const app = () => {
         getWebsiteContent(url, taskData.taskId, publisher);
     });
 
-    subscriber.subscribe("jobs");
+    subscriber.subscribe("pt-scraper-search-tasks");
 };
 
 app();

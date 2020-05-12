@@ -7,7 +7,7 @@ const redisConfig = {
 
 var publisher = redis.createClient(redisConfig);
 publisher.publish(
-    "jobs",
+    "pt-scraper-search-tasks",
     `
     {
         "taskId": "123e4567-e89b-12d3-a456-426614174000",
