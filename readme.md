@@ -16,9 +16,11 @@ See their readmes for more documentation
 
 ## deployment - Docker
 
-Set `OFFER_RIDER_ARCHITECTURE` variable accordingly to your machine - `arm` or `x86`
+1. Set varaibles in `.env `:
+    - `OFFER_RIDER_ARCHITECTURE` accordingly to your machine - `arm` or `x86`
+    - `TARGET` accordingly to purpose - `develop-stage` or `production-stage`
+2. Run `docker-compose up --build`
 
-Run `docker-compose up --build` in your console, while running docker VM on your machine.
 If you want clean Docker after shuting down all containers type `docker-compose down -v --rmi all --remove-orphans`.
 
 ## credits
