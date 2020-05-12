@@ -4,7 +4,11 @@
 This service manages data flows in system for automatic searching advertisements on e-commerce web sites
 
 ## build
-To generate fat executable jar use `sbt assembly`. The jar will be a available in `target/scala-2.13/scrapper-search-service-assembly-0.1.jar`.
+To generate fat executable jar use 
+```shell script
+sbt clean assembly
+```
+The jar will be available in `target/scala-2.13/scrapper-search-service-assembly-0.1.jar`.
 
 ## run
 ### jar
@@ -14,7 +18,9 @@ java -jar target/scala-2.13/scrapper-search-service-assembly-0.1.jar
 ```
 
 ### docker
-tba
+```shell script
+docker build -t search-service . && docker run -p 30001:30001 --name offer-rider-search-service search-service 
+```
 
 ## integrate
 ### events

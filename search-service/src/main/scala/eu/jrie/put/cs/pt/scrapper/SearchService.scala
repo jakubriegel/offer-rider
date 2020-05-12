@@ -16,7 +16,7 @@ import scala.concurrent.duration.Duration
 
 class SearchService {
 
-  private def redisClient = new RedisClient("jrie.eu", 6379)
+  private def redisClient = new RedisClient("redis", 6379)
   private implicit val session: SlickSession = SlickSession.forConfig("slick-mysql")
 
   private val searchExecutor: ActorSystem[StartSearch] = ActorSystem(SearchExecutor(redisClient), "searchExecutor")

@@ -80,32 +80,30 @@ VALUES (@user1search, 'brand', 'opel');
 INSERT INTO search_param (search_id, name, value)
 VALUES (@user1search, 'model', 'astra');
 INSERT INTO search_param (search_id, name, value)
-VALUES (@user1search, 'maxMileage', '150000');
+VALUES (@user1search, 'mileage_to', '150000');
 INSERT INTO search_param (search_id, name, value)
-VALUES (@user1search, 'minMileage', '10000');
+VALUES (@user1search, 'mileage_from', '10000');
 INSERT INTO search_param (search_id, name, value)
-VALUES (@user1search, 'minYear', '2010');
+VALUES (@user1search, 'year_from', '2010');
 INSERT INTO search_param (search_id, name, value)
-VALUES (@user1search, 'maxYear', '2016');
+VALUES (@user1search, 'year_to', '2016');
 INSERT INTO search_param (search_id, name, value)
-VALUES (@user1search, 'minEngineSize', '1000');
+VALUES (@user1search, 'price_from', '1000');
 INSERT INTO search_param (search_id, name, value)
-VALUES (@user1search, 'maxEngineSize', '1500');
-INSERT INTO search_param (search_id, name, value)
-VALUES (@user1search, 'minPrice', '1000');
-INSERT INTO search_param (search_id, name, value)
-VALUES (@user1search, 'maxPrice', '75000');
+VALUES (@user1search, 'price_to', '75000');
 INSERT INTO search_param (search_id, name, value)
 VALUES (@user1search, 'fuel', 'petrol');
+INSERT INTO search_param (search_id, name, value)
+VALUES (@user1search, 'engine', 'V8');
 
 INSERT INTO search_param (search_id, name, value)
 VALUES (@user2search, 'brand', 'mercedes-benz');
 INSERT INTO search_param (search_id, name, value)
 VALUES (@user2search, 'model', 'gls');
 INSERT INTO search_param (search_id, name, value)
-VALUES (@user2search, 'maxMileage', '100000');
+VALUES (@user2search, 'mileage_to', '100000');
 INSERT INTO search_param (search_id, name, value)
-VALUES (@user2search, 'minYear', '2015');
+VALUES (@user2search, 'year_from', '2015');
 
 
 INSERT INTO search_param (search_id, name, value)
@@ -113,6 +111,6 @@ VALUES (@user3search, 'brand', 'tesla');
 INSERT INTO search_param (search_id, name, value)
 VALUES (@user3search, 'model', 'model 3');
 INSERT INTO search_param (search_id, name, value)
-VALUES (@user3search, 'maxMileage', '10');
+VALUES (@user3search, 'mileage_to', '10');
 INSERT INTO search_param (search_id, name, value)
-VALUES (@user3search, 'minYear', '2018');
+VALUES (@user3search, 'year_from', '2018');
