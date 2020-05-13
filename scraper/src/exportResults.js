@@ -2,11 +2,11 @@ import fs from "fs";
 import chalk from "chalk";
 import appConfig from "../configs/appConfig.js";
 
-const exportResults = (parsedResults) => {
+const exportResults = async (parsedResults) => {
     if (appConfig.isSavingData) {
         const outputFile = appConfig.outputFile;
 
-        fs.writeFile(outputFile, JSON.stringify(parsedResults, null, 4), (err) => {
+        await fs.writeFile(outputFile, JSON.stringify(parsedResults, null, 4), (err) => {
             if (err) {
                 console.log(err);
             }
