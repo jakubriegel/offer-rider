@@ -29,7 +29,7 @@ object SearchRepository {
 
   case class EndSearchRepo() extends SearchRepoMsg
 
-  private val allowedParams = ConfigFactory.load().getStringList("service.result.allowedParams")
+  private val allowedParams = ConfigFactory.load().getStringList("service.search.allowedParams")
 
   case class InvalidParamException(param: String) extends Exception(
     s"Invalid param: $param. Allowed params are: $allowedParams"
