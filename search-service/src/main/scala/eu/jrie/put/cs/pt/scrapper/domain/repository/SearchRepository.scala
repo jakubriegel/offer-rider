@@ -5,6 +5,7 @@ import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
 import akka.stream.alpakka.slick.scaladsl.{Slick, SlickSession}
 import akka.stream.scaladsl.{Sink, Source}
+import com.typesafe.config.ConfigFactory
 import eu.jrie.put.cs.pt.scrapper.domain.repository.Repository.RepoMsg
 import eu.jrie.put.cs.pt.scrapper.domain.repository.SearchRepository._
 import eu.jrie.put.cs.pt.scrapper.model.Search
@@ -13,6 +14,7 @@ import eu.jrie.put.cs.pt.scrapper.model.db.Tables.SearchesTable.{SearchRow, Sear
 import slick.jdbc.SQLActionBuilder
 
 import scala.collection.immutable.ListMap
+import scala.concurrent.Future.failed
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContextExecutor, Future}
 
@@ -22,10 +24,16 @@ object SearchRepository {
   case class FindSearches(userId: Int, active: Option[Boolean], replyTo: ActorRef[SearchesAnswer]) extends SearchRepoMsg
   case class FindActiveSearches(replyTo: ActorRef[SearchesAnswer]) extends SearchRepoMsg
 
-  case class SearchAnswer(search: Search) extends SearchRepoMsg
+  case class SearchAnswer(search: Future[Search]) extends SearchRepoMsg
   case class SearchesAnswer(searches: Source[Search, NotUsed]) extends SearchRepoMsg
 
   case class EndSearchRepo() extends SearchRepoMsg
+
+  private val allowedParams = ConfigFactory.load().getStringList("service.result.allowedParams")
+
+  case class InvalidParamException(param: String) extends Exception(
+    s"Invalid param: $param. Allowed params are: $allowedParams"
+  )
 
   def apply()(implicit session: SlickSession): Behavior[SearchRepoMsg] =
     Behaviors.setup(implicit context => new SearchRepository)
@@ -39,29 +47,7 @@ private class SearchRepository(
 
   override def onMessage(msg: SearchRepoMsg): Behavior[SearchRepoMsg] = {
     msg match {
-      case AddSearch(search, replyTo) =>
-        Future {
-          (None, search.userId, true)
-        }.map { (_, TableQuery[Searches]) }
-          .flatMap { case (row, table) =>
-            session.db.run((table returning table.map(_.id)) += row)
-          }
-          .map { _.get }
-          .map { (_, TableQuery[SearchesParams]) }
-          .flatMap { case (searchId, table) =>
-            Future.sequence(
-              search.params.map { case (name, value) =>
-                session.db.run(table += (searchId, name, value))
-              }
-            ).map { (searchId, _) }
-          }
-          .map { case (searchId, _) =>
-            findSearches(sql"SELECT * FROM search WHERE id = $searchId").map { SearchAnswer }
-          }
-          .flatMap { _.runWith(Sink.head) }
-          .andThen { replyTo ! _.get }
-
-        Behaviors.same
+      case AddSearch(search, replyTo) => addSearch(search, replyTo)
       case FindSearches(userId, active, replyTo) =>
         val filtered = Slick.source(sql"SELECT * FROM search WHERE user_id = $userId".as[SearchRow])
           .filter { s => active forall (s.active == _) }
@@ -76,6 +62,37 @@ private class SearchRepository(
         context.log.info("unsupported repo msg")
         Behaviors.stopped
     }
+  }
+
+  private def addSearch(search: Search, replyTo: ActorRef[SearchAnswer]): Behavior[SearchRepoMsg] = {
+    val unwantedParam = search.params
+      .map { case (param, _) => param }
+      .filterNot { allowedParams.contains }
+      .lastOption
+    if (unwantedParam.nonEmpty) {
+      replyTo ! SearchAnswer(failed(InvalidParamException(unwantedParam.get)))
+    }
+    else {
+      val added: Future[Search] = Future { (None, search.userId, true) }
+        .map { (_, TableQuery[Searches]) }
+        .flatMap { case (row, table) =>
+          session.db.run((table returning table.map(_.id)) += row)
+        }
+        .map { _.get }
+        .map { (_, TableQuery[SearchesParams]) }
+        .flatMap { case (searchId, table) =>
+          Future.sequence(
+            search.params.map { case (name, value) =>
+              session.db.run(table += (searchId, name, value))
+            }
+          ).map { (searchId, _) }
+        }
+        .map { case (searchId, _) => findSearches(sql"SELECT * FROM search WHERE id = $searchId") }
+        .flatMap { _.runWith(Sink.head) }
+      replyTo ! SearchAnswer(added)
+    }
+
+    Behaviors.same
   }
 
   private def findSearches(sql: SQLActionBuilder)(implicit system: ActorSystem[_]): Source[Search, NotUsed] =  {
