@@ -21,6 +21,7 @@ def mock():
 def publish_result(id, n, last=False):
     msg = {
         'taskId': id,
+        'offerId': int(random() * 1000000),
         'title': f'good car {n}',
         'subtitle': f'buy it',
         'price': int(random() * 500_000),

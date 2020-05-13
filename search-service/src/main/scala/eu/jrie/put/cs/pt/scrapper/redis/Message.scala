@@ -6,9 +6,10 @@ object Message {
   case class TaskMessage(taskId: String, params: Map[String, String]) extends RedisMessage
   case class ResultMessage(
                             taskId: String,
+                            offerId: Option[String],
                             title: String,
                             subtitle: Option[String],
-                            url: Option[String],
+                            url: String,
                             imgUrl: Option[String],
                             price: Double,
                             currency: String,

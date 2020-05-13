@@ -60,29 +60,31 @@ object Tables {
     case class ResultRow (
                            id: Option[Long],
                            taskId: String,
+                           offerId: Option[String],
                            title: String,
                            subtitle: Option[String],
                            price: Double,
                            currency: String,
-                           url: Option[String],
+                           url: String,
                            imgUrl: Option[String]
                          )
 
     implicit val getResultRow: AnyRef with GetResult[ResultRow] = GetResult(r => {
-      ResultRow(r.nextLongOption, r.nextString, r.nextString, r.nextStringOption, r.nextDouble, r.nextString, r.nextStringOption, r.nextStringOption)
+      ResultRow(r.nextLongOption, r.nextString, r.nextStringOption, r.nextString, r.nextStringOption, r.nextDouble, r.nextString, r.nextString, r.nextStringOption)
     })
 
-    class Results (tag: Tag) extends Table[(Option[Long], String, String, Option[String], Double, String, Option[String], Option[String])](tag, "result") {
+    class Results (tag: Tag) extends Table[(Option[Long], String, Option[String], String, Option[String], Double, String, String, Option[String])](tag, "result") {
       def id = column[Option[Long]]("id", O.PrimaryKey, O.AutoInc)
       def taskId = column[String]("task_id")
+      def offerId = column[Option[String]]("offer_id")
       def title = column[String]("title")
       def subtitle = column[Option[String]]("subtitle")
       def price = column[Double]("price")
       def currency = column[String]("currency")
-      def url = column[Option[String]]("url")
+      def url = column[String]("url")
       def imgUrl = column[Option[String]]("imgUrl")
 
-      def * = (id, taskId, title, subtitle, price, currency, url, imgUrl)
+      def * = (id, taskId, offerId, title, subtitle, price, currency, url, imgUrl)
     }
   }
 

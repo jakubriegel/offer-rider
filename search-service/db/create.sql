@@ -30,12 +30,13 @@ CREATE TABLE task (
 CREATE TABLE result (
     id bigint unsigned unique KEY AUTO_INCREMENT,
     task_id varchar(36) NOT NULL,
+    offer_id varchar(64) NULl default null,
     title varchar(256) NOT NULL,
-    subtitle text NULL,
+    subtitle text NULL default null,
     price decimal(12, 2) NOT NULL,
     currency varchar(5) NOT NULL default 'PLN',
-    url text NULL,
-    imgUrl text NULL,
+    url text NOT NULL,
+    imgUrl text NULL default null,
 
     PRIMARY KEY (id),
     FOREIGN KEY (task_id) REFERENCES task(id)
