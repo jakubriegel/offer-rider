@@ -4,7 +4,7 @@ import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.Behaviors
 import akka.stream.alpakka.slick.scaladsl.SlickSession
 import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
-import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.redis.{M, PubSubMessage, RedisClient}
 import eu.jrie.put.cs.pt.scrapper.domain.repository.{ResultsRepository, TasksRepository}
@@ -29,9 +29,8 @@ object Subscriber {
       m match {
         case M(channel, rawMsg) =>
           val msg: ResultMessage = asMsg(rawMsg)
-          context.log.debug ("received {} for task {} from {}", msg.title, msg.taskId, channel)
-          val result = Result(None, msg.taskId, msg.title, msg.subtitle, msg.price, msg.currency, msg.url, msg.imgUrl, msg.params)
-          resultsWriter ! WriteResult(result, msg.last)
+          context.log.debug ("received {} for task {} from {}", msg.result.title, msg.result.taskId, channel)
+          resultsWriter ! WriteResult(msg.result, msg.last)
         case _ =>
       }
     }

@@ -72,11 +72,19 @@ object RestApi {
         post {
           entity(as[String]) { request =>
             val created: Future[SearchAnswer] = searchesRepo ? (AddSearch(request, _))
-            complete(
-              created.map { _.search }
+            completeOrRecoverWith(
+              created.flatMap { _.search }
                 .map { HttpEntity(ContentTypes.`application/json`, _) }
                 .map { HttpResponse(StatusCodes.Created, Seq.empty, _) }
-            )
+            ) { case e: InvalidParamException =>
+              complete(
+                HttpResponse(
+                  StatusCodes.UnprocessableEntity,
+                  Seq.empty,
+                  HttpEntity(ContentTypes.`text/plain(UTF-8)`, e.asInstanceOf[Exception].getMessage)
+                )
+              )
+            }
           }
         }
     )

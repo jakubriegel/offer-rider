@@ -49,22 +49,24 @@ const getWebsiteContent = (url, taskId, publisher) => {
                     .text()
                     .match(/\(([^)]+)\)/)[1];
                 const metadata = {
-                    taskId,
-                    offerId,
-                    title,
-                    subtitle,
-                    price: parseInt(price),
-                    currency,
-                    url,
-                    imgUrl: image,
-                    params: {
-                        year: parseFloat(year),
-                        mileage: mileage,
-                        engine_capacity,
-                        fuel_type,
-                        town,
-                            region
-                        },
+                    result: {
+                        taskId,
+                        offerId,
+                        title,
+                        subtitle,
+                        price: parseInt(price),
+                        currency,
+                        url,
+                        imgUrl: image,
+                        params: {
+                            year: parseFloat(year),
+                            mileage: mileage,
+                            engine_capacity,
+                            fuel_type,
+                            town,
+                                region
+                            },
+                    },
                     last: false
                 };
                 parsedResults.push(metadata);
