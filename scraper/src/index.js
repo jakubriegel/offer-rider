@@ -4,7 +4,9 @@ import redis from "redis";
 import redisConfig from "../configs/redisConfig.js";
 import exportResults from "./exportResults.js";
 import getWebsiteContent from "./getWebsiteContent.js";
-import { buildUrlFromParams } from "./urlBuilder.js";
+import {
+    buildUrlFromParams
+} from "./urlBuilder.js";
 
 const app = () => {
     const subscriber = redis.createClient(redisConfig);

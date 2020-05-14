@@ -1,9 +1,11 @@
 import axios from "axios";
 import cheerio from "cheerio";
 import chalk from "chalk";
-import { processResults } from "./processResults.js";
+import appConfig from "../configs/appConfig.js";
+import {
+    processResults
+} from "./processResults.js";
 
-const pageLimit = 5;
 const resultsSelector = "div.offers.list article";
 
 const popLastResult = ($) => {
@@ -32,7 +34,7 @@ const getWebsiteContent = async (
                 .attr("href");
 
             console.log(chalk.cyan(`  Scraping: ${url}`));
-            if (nextPageLink && pageCounter < pageLimit) {
+            if (nextPageLink && pageCounter < appConfig.pageLimit) {
                 processResults(
                     $,
                     $(resultsSelector),
@@ -48,7 +50,10 @@ const getWebsiteContent = async (
                     ++pageCounter
                 );
             } else {
-                let { results, last } = popLastResult($);
+                let {
+                    results,
+                    last
+                } = popLastResult($);
                 processResults($, results, taskId, publisher, parsedResults);
                 processResults($, last, taskId, publisher, parsedResults, true);
                 console.log(

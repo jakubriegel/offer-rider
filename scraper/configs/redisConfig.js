@@ -1,5 +1,5 @@
 const redisConfig = {
-    host: "192.168.0.168",
+    host: "redis",
     port: "6379"
 };
 
