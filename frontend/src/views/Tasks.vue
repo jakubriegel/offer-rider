@@ -2,10 +2,10 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <v-card class="pb-4">
+        <v-card class="pt-4">
           <v-select v-model="task" label="Task" class="pa-4" :items="tasks" item-text="startTime" item-value="id" @input="showTask"/>
           <v-card-title>
-            Samochody
+            Scrapped cars
             <v-spacer></v-spacer>
             <v-text-field
               v-model="search"
@@ -27,15 +27,18 @@
             item-key="url"
             show-expand
           >
-            <template v-slot:item.imgUrl="{ item } ">
+            <template v-slot:item.imgUrl="{ item }">
               <a :href="item.url" target="blank"><v-img :src="item.imgUrl" max-height="125" width="150" contain/></a>
             </template>
             <template v-slot:item.url="{ item } ">
               <a :href="item.url" target="blank"><v-icon color="black">mdi-open-in-new</v-icon></a>
             </template>
+            <template v-slot:item.place="{ item }">
+              {{ item.params.town }}, {{ item.params.region }}
+            </template>
             <template v-slot:expanded-item="{ headers, item }">
               <td :colspan="headers.length">
-                Więcej informacji na temat {{ item.params }}
+                More information: {{ item.params }}
               </td>
             </template>
           </v-data-table>
@@ -56,30 +59,34 @@ export default {
     search: "",
     headers: [
       {
-        text: "",
+        text: "Image",
         value: "imgUrl",
-        sortable: false
+        sortable: false,
+        width: 150
       },
       {
-        text: "Tytuł",
+        text: "Title",
         value: "title",
-        width: 100
+        width: 125
       },
       {
-        text: "Opis",
+        text: "Description",
         value: "subtitle",
+      },
+      {
+        text: "Price",
+        value: "price",
+        align: "end",
         width: 100
       },
       {
-        text: "Cena",
-        value: "price",
-        width: 120,
-        align: "end"
-      },
-      {
-        text: "Waluta",
+        text: "Currency",
         value: "currency",
         sortable: false
+      },
+      {
+        text: "Place",
+        value: "place"
       },
       {
         text: "Link",
@@ -87,7 +94,7 @@ export default {
         sortable: false
       },
       {
-        text: "Parametry",
+        text: "Parameters",
         value: 'data-table-expand'
       }
     ],

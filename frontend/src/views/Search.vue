@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <v-card class="ma-4">
+        <v-card class="pa-2">
           <v-card-title>Filters</v-card-title>
           <v-form class="ma-4">
             <v-select v-model="params.brand" label="Car brand" :items="cars" @input="populateModels" clearable/>
@@ -34,8 +34,9 @@
             </v-row>
 
             <!-- <v-select v-model="params.fuel" label="Rodzaj paliwa" :items="fuelType" clearable></v-select> -->
-            <v-btn @click="sendFilters" color="accent" class="mb-4 black--text">
-              Create Search Task
+            <v-btn @click="sendFilters" color="accent" class="mb-4 black--text" block :disabled="loading">
+              <span v-if="!loading">Create Search Task</span>
+              <v-icon v-else>mdi-spin mdi-loading</v-icon>
             </v-btn>
           </v-form>
         </v-card>
@@ -65,6 +66,7 @@ export default {
       ],
       models: ["none"],
       disabled: true,
+      loading: false,
       params: {
         brand: null,
         model: null,
@@ -94,9 +96,12 @@ export default {
       })
     },
     sendFilters() {
+      this.loading = true;
       axios.post(service + '/search', {
         userId: 1,
         params: this.params
+      }).then(() => {
+        this.loading = false
       })
     }
   }
