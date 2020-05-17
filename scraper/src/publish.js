@@ -1,11 +1,8 @@
 import redis from "redis";
-
-const redisConfig = {
-    host: "jrie.eu",
-    port: "6379"
-};
+import redisConfig from "../configs/redisConfig.js";
 
 var publisher = redis.createClient(redisConfig);
+
 publisher.publish(
     "pt-scraper-search-tasks",
     `
