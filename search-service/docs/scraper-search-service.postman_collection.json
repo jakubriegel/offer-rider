@@ -9,29 +9,20 @@
 			"name": "search",
 			"item": [
 				{
-					"name": "search",
+					"name": "preflight",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"id": "31b9ec91-9784-40ed-9d4b-63a6736410a8",
+								"id": "24598d04-f094-4a33-8c6f-3390696d93bb",
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
+									"pm.test(\"Status code is 200\", () => {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"Content-Type is present\", () => {",
-									"    pm.response.to.have.header(\"Content-Type\");",
-									"});",
-									"",
-									"pm.test(\"Content-Type is application/json\", () => {",
-									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.equal(\"application/json\");",
-									"});",
-									"",
-									"pm.test(\"Response contains searches\", () => {",
-									"    let jsonData = pm.response.json();",
-									"    pm.expect(jsonData.searches).to.be.an('array');",
-									"});",
+									"pm.test(\"Response body is empty\", () => {",
+									"    pm.responseBody === null",
+									"})",
 									""
 								],
 								"type": "text/javascript"
@@ -39,63 +30,11 @@
 						}
 					],
 					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{SERVICE}}/search?userId=1",
-							"host": [
-								"{{SERVICE}}"
-							],
-							"path": [
-								"search"
-							],
-							"query": [
-								{
-									"key": "userId",
-									"value": "1"
-								},
-								{
-									"key": "active",
-									"value": "false",
-									"description": "optional",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "search",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "18f69877-8f5a-41a6-aa40-22ab879f1dba",
-								"exec": [
-									"pm.test(\"Status code is 201\", function () {",
-									"    pm.response.to.have.status(201);",
-									"});",
-									"",
-									"pm.test(\"Content-Type is present\", () => {",
-									"    pm.response.to.have.header(\"Content-Type\");",
-									"});",
-									"",
-									"pm.test(\"Content-Type is application/json\", () => {",
-									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.equal(\"application/json\");",
-									"});",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
+						"method": "OPTIONS",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"userId\": 1,\n    \"params\": {\n        \"minYear\": \"1999\",\n        \"maxYear\": 2003,\n        \"maxMileage\": \"250000\",\n        \"model\": \"golf\",\n        \"brand\": \"vw\"\n    }\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -162,6 +101,161 @@
 							"body": "{\n    \"id\": 12,\n    \"userId\": 1,\n    \"params\": {\n        \"brand\": \"vw\",\n        \"maxYear\": \"2003\",\n        \"maxMileage\": \"250000\",\n        \"minYear\": \"1999\",\n        \"model\": \"golf\"\n    },\n    \"active\": true\n}"
 						}
 					]
+				},
+				{
+					"name": "search",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "18f69877-8f5a-41a6-aa40-22ab879f1dba",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Content-Type is present\", () => {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									"",
+									"pm.test(\"Content-Type is application/json\", () => {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.equal(\"application/json\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": 1,\n    \"params\": {\n        \"year_from\": \"1999\",\n        \"year_to\": 2003,\n        \"mileage_to\": \"250000\",\n        \"model\": null,\n        \"brand\": \"vw\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SERVICE}}/search",
+							"host": [
+								"{{SERVICE}}"
+							],
+							"path": [
+								"search"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "create search",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"userId\": 1,\n    \"params\": {\n        \"minYear\": \"1999\",\n        \"maxYear\": 2003,\n        \"maxMileage\": \"250000\",\n        \"model\": \"golf\",\n        \"brand\": \"vw\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{SERVICE}}/search",
+									"host": [
+										"{{SERVICE}}"
+									],
+									"path": [
+										"search"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "akka-http/10.1.11"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 13 Apr 2020 08:01:27 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "129"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 12,\n    \"userId\": 1,\n    \"params\": {\n        \"brand\": \"vw\",\n        \"maxYear\": \"2003\",\n        \"maxMileage\": \"250000\",\n        \"minYear\": \"1999\",\n        \"model\": \"golf\"\n    },\n    \"active\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "search",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "31b9ec91-9784-40ed-9d4b-63a6736410a8",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Content-Type is present\", () => {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									"",
+									"pm.test(\"Content-Type is application/json\", () => {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.equal(\"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response contains searches\", () => {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData.searches).to.be.an('array');",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVICE}}/search?userId=1",
+							"host": [
+								"{{SERVICE}}"
+							],
+							"path": [
+								"search"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "1"
+								},
+								{
+									"key": "active",
+									"value": "false",
+									"description": "optional",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -330,20 +424,19 @@
 				"id": "bef8e102-0c8c-4717-85b9-8675bdeb9fe2",
 				"type": "text/javascript",
 				"exec": [
-					"// CORS",
-					"pm.test(\"Access-Control-Allow-Origin is present\", () => {",
+					"pm.test(\"CORS: Access-Control-Allow-Origin is present\", () => {",
 					"    pm.response.to.have.header(\"Access-Control-Allow-Origin\");",
 					"});",
 					"",
-					"pm.test(\"Access-Control-Allow-Origin equals *\", () => {",
+					"pm.test(\"CORS: Access-Control-Allow-Origin equals *\", () => {",
 					"    pm.expect(pm.response.headers.get(\"Access-Control-Allow-Origin\")).to.equal(\"*\");",
 					"});",
 					"",
-					"pm.test(\"Access-Control-Allow-Headers is present\", () => {",
+					"pm.test(\"CORS: Access-Control-Allow-Headers is present\", () => {",
 					"    pm.response.to.have.header(\"Access-Control-Allow-Headers\");",
 					"});",
 					"",
-					"pm.test(\"Access-Control-Allow-Headers equals *\", () => {",
+					"pm.test(\"CORS: Access-Control-Allow-Headers equals *\", () => {",
 					"    pm.expect(pm.response.headers.get(\"Access-Control-Allow-Headers\")).to.equal(\"Content-Type, Origin\");",
 					"});",
 					""
@@ -353,7 +446,7 @@
 	],
 	"variable": [
 		{
-			"id": "de04a8a6-a3fd-4b4e-ba02-a59bd93c327e",
+			"id": "817f653f-6eb0-4991-8338-99e1938997fe",
 			"key": "SERVICE",
 			"value": "{{HOST}}:30001",
 			"type": "string"
