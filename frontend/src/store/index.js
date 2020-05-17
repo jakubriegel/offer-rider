@@ -7,7 +7,7 @@ export default new Vuex.Store({
     state: {
         drawer: false,
         routes: [{
-                text: "Dashboard",
+                text: "Search",
                 to: "/"
             },
             {

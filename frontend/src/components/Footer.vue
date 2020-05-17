@@ -23,7 +23,7 @@
             <strong class="accent--text">Scala, Cheerio, Vue</strong> and
             <strong class="accent--text">Vuetify. </strong>
             Scrapped magnificient from 
-            <i href="https://www.otomoto.pl/">Otomoto.pl</i>
+            <a href="https://www.otomoto.pl/">Otomoto.pl</a>
           </v-card-text>
         </v-col>
         <v-col cols="12" md="3" class="max-height pt-0">
