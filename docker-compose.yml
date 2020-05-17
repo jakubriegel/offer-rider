@@ -31,6 +31,9 @@ services:
         build: 
             context: ./search-service
             target: ${TARGET}
+        environment: 
+            - SEARCH_SERVICE_TASK_DELAY=${SEARCH_SERVICE_TASK_DELAY}
+            - SEARCH_SERVICE_TASK_INTERVAL=${SEARCH_SERVICE_TASK_INTERVAL}
         ports:
             - 30001:30001
     search-db:
