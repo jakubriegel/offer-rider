@@ -82,9 +82,11 @@ private class SearchRepository(
         .map { (_, TableQuery[SearchesParams]) }
         .flatMap { case (searchId, table) =>
           Future.sequence(
-            search.params.map { case (name, value) =>
-              session.db.run(table += (searchId, name, value))
-            }
+            search.params
+              .filter { case (_, value) => value != null}
+              .map { case (name, value) =>
+                session.db.run(table += (searchId, name, value))
+              }
           ).map { (searchId, _) }
         }
         .map { case (searchId, _) => findSearches(sql"SELECT * FROM search WHERE id = $searchId") }
