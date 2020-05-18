@@ -8,7 +8,7 @@ import com.redis.RedisClient
 import com.typesafe.config.ConfigFactory
 import eu.jrie.put.cs.pt.scrapper.api.RestApi
 import eu.jrie.put.cs.pt.scrapper.domain.search.SearchTaskCreator
-import eu.jrie.put.cs.pt.scrapper.domain.search.SearchTaskCreator.StartSearch
+import eu.jrie.put.cs.pt.scrapper.domain.search.SearchTaskCreator.{CreateForAllActive, SearchTaskCreatorMsg}
 import eu.jrie.put.cs.pt.scrapper.redis.Subscriber
 import eu.jrie.put.cs.pt.scrapper.redis.Subscriber.Subscribe
 
@@ -19,7 +19,7 @@ class SearchService {
   private def redisClient = new RedisClient("redis", 6379)
   private implicit val session: SlickSession = SlickSession.forConfig("slick-mysql")
 
-  private val searchExecutor: ActorSystem[StartSearch] = ActorSystem(SearchTaskCreator(redisClient), "searchExecutor")
+  private val searchExecutor: ActorSystem[SearchTaskCreatorMsg] = ActorSystem(SearchTaskCreator(redisClient), "searchExecutor")
   private val subscriber: ActorSystem[Subscribe] = ActorSystem(Subscriber(redisClient), "subscriber")
 
   private val config = ConfigFactory.load().getConfig("service")
@@ -34,7 +34,7 @@ class SearchService {
     val delay = Duration(config.getInt("search.delay"), TimeUnit.SECONDS)
     val rate = Duration(config.getInt("search.interval"), TimeUnit.SECONDS)
     searchExecutor.scheduler.scheduleAtFixedRate(delay, rate) (() => {
-      searchExecutor ! StartSearch()
+      searchExecutor ! CreateForAllActive()
     }) (searchExecutor.executionContext)
     searchExecutor.log.info(s"scheduled searches with delay ${delay}s and interval ${rate}s")
   }
