@@ -7,8 +7,8 @@ import akka.stream.alpakka.slick.scaladsl.SlickSession
 import com.redis.RedisClient
 import com.typesafe.config.ConfigFactory
 import eu.jrie.put.cs.pt.scrapper.api.RestApi
-import eu.jrie.put.cs.pt.scrapper.domain.search.SearchExecutor
-import eu.jrie.put.cs.pt.scrapper.domain.search.SearchExecutor.StartSearch
+import eu.jrie.put.cs.pt.scrapper.domain.search.SearchTaskCreator
+import eu.jrie.put.cs.pt.scrapper.domain.search.SearchTaskCreator.StartSearch
 import eu.jrie.put.cs.pt.scrapper.redis.Subscriber
 import eu.jrie.put.cs.pt.scrapper.redis.Subscriber.Subscribe
 
@@ -19,7 +19,7 @@ class SearchService {
   private def redisClient = new RedisClient("redis", 6379)
   private implicit val session: SlickSession = SlickSession.forConfig("slick-mysql")
 
-  private val searchExecutor: ActorSystem[StartSearch] = ActorSystem(SearchExecutor(redisClient), "searchExecutor")
+  private val searchExecutor: ActorSystem[StartSearch] = ActorSystem(SearchTaskCreator(redisClient), "searchExecutor")
   private val subscriber: ActorSystem[Subscribe] = ActorSystem(Subscriber(redisClient), "subscriber")
 
   private val config = ConfigFactory.load().getConfig("service")

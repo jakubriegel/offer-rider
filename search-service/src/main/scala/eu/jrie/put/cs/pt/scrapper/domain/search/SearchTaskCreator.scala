@@ -23,7 +23,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
 
-object SearchExecutor {
+object SearchTaskCreator {
   final case class StartSearch()
   final val SEARCH_TASKS_CHANNEL = "pt-scraper-search-tasks"
 
