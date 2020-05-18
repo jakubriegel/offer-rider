@@ -17,10 +17,12 @@ object TasksRepository {
   case class AddTask(task: Task, replyTo: ActorRef[TaskResponse]) extends TasksRepoMsg
   case class EndTask(id: String) extends TasksRepoMsg
   case class FindTasks(userId: Int, searchId: Int, replyTo: ActorRef[TasksResponse]) extends TasksRepoMsg
+  case class CheckForNotEndedTasks(replyTo: ActorRef[HasEmptyTasksResponse]) extends TasksRepoMsg
   case class EndTasksRepo() extends TasksRepoMsg
 
   case class TaskResponse(id: String) extends TasksRepoMsg
   case class TasksResponse(tasks: Seq[Task]) extends TasksRepoMsg
+  case class HasEmptyTasksResponse(has: Boolean) extends TasksRepoMsg
 
   def apply()(implicit session: SlickSession): Behavior[TasksRepoMsg] =
     Behaviors.setup(implicit context => new TasksRepository)
@@ -38,6 +40,7 @@ private class TasksRepository(
       case AddTask(result, replyTo) => addNewTask(result, replyTo)
       case EndTask(id) => endTask(id)
       case FindTasks(userId, searchId, replyTo) => findTasks(userId, searchId, replyTo)
+      case CheckForNotEndedTasks(replyTo) => checkForNotEndedTasks(replyTo)
       case EndTasksRepo() =>
         Behaviors.stopped
       case _ =>
@@ -68,6 +71,18 @@ private class TasksRepository(
     } .runWith(Sink.seq)
       .map { TasksResponse }
       .andThen { replyTo ! _.get }
+    Behaviors.same
+  }
+
+  private def checkForNotEndedTasks(replyTo: ActorRef[HasEmptyTasksResponse]): Behavior[TasksRepoMsg] = {
+    Slick.source {
+      sql"""SELECT count(*) FROM task WHERE end_time IS NULL""".as[Int]
+    } .runWith(Sink.headOption)
+      .map { _.get }
+      .map { _ > 0 }
+      .map { HasEmptyTasksResponse }
+      .andThen { replyTo ! _.get }
+
     Behaviors.same
   }
 }

@@ -12,7 +12,7 @@ import akka.stream.scaladsl.Source
 import akka.util.Timeout
 import com.redis.RedisClient
 import eu.jrie.put.cs.pt.scrapper.domain.repository.SearchRepository.{EndSearchRepo, FindActiveSearches, SearchRepoMsg, SearchesAnswer}
-import eu.jrie.put.cs.pt.scrapper.domain.repository.TasksRepository.{AddTask, EndTasksRepo, TaskResponse, TasksRepoMsg}
+import eu.jrie.put.cs.pt.scrapper.domain.repository.TasksRepository._
 import eu.jrie.put.cs.pt.scrapper.domain.repository.{SearchRepository, TasksRepository}
 import eu.jrie.put.cs.pt.scrapper.domain.search.SearchTaskCreator.SearchTaskCreatorMsg
 import eu.jrie.put.cs.pt.scrapper.model.Task
@@ -59,22 +59,33 @@ private class SearchTaskCreator (redis: RedisClient)
   }
 
   private def createForAllActive(): Unit = {
+    import akka.actor.typed.scaladsl.AskPattern._
+
     ctx.log.info("searches task creation started")
 
     val publisher = ctx.spawn(Publisher(redis), "searchTaskPublisher")
     val searchRepo = ctx.spawn(SearchRepository(), "searchRepositorySearchExecutor")
     val tasksRepo = ctx.spawn(TasksRepository(), "tasksRepositorySearchExecutor")
 
+    val hasEmptyTasks: Future[HasEmptyTasksResponse] = tasksRepo ? CheckForNotEndedTasks
     Await.result(
-      tasks(searchRepo, tasksRepo)
-        .map { source =>
-          source.runForeach { case (taskId: String, params: Map[String, String]) =>
-            publisher ! Publish(SEARCH_TASKS_CHANNEL, TaskMessage(taskId, params))
-          }.andThen(_ => {
-            publisher ! EndPublish()
-            searchRepo ! EndSearchRepo()
-            tasksRepo ! EndTasksRepo()
-          })
+      hasEmptyTasks
+          .map { _.has }
+        .andThen { has =>
+          if (!has.get) {
+            tasks(searchRepo, tasksRepo)
+              .map { source =>
+                source.runForeach { case (taskId: String, params: Map[String, String]) =>
+                  publisher ! Publish(SEARCH_TASKS_CHANNEL, TaskMessage(taskId, params))
+                }.andThen(_ => {
+                  publisher ! EndPublish()
+                  searchRepo ! EndSearchRepo()
+                  tasksRepo ! EndTasksRepo()
+                })
+              }
+          } else {
+            ctx.log.error("Creation scheduled before previous ended. Aborting...")
+          }
         },
       Duration.Inf
     )
