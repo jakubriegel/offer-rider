@@ -10,5 +10,6 @@ case class Result (
                     currency: String,
                     url: String,
                     imgUrl: Option[String],
-                    params: Map[String, String]
+                    newcomer: Boolean,
+                    params: Map[String, String] = Map.empty
                   )

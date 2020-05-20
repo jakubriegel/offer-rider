@@ -5,12 +5,11 @@ import java.util.concurrent.TimeUnit
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, Behavior}
 import akka.stream.alpakka.slick.scaladsl.{Slick, SlickSession}
-import akka.stream.scaladsl.Sink
+import akka.stream.scaladsl.{Sink, Source}
 import eu.jrie.put.cs.pt.scrapper.domain.repository.Repository.RepoMsg
 import eu.jrie.put.cs.pt.scrapper.domain.repository.ResultsRepository.{AddResult, FindResults, ResultsAnswer, ResultsRepoMsg}
 import eu.jrie.put.cs.pt.scrapper.model.Result
-import eu.jrie.put.cs.pt.scrapper.model.db.Tables.ResultsParamsTable.{ResultParamRow, ResultParams}
-import eu.jrie.put.cs.pt.scrapper.model.db.Tables.ResultsTable.{ResultRow, Results}
+import eu.jrie.put.cs.pt.scrapper.model.db.Tables.ResultsTable.{Results, getResult}
 
 import scala.collection.immutable.ListMap
 import scala.concurrent.duration.Duration
@@ -45,20 +44,38 @@ private class ResultsRepository(
   }
 
   private def addNewResult(result: Result): Behavior[ResultsRepoMsg] = {
-    val action = Future {
-      (None, result.taskId, result.offerId, result.title, result.subtitle, result.price, result.currency, result.url, result.imgUrl)
-    }.map { (_, TableQuery[Results]) }
+    val lastIds = Slick.source {
+      sql"""
+           SELECT offer_id FROM result
+           WHERE task_id = (
+            SELECT id FROM task
+            WHERE search_id = (SELECT search_id FROM task WHERE id = ${result.taskId})
+            ORDER BY end_time DESC LIMIT 1
+          );
+          """.as[String]
+    } .runWith(Sink.seq)
+
+    val action = Future { result }
+      .zipWith(lastIds) { case (result, lastOfferIds) =>
+        val newcomer = result.offerId
+          .map { lastOfferIds.contains }
+          .forall { !_ }
+        (result, newcomer)
+      }
+      .map { case (r, newcomer) =>
+        (None, r.taskId, r.offerId, r.title, r.subtitle, r.price, r.currency, r.url, r.imgUrl, newcomer)
+      }
+      .map { (_, TableQuery[Results]) }
       .flatMap { case (row, table) =>
         session.db.run((table returning table.map(_.id)) += row)
       }
       .map { _.get }
-      .map { (_, TableQuery[ResultParams]) }
-      .flatMap { case (resultId, table) =>
-        Future.sequence(
-          result.params.map { case (name: String, value: String) =>
-            session.db.run(table += (resultId, name, value))
-          }
-        )
+      .flatMap { resultId =>
+        Source(result.params)
+          .filter { case (_, value) => value != null }
+          .runWith(Slick.sink { case (name, value) =>
+            sqlu"INSERT INTO result_param VALUES ($resultId, $name, $value)"
+          })
       }
 
     Await.ready(action, Duration.create(15, TimeUnit.SECONDS))
@@ -69,19 +86,26 @@ private class ResultsRepository(
     Slick.source {
       taskId match {
         case Some(id) =>
-          sql"SELECT * FROM result WHERE task_id = $id AND task_id IN (SELECT id FROM task WHERE search_id = $searchId AND search_id IN (SELECT id FROM search WHERE user_id = $userId))".as[ResultRow]
+          sql"""
+                SELECT * FROM result
+                WHERE task_id = $id
+                AND task_id IN (SELECT id FROM task WHERE search_id = $searchId AND search_id IN (SELECT id FROM search WHERE user_id = $userId))
+                """.as[Result]
         case None =>
-          sql"SELECT * FROM result WHERE task_id IN (SELECT id FROM task WHERE search_id = $searchId AND search_id IN (SELECT id FROM search WHERE user_id = $userId))".as[ResultRow]
+          sql"""
+               SELECT * FROM result
+               WHERE task_id IN (SELECT id FROM task WHERE search_id = $searchId AND search_id IN (SELECT id FROM search WHERE user_id = $userId))
+               """.as[Result]
       }
-    }.map { row =>
+    }.map { r =>
       Slick.source {
-        sql"SELECT * FROM result_param WHERE result_id = ${row.id.get}".as[ResultParamRow]
-      } .runWith(Sink.seq)
-        .map { _.map(p => p.name -> p.value) }
+        sql"SELECT * FROM result_param WHERE result_id = ${r.id.get}".as[(Int, String, String)]
+      } .map { case (_, name, value) => (name, value) }
+        .runWith(Sink.seq)
         .map { _.sortWith(_._1 > _._2) }
         .map { ListMap.newBuilder.addAll(_).result }
         .map {
-          Result(row.id, row.taskId, row.offerId, row.title, row.subtitle, row.price, row.currency, row.url, row.imgUrl, _)
+          Result(r.id, r.taskId, r.offerId, r.title, r.subtitle, r.price, r.currency, r.url, r.imgUrl, r.newcomer, _)
         }
     }
       .runWith(Sink.seq)

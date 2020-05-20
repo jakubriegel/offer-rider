@@ -37,6 +37,7 @@ CREATE TABLE result (
     currency varchar(5) NOT NULL default 'PLN',
     url text NOT NULL,
     imgUrl text NULL default null,
+    newcomer bit NOT NULL default false,
 
     PRIMARY KEY (id),
     FOREIGN KEY (task_id) REFERENCES task(id)

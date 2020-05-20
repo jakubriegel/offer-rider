@@ -5,11 +5,10 @@ import java.sql.Timestamp
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, Behavior}
 import akka.stream.alpakka.slick.scaladsl.{Slick, SlickSession}
-import akka.stream.scaladsl.Sink
+import akka.stream.scaladsl.{Sink, Source}
 import eu.jrie.put.cs.pt.scrapper.domain.repository.Repository.RepoMsg
 import eu.jrie.put.cs.pt.scrapper.domain.repository.TasksRepository._
 import eu.jrie.put.cs.pt.scrapper.model.Task
-import eu.jrie.put.cs.pt.scrapper.model.db.Tables.TasksTable.Tasks
 
 object TasksRepository {
   sealed trait TasksRepoMsg extends RepoMsg
@@ -17,10 +16,12 @@ object TasksRepository {
   case class AddTask(task: Task, replyTo: ActorRef[TaskResponse]) extends TasksRepoMsg
   case class EndTask(id: String) extends TasksRepoMsg
   case class FindTasks(userId: Int, searchId: Int, replyTo: ActorRef[TasksResponse]) extends TasksRepoMsg
+  case class CheckForNotEndedTasks(replyTo: ActorRef[HasEmptyTasksResponse]) extends TasksRepoMsg
   case class EndTasksRepo() extends TasksRepoMsg
 
   case class TaskResponse(id: String) extends TasksRepoMsg
   case class TasksResponse(tasks: Seq[Task]) extends TasksRepoMsg
+  case class HasEmptyTasksResponse(has: Boolean) extends TasksRepoMsg
 
   def apply()(implicit session: SlickSession): Behavior[TasksRepoMsg] =
     Behaviors.setup(implicit context => new TasksRepository)
@@ -38,6 +39,7 @@ private class TasksRepository(
       case AddTask(result, replyTo) => addNewTask(result, replyTo)
       case EndTask(id) => endTask(id)
       case FindTasks(userId, searchId, replyTo) => findTasks(userId, searchId, replyTo)
+      case CheckForNotEndedTasks(replyTo) => checkForNotEndedTasks(replyTo)
       case EndTasksRepo() =>
         Behaviors.stopped
       case _ =>
@@ -47,10 +49,16 @@ private class TasksRepository(
   }
 
   private def addNewTask(task: Task, replyTo: ActorRef[TaskResponse]): Behavior[TasksRepoMsg] = {
-    session.db.run {
-      TableQuery[Tasks] += (task.id, task.searchId, Timestamp.from(task.startTime), task.endTime.map(Timestamp.from))
-    } .map(_ => TaskResponse(task.id))
-      .andThen { replyTo ! _.get }
+
+    Source.single((task.id, task.searchId, Timestamp.from(task.startTime), task.endTime.map(Timestamp.from)))
+        .via {
+          Slick.flow { case (taskId, searchId, startTime, endTime) =>
+            sqlu"INSERT INTO task VALUES ($taskId, $searchId, $startTime, $endTime)"
+          }
+        }
+      .runWith(Sink.ignore)
+      .onComplete { _ => replyTo ! TaskResponse(task.id) }
+
     Behaviors.same
   }
 
@@ -68,6 +76,18 @@ private class TasksRepository(
     } .runWith(Sink.seq)
       .map { TasksResponse }
       .andThen { replyTo ! _.get }
+    Behaviors.same
+  }
+
+  private def checkForNotEndedTasks(replyTo: ActorRef[HasEmptyTasksResponse]): Behavior[TasksRepoMsg] = {
+    Slick.source {
+      sql"""SELECT count(*) FROM task WHERE end_time IS NULL""".as[Int]
+    } .runWith(Sink.headOption)
+      .map { _.get }
+      .map { _ > 0 }
+      .map { HasEmptyTasksResponse }
+      .andThen { replyTo ! _.get }
+
     Behaviors.same
   }
 }
