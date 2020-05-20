@@ -5,11 +5,10 @@ import java.util.concurrent.TimeUnit
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, Behavior}
 import akka.stream.alpakka.slick.scaladsl.{Slick, SlickSession}
-import akka.stream.scaladsl.Sink
+import akka.stream.scaladsl.{Sink, Source}
 import eu.jrie.put.cs.pt.scrapper.domain.repository.Repository.RepoMsg
 import eu.jrie.put.cs.pt.scrapper.domain.repository.ResultsRepository.{AddResult, FindResults, ResultsAnswer, ResultsRepoMsg}
 import eu.jrie.put.cs.pt.scrapper.model.Result
-import eu.jrie.put.cs.pt.scrapper.model.db.Tables.ResultsParamsTable.ResultParams
 import eu.jrie.put.cs.pt.scrapper.model.db.Tables.ResultsTable.{Results, getResult}
 
 import scala.collection.immutable.ListMap
@@ -45,20 +44,34 @@ private class ResultsRepository(
   }
 
   private def addNewResult(result: Result): Behavior[ResultsRepoMsg] = {
-    val action = Future {
-      (None, result.taskId, result.offerId, result.title, result.subtitle, result.price, result.currency, result.url, result.imgUrl)
-    }.map { (_, TableQuery[Results]) }
-      .flatMap { case (row, table) =>
+    val action = Slick.source {
+      sql"""
+           SELECT offer_id FROM result
+           WHERE task_id = (
+            SELECT id FROM task
+            WHERE search_id = (SELECT search_id FROM task WHERE id = ${result.taskId})
+            ORDER BY end_time DESC LIMIT 1
+          );
+          """.as[String]
+    } .runWith(Sink.seq)
+      .map { lastOfferIds =>
+        result.offerId
+          .map { lastOfferIds.contains(_) }
+          .forall { !_ }
+      }
+      .map { newcomer =>
+        (None, result.taskId, result.offerId, result.title, result.subtitle, result.price, result.currency, result.url, result.imgUrl, newcomer)
+      }
+      .map { (_, TableQuery[Results]) }
+      . flatMap { case (row, table) =>
         session.db.run((table returning table.map(_.id)) += row)
       }
       .map { _.get }
-      .map { (_, TableQuery[ResultParams]) }
-      .flatMap { case (resultId, table) =>
-        Future.sequence(
-          result.params.map { case (name: String, value: String) =>
-            session.db.run(table += (resultId, name, value))
-          }
-        )
+      .flatMap { resultId =>
+        Source(result.params)
+            .runWith(Slick.sink { case (name, value) =>
+              sqlu"INSERT INTO result_param VALUES ($resultId, $name, $value)"
+            })
       }
 
     Await.ready(action, Duration.create(15, TimeUnit.SECONDS))
