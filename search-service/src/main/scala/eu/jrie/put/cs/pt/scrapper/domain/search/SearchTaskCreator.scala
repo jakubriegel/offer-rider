@@ -4,29 +4,30 @@ package eu.jrie.put.cs.pt.scrapper.domain.search
 import java.time.Instant
 import java.util.UUID.randomUUID
 
-import akka.NotUsed
 import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
-import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
+import akka.actor.typed.{ActorSystem, Behavior}
 import akka.stream.alpakka.slick.scaladsl.SlickSession
 import akka.stream.scaladsl.Source
 import akka.util.Timeout
+import akka.{Done, NotUsed}
 import com.redis.RedisClient
-import eu.jrie.put.cs.pt.scrapper.domain.repository.SearchRepository.{EndSearchRepo, FindActiveSearches, SearchRepoMsg, SearchesAnswer}
+import eu.jrie.put.cs.pt.scrapper.domain.repository.SearchRepository.{EndSearchRepo, FindActiveSearches}
 import eu.jrie.put.cs.pt.scrapper.domain.repository.TasksRepository._
 import eu.jrie.put.cs.pt.scrapper.domain.repository.{SearchRepository, TasksRepository}
 import eu.jrie.put.cs.pt.scrapper.domain.search.SearchTaskCreator.SearchTaskCreatorMsg
-import eu.jrie.put.cs.pt.scrapper.model.Task
+import eu.jrie.put.cs.pt.scrapper.model.{Search, Task}
 import eu.jrie.put.cs.pt.scrapper.redis.Message.TaskMessage
 import eu.jrie.put.cs.pt.scrapper.redis.Publisher
 import eu.jrie.put.cs.pt.scrapper.redis.Publisher.{EndPublish, Publish}
 
+import scala.concurrent.Future.failed
 import scala.concurrent.{Await, ExecutionContext, Future}
 
 
 object SearchTaskCreator {
   sealed trait SearchTaskCreatorMsg
   final case class CreateForAllActive() extends SearchTaskCreatorMsg
-  final case class CreateForSearch(searchId: Int) extends SearchTaskCreatorMsg
+  final case class CreateForSearch(search: Search) extends SearchTaskCreatorMsg
   final val SEARCH_TASKS_CHANNEL = "pt-scraper-search-tasks"
 
   def apply(redis: RedisClient)(implicit session: SlickSession): Behavior[SearchTaskCreatorMsg] =
@@ -39,6 +40,7 @@ private class SearchTaskCreator (redis: RedisClient)
                                   implicit ctx: ActorContext[SearchTaskCreatorMsg],
                                   session: SlickSession
                                 ) extends AbstractBehavior[SearchTaskCreatorMsg](ctx) {
+  import akka.actor.typed.scaladsl.AskPattern._
   import eu.jrie.put.cs.pt.scrapper.domain.search.SearchTaskCreator.{CreateForAllActive, CreateForSearch, SEARCH_TASKS_CHANNEL}
 
   import scala.concurrent.duration._
@@ -47,69 +49,65 @@ private class SearchTaskCreator (redis: RedisClient)
   private implicit val executionContext: ExecutionContext = ctx.system.executionContext
   private implicit val timeout: Timeout = 15.seconds
 
+  private val publisher = ctx.spawn(Publisher(redis), "publisherSearchTaskCreator")
+  private val searchRepo = ctx.spawn(SearchRepository(), "searchRepositorySearchTaskCreator")
+  private val tasksRepo = ctx.spawn(TasksRepository(), "tasksRepositorySearchTaskCreator")
+
   override def onMessage(msg: SearchTaskCreatorMsg): Behavior[SearchTaskCreatorMsg] = msg match {
     case CreateForAllActive() =>
       createForAllActive()
       Behaviors.same
-    case CreateForSearch(searchId) =>
+    case CreateForSearch(search) =>
+      createForSearch(search)
       Behaviors.same
     case _ =>
       ctx.log.error("Received invalid msg")
+      publisher ! EndPublish()
+      searchRepo ! EndSearchRepo()
+      tasksRepo ! EndTasksRepo()
       Behaviors.stopped
   }
 
   private def createForAllActive(): Unit = {
-    import akka.actor.typed.scaladsl.AskPattern._
-
     ctx.log.info("searches task creation started")
-
-    val publisher = ctx.spawn(Publisher(redis), "searchTaskPublisher")
-    val searchRepo = ctx.spawn(SearchRepository(), "searchRepositorySearchExecutor")
-    val tasksRepo = ctx.spawn(TasksRepository(), "tasksRepositorySearchExecutor")
-
-    val hasEmptyTasks: Future[HasEmptyTasksResponse] = tasksRepo ? CheckForNotEndedTasks
     Await.result(
-      hasEmptyTasks
-          .map { _.has }
-        .andThen { has =>
-          if (!has.get) {
-            tasks(searchRepo, tasksRepo)
-              .map { source =>
-                source.runForeach { case (taskId: String, params: Map[String, String]) =>
-                  publisher ! Publish(SEARCH_TASKS_CHANNEL, TaskMessage(taskId, params))
-                }.andThen(_ => {
-                  publisher ! EndPublish()
-                  searchRepo ! EndSearchRepo()
-                  tasksRepo ! EndTasksRepo()
-                })
-              }
-          } else {
-            ctx.log.error("Creation scheduled before previous ended. Aborting...")
-          }
-        },
+      (tasksRepo ? CheckForNotEndedTasks)
+        .map { _.has }
+        .flatMap { has =>
+          if (!has) searchRepo ? FindActiveSearches
+          else failed(new Exception("Creation stated before previous tasks ended. Aborting..."))
+        }
+        .map { _.searches }
+        .map { publishTasks },
       Duration.Inf
-    )
+    ).andThen { result =>
+      if (result.isFailure) ctx.log.error(result.failed.get.getMessage)
+    }
 
     ctx.log.debug("searches task creation ended")
   }
 
-  def tasks(searchesRepo: ActorRef[SearchRepoMsg], tasksRepo: ActorRef[TasksRepoMsg]): Future[Source[(String, Map[String, String]), NotUsed]] = {
-    import akka.actor.typed.scaladsl.AskPattern._
+  private def createForSearch(search: Search): Unit = {
+    ctx.log.info(s"Creating search tasks for ${search.id.get}")
+    Await.ready(
+      Future { Source.single(search) }
+        .map { publishTasks },
+      Duration.Inf
+    )
+  }
 
-    val searches: Future[SearchesAnswer] = searchesRepo ? FindActiveSearches
-    searches.map { _.searches }
-      .map { source =>
-        source.map { s =>
-            (s.id.get, s.params, randomUUID.toString, Instant.now())
-          }
-          .map { case (searchId, params, taskId, start) =>
-            (Task(taskId, searchId, start, None), params)
-          }
-          .mapAsync(1) { case (task, params) =>
-            val addedId: Future[TaskResponse] = tasksRepo ? (AddTask(task, _))
-            addedId.map { _.id }
-              .map { (_, params) }
-          }
+  private def publishTasks(searches: Source[Search, NotUsed]): Future[Done] = {
+    searches.map { s => (s.id.get, s.params, randomUUID.toString, Instant.now()) }
+      .map { case (searchId, params, taskId, start) =>
+        (Task(taskId, searchId, start, None), params)
+      }
+      .mapAsync(1) { case (task, params) =>
+        val addedId: Future[TaskResponse] = tasksRepo ? (AddTask(task, _))
+        addedId.map { _.id }
+          .map { (_, params) }
+      }
+      .runForeach { case (taskId: String, params: Map[String, String]) =>
+        publisher ! Publish(SEARCH_TASKS_CHANNEL, TaskMessage(taskId, params))
       }
   }
 }
