@@ -2,7 +2,7 @@ package eu.jrie.put.cs.pt.scrapper.model.db
 
 import java.sql.Timestamp
 
-import eu.jrie.put.cs.pt.scrapper.model.Task
+import eu.jrie.put.cs.pt.scrapper.model.{Result, Task}
 import slick.jdbc.GetResult
 import slick.jdbc.MySQLProfile.api._
 import slick.lifted.Tag
@@ -57,20 +57,9 @@ object Tables {
   }
 
   object ResultsTable {
-    case class ResultRow (
-                           id: Option[Long],
-                           taskId: String,
-                           offerId: Option[String],
-                           title: String,
-                           subtitle: Option[String],
-                           price: Double,
-                           currency: String,
-                           url: String,
-                           imgUrl: Option[String]
-                         )
 
-    implicit val getResultRow: AnyRef with GetResult[ResultRow] = GetResult(r => {
-      ResultRow(r.nextLongOption, r.nextString, r.nextStringOption, r.nextString, r.nextStringOption, r.nextDouble, r.nextString, r.nextString, r.nextStringOption)
+    implicit val getResult: AnyRef with GetResult[Result] = GetResult(r => {
+      Result(r.nextLongOption, r.nextString, r.nextStringOption, r.nextString, r.nextStringOption, r.nextDouble, r.nextString, r.nextString, r.nextStringOption, r.nextBoolean)
     })
 
     class Results (tag: Tag) extends Table[(Option[Long], String, Option[String], String, Option[String], Double, String, String, Option[String])](tag, "result") {

@@ -9,8 +9,8 @@ import akka.stream.scaladsl.Sink
 import eu.jrie.put.cs.pt.scrapper.domain.repository.Repository.RepoMsg
 import eu.jrie.put.cs.pt.scrapper.domain.repository.ResultsRepository.{AddResult, FindResults, ResultsAnswer, ResultsRepoMsg}
 import eu.jrie.put.cs.pt.scrapper.model.Result
-import eu.jrie.put.cs.pt.scrapper.model.db.Tables.ResultsParamsTable.{ResultParamRow, ResultParams}
-import eu.jrie.put.cs.pt.scrapper.model.db.Tables.ResultsTable.{ResultRow, Results}
+import eu.jrie.put.cs.pt.scrapper.model.db.Tables.ResultsParamsTable.ResultParams
+import eu.jrie.put.cs.pt.scrapper.model.db.Tables.ResultsTable.{Results, getResult}
 
 import scala.collection.immutable.ListMap
 import scala.concurrent.duration.Duration
@@ -69,19 +69,25 @@ private class ResultsRepository(
     Slick.source {
       taskId match {
         case Some(id) =>
-          sql"SELECT * FROM result WHERE task_id = $id AND task_id IN (SELECT id FROM task WHERE search_id = $searchId AND search_id IN (SELECT id FROM search WHERE user_id = $userId))".as[ResultRow]
+          sql"""
+                SELECT * FROM result
+                WHERE task_id = $id
+                AND task_id IN (SELECT id FROM task WHERE search_id = $searchId AND search_id IN (SELECT id FROM search WHERE user_id = $userId))
+                """.as[Result]
         case None =>
-          sql"SELECT * FROM result WHERE task_id IN (SELECT id FROM task WHERE search_id = $searchId AND search_id IN (SELECT id FROM search WHERE user_id = $userId))".as[ResultRow]
+          sql"""
+               SELECT * FROM result
+               WHERE task_id IN (SELECT id FROM task WHERE search_id = $searchId AND search_id IN (SELECT id FROM search WHERE user_id = $userId))
+               """.as[Result]
       }
-    }.map { row =>
+    }.map { r =>
       Slick.source {
-        sql"SELECT * FROM result_param WHERE result_id = ${row.id.get}".as[ResultParamRow]
+        sql"SELECT * FROM result_param WHERE result_id = ${r.id.get}".as[(String, String)]
       } .runWith(Sink.seq)
-        .map { _.map(p => p.name -> p.value) }
         .map { _.sortWith(_._1 > _._2) }
         .map { ListMap.newBuilder.addAll(_).result }
         .map {
-          Result(row.id, row.taskId, row.offerId, row.title, row.subtitle, row.price, row.currency, row.url, row.imgUrl, _)
+          Result(r.id, r.taskId, r.offerId, r.title, r.subtitle, r.price, r.currency, r.url, r.imgUrl, r.newcomer, _)
         }
     }
       .runWith(Sink.seq)
