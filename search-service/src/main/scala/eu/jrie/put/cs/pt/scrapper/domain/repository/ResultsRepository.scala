@@ -44,7 +44,7 @@ private class ResultsRepository(
   }
 
   private def addNewResult(result: Result): Behavior[ResultsRepoMsg] = {
-    val action = Slick.source {
+    val lastIds = Slick.source {
       sql"""
            SELECT offer_id FROM result
            WHERE task_id = (
@@ -54,24 +54,28 @@ private class ResultsRepository(
           );
           """.as[String]
     } .runWith(Sink.seq)
-      .map { lastOfferIds =>
-        result.offerId
-          .map { lastOfferIds.contains(_) }
+
+    val action = Future { result }
+      .zipWith(lastIds) { case (result, lastOfferIds) =>
+        val newcomer = result.offerId
+          .map { lastOfferIds.contains }
           .forall { !_ }
+        (result, newcomer)
       }
-      .map { newcomer =>
-        (None, result.taskId, result.offerId, result.title, result.subtitle, result.price, result.currency, result.url, result.imgUrl, newcomer)
+      .map { case (r, newcomer) =>
+        (None, r.taskId, r.offerId, r.title, r.subtitle, r.price, r.currency, r.url, r.imgUrl, newcomer)
       }
       .map { (_, TableQuery[Results]) }
-      . flatMap { case (row, table) =>
+      .flatMap { case (row, table) =>
         session.db.run((table returning table.map(_.id)) += row)
       }
       .map { _.get }
       .flatMap { resultId =>
         Source(result.params)
-            .runWith(Slick.sink { case (name, value) =>
-              sqlu"INSERT INTO result_param VALUES ($resultId, $name, $value)"
-            })
+          .filter { case (_, value) => value != null }
+          .runWith(Slick.sink { case (name, value) =>
+            sqlu"INSERT INTO result_param VALUES ($resultId, $name, $value)"
+          })
       }
 
     Await.ready(action, Duration.create(15, TimeUnit.SECONDS))
@@ -95,8 +99,9 @@ private class ResultsRepository(
       }
     }.map { r =>
       Slick.source {
-        sql"SELECT * FROM result_param WHERE result_id = ${r.id.get}".as[(String, String)]
-      } .runWith(Sink.seq)
+        sql"SELECT * FROM result_param WHERE result_id = ${r.id.get}".as[(Int, String, String)]
+      } .map { case (_, name, value) => (name, value) }
+        .runWith(Sink.seq)
         .map { _.sortWith(_._1 > _._2) }
         .map { ListMap.newBuilder.addAll(_).result }
         .map {

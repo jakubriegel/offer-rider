@@ -9,8 +9,7 @@ import com.typesafe.config.ConfigFactory
 import eu.jrie.put.cs.pt.scrapper.domain.repository.Repository.RepoMsg
 import eu.jrie.put.cs.pt.scrapper.domain.repository.SearchRepository._
 import eu.jrie.put.cs.pt.scrapper.model.Search
-import eu.jrie.put.cs.pt.scrapper.model.db.Tables.SearchesParamsTable.{SearchParamRow, SearchesParams}
-import eu.jrie.put.cs.pt.scrapper.model.db.Tables.SearchesTable.{SearchRow, Searches}
+import eu.jrie.put.cs.pt.scrapper.model.db.Tables.SearchesTable.Searches
 import slick.jdbc.SQLActionBuilder
 
 import scala.collection.immutable.ListMap
@@ -28,6 +27,8 @@ object SearchRepository {
   case class SearchesAnswer(searches: Source[Search, NotUsed]) extends SearchRepoMsg
 
   case class EndSearchRepo() extends SearchRepoMsg
+
+  private type SearchRow = (Int, Int, Boolean)
 
   private val allowedParams = ConfigFactory.load().getStringList("service.search.allowedParams")
 
@@ -48,9 +49,9 @@ private class SearchRepository(
   override def onMessage(msg: SearchRepoMsg): Behavior[SearchRepoMsg] = {
     msg match {
       case AddSearch(search, replyTo) => addSearch(search, replyTo)
-      case FindSearches(userId, active, replyTo) =>
+      case FindSearches(userId, onlyActive, replyTo) =>
         val filtered = Slick.source(sql"SELECT * FROM search WHERE user_id = $userId".as[SearchRow])
-          .filter { s => active forall (s.active == _) }
+          .filter { case (_, _, active) => onlyActive forall (active == _) }
         replyTo ! SearchesAnswer(findSearches(filtered))
         Behaviors.same
       case FindActiveSearches(replyTo) =>
@@ -69,6 +70,7 @@ private class SearchRepository(
       .map { case (param, _) => param }
       .filterNot { allowedParams.contains }
       .lastOption
+
     if (unwantedParam.nonEmpty) {
       replyTo ! SearchAnswer(failed(InvalidParamException(unwantedParam.get)))
     }
@@ -79,17 +81,14 @@ private class SearchRepository(
           session.db.run((table returning table.map(_.id)) += row)
         }
         .map { _.get }
-        .map { (_, TableQuery[SearchesParams]) }
-        .flatMap { case (searchId, table) =>
-          Future.sequence(
-            search.params
-              .filter { case (_, value) => value != null}
-              .map { case (name, value) =>
-                session.db.run(table += (searchId, name, value))
-              }
-          ).map { (searchId, _) }
+        .flatMap { searchId =>
+          Source(search.params)
+            .filter { case (_, value) => value != null }
+            .runWith(Slick.sink { case (name, value) =>
+              sqlu"INSERT INTO search_param VALUES ($searchId, $name, $value)"
+            }).map { _ => searchId }
         }
-        .map { case (searchId, _) => findSearches(sql"SELECT * FROM search WHERE id = $searchId") }
+        .map { searchId => findSearches(sql"SELECT * FROM search WHERE id = $searchId") }
         .flatMap { _.runWith(Sink.head) }
       replyTo ! SearchAnswer(added)
     }
@@ -104,16 +103,17 @@ private class SearchRepository(
   private def findSearches(source: Source[SearchRow, NotUsed])(implicit system: ActorSystem[_]): Source[Search, NotUsed] = {
     implicit val executionContext: ExecutionContextExecutor = system.executionContext
     source
-      .map { searchRow =>
-        val futureParams = Slick.source(sql"SELECT * FROM search_param WHERE search_id = ${searchRow.id}".as[SearchParamRow])
-          .runWith(Sink.seq[SearchParamRow])
-          .map { _.map(p => p.name -> p.value) }
+      .map { case (id, userId, active) =>
+        val futureParams = Slick.source {
+          sql"SELECT * FROM search_param WHERE search_id = $id".as[(Int, String, String)]
+        } .map { case (_, name, value) => (name, value) }
+          .runWith(Sink.seq)
           .map { _.sortWith(_._1 > _._2) }
           .map { ListMap.newBuilder.addAll(_).result }
-        (searchRow, Await.result(futureParams, Duration.Inf))
+        ((id, userId, active), Await.result(futureParams, Duration.Inf))
       }
-      .map { case (searchRow, params) =>
-        Search(Option(searchRow.id), searchRow.userId, params, searchRow.active)
+      .map { case ((id, userId, active), params) =>
+        Search(Option(id), userId, params, active)
       }
   }
 }

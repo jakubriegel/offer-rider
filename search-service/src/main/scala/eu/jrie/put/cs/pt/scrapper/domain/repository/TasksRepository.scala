@@ -5,11 +5,10 @@ import java.sql.Timestamp
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, Behavior}
 import akka.stream.alpakka.slick.scaladsl.{Slick, SlickSession}
-import akka.stream.scaladsl.Sink
+import akka.stream.scaladsl.{Sink, Source}
 import eu.jrie.put.cs.pt.scrapper.domain.repository.Repository.RepoMsg
 import eu.jrie.put.cs.pt.scrapper.domain.repository.TasksRepository._
 import eu.jrie.put.cs.pt.scrapper.model.Task
-import eu.jrie.put.cs.pt.scrapper.model.db.Tables.TasksTable.Tasks
 
 object TasksRepository {
   sealed trait TasksRepoMsg extends RepoMsg
@@ -50,10 +49,16 @@ private class TasksRepository(
   }
 
   private def addNewTask(task: Task, replyTo: ActorRef[TaskResponse]): Behavior[TasksRepoMsg] = {
-    session.db.run {
-      TableQuery[Tasks] += (task.id, task.searchId, Timestamp.from(task.startTime), task.endTime.map(Timestamp.from))
-    } .map(_ => TaskResponse(task.id))
-      .andThen { replyTo ! _.get }
+
+    Source.single((task.id, task.searchId, Timestamp.from(task.startTime), task.endTime.map(Timestamp.from)))
+        .via {
+          Slick.flow { case (taskId, searchId, startTime, endTime) =>
+            sqlu"INSERT INTO task VALUES ($taskId, $searchId, $startTime, $endTime)"
+          }
+        }
+      .runWith(Sink.ignore)
+      .onComplete { _ => replyTo ! TaskResponse(task.id) }
+
     Behaviors.same
   }
 
