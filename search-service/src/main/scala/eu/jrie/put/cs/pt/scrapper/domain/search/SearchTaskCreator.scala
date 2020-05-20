@@ -5,7 +5,7 @@ import java.time.Instant
 import java.util.UUID.randomUUID
 
 import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
-import akka.actor.typed.{ActorSystem, Behavior}
+import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
 import akka.stream.alpakka.slick.scaladsl.SlickSession
 import akka.stream.scaladsl.Source
 import akka.util.Timeout
@@ -26,7 +26,7 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 
 object SearchTaskCreator {
   sealed trait SearchTaskCreatorMsg
-  final case class CreateForAllActive() extends SearchTaskCreatorMsg
+  final case class CreateForAllActive(replyTo: ActorRef[Done]) extends SearchTaskCreatorMsg
   final case class CreateForSearch(search: Search) extends SearchTaskCreatorMsg
   final val SEARCH_TASKS_CHANNEL = "pt-scraper-search-tasks"
 
@@ -54,8 +54,9 @@ private class SearchTaskCreator (redis: RedisClient)
   private val tasksRepo = ctx.spawn(TasksRepository(), "tasksRepositorySearchTaskCreator")
 
   override def onMessage(msg: SearchTaskCreatorMsg): Behavior[SearchTaskCreatorMsg] = msg match {
-    case CreateForAllActive() =>
+    case CreateForAllActive(replyTo) =>
       createForAllActive()
+      replyTo ! Done
       Behaviors.same
     case CreateForSearch(search) =>
       createForSearch(search)
