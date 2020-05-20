@@ -121,7 +121,16 @@
 									"pm.test(\"Content-Type is application/json\", () => {",
 									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.equal(\"application/json\");",
 									"});",
-									""
+									"",
+									"pm.test(\"Added search has correct userId\", function () {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData.userId).to.eql(1);",
+									"});",
+									"",
+									"pm.test(\"Added search is active\", function () {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData.active).to.eql(true);",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -132,7 +141,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"userId\": 1,\n    \"params\": {\n        \"year_from\": \"1999\",\n        \"year_to\": 2003,\n        \"mileage_to\": \"250000\",\n        \"model\": null,\n        \"brand\": \"vw\"\n    }\n}",
+							"raw": "{\n    \"userId\": 1,\n    \"params\": {\n        \"year_from\": \"1999\",\n        \"year_to\": 2018,\n        \"mileage_to\": \"250000\",\n        \"model\": \"Zafira\",\n        \"brand\": \"opel\"\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -446,7 +455,7 @@
 	],
 	"variable": [
 		{
-			"id": "817f653f-6eb0-4991-8338-99e1938997fe",
+			"id": "3b89b447-9f7c-4f3a-883c-1e498776c280",
 			"key": "SERVICE",
 			"value": "{{HOST}}:30001",
 			"type": "string"
