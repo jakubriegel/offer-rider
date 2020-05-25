@@ -3,8 +3,7 @@ FROM node:13.13.0-alpine as develop-stage
 RUN mkdir -p /scraper/
 WORKDIR /scraper/
 
-COPY ./package.json /scraper/
-COPY ./package-lock.json /scraper/
+COPY ./package*.json /scraper/
 
 RUN npm install
 COPY . /scraper/
@@ -16,10 +15,9 @@ FROM node:13.13.0-alpine as production-stage
 RUN mkdir -p /scraper/
 WORKDIR /scraper/
 
-COPY ./package.json /scraper/
-COPY ./package-lock.json /scraper/
+COPY ./package*.json /scraper/
 
 RUN npm install
 COPY . /scraper/
 
-CMD ["npm", "start:prod"]
+CMD ["npm", "run" ,"start:prod"]
