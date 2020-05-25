@@ -21,6 +21,7 @@ import eu.jrie.put.cs.pt.scrapper.domain.repository.ResultsRepository.{FindResul
 import eu.jrie.put.cs.pt.scrapper.domain.repository.SearchRepository._
 import eu.jrie.put.cs.pt.scrapper.domain.repository.TasksRepository.{FindTasks, TasksRepoMsg, TasksResponse}
 import eu.jrie.put.cs.pt.scrapper.domain.repository.{ResultsRepository, SearchRepository, TasksRepository}
+import eu.jrie.put.cs.pt.scrapper.domain.search.SearchTaskCreator.{CreateForSearch, SearchTaskCreatorMsg}
 import eu.jrie.put.cs.pt.scrapper.model.{Result, Search, Task}
 
 import scala.concurrent.duration._
@@ -38,7 +39,8 @@ object RestApi {
                       implicit actorSystem: ActorSystem[_],
                       searchesRepo: ActorRef[SearchRepoMsg],
                       tasksRepo: ActorRef[TasksRepoMsg],
-                      resultsRepo: ActorRef[ResultsRepoMsg]
+                      resultsRepo: ActorRef[ResultsRepoMsg],
+                      tasksCreator: ActorRef[SearchTaskCreatorMsg]
                     ): Route = {
 
     import akka.actor.typed.scaladsl.AskPattern._
@@ -74,6 +76,7 @@ object RestApi {
             val created: Future[SearchAnswer] = searchesRepo ? (AddSearch(request, _))
             completeOrRecoverWith(
               created.flatMap { _.search }
+                .andThen { s => tasksCreator ! CreateForSearch(s.get) }
                 .map { HttpEntity(ContentTypes.`application/json`, _) }
                 .map { HttpResponse(StatusCodes.Created, Seq.empty, _) }
             ) { case e: InvalidParamException =>
@@ -127,7 +130,7 @@ object RestApi {
   }
 
 
-  def run(implicit session: SlickSession): ActorSystem[Done] = ActorSystem[Done](Behaviors.setup[Done] { ctx =>
+  def run(tasksCreator: ActorRef[SearchTaskCreatorMsg])(implicit session: SlickSession): ActorSystem[Done] = ActorSystem[Done](Behaviors.setup[Done] { ctx =>
 
     import akka.actor.typed.scaladsl.adapter._
     implicit val system: akka.actor.ActorSystem = ctx.system.toClassic
@@ -139,7 +142,7 @@ object RestApi {
     val resultsRepo = ctx.spawn(ResultsRepository(), "resultRepoAPI")
 
     Http().bindAndHandle(
-      routes(ctx.system, searchesRepo, tasksRepo, resultsRepo),
+      routes(ctx.system, searchesRepo, tasksRepo, resultsRepo, tasksCreator: ActorRef[SearchTaskCreatorMsg]),
       config.getString("host"), config.getInt("port")
     ).onComplete {
       case Success(bound) =>
