@@ -48,7 +48,7 @@
 <script>
 import cars from "../mocks/cars.json"
 import axios from "axios";
-const service = "http://localhost:30001";
+import service from "../config/service.js";
 export default {
   name: "filters",
   data() {
@@ -97,7 +97,7 @@ export default {
     },
     sendFilters() {
       this.loading = true;
-      axios.post(service + '/search', {
+      axios.post(service.baseUrl + '/search', {
         userId: 1,
         params: this.params
       }).then(() => {
