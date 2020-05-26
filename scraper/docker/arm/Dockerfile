@@ -3,7 +3,7 @@ FROM arm32v7/node:13.13-slim as develop-stage
 RUN mkdir -p /scraper/
 WORKDIR /scraper/
 
-COPY package*.json /scraper/
+COPY ./package*.json /scraper/
 
 RUN npm install
 COPY . /scraper/
@@ -20,4 +20,4 @@ COPY ./package*.json /scraper/
 RUN npm install
 COPY . /scraper/
 
-CMD ["npm", "start:prod"]
+CMD ["npm", "run" ,"start:prod"]
