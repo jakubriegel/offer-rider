@@ -137,7 +137,6 @@ export default {
     populateModels(test) {
       test = test.toString().toLowerCase();
       this.disabled = false;
-      console.log(test);
       this.models = cars.cars[test].map(function(obj) {
         return obj.value;
       });
