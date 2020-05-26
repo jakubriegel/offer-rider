@@ -42,6 +42,19 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-snackbar
+      v-model="showInfo"
+      bottom
+      right
+      :color="error ? 'red' : 'green'"
+      multi-line
+      :timeout="10000"
+    >
+       {{error ? error : "Successfully added task!"}}
+      <v-btn dark text @click="showInfo = false" fab>
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -51,8 +64,7 @@ import axios from "axios";
 const service = "http://localhost:30001";
 export default {
   name: "filters",
-  data() {
-    return {
+  data: () => ({
       min: 1990,
       max: 2020,
       slider: 0,
@@ -67,6 +79,8 @@ export default {
       models: ["none"],
       disabled: true,
       loading: false,
+      showInfo: false,
+      error: null,
       params: {
         brand: null,
         model: null,
@@ -77,8 +91,7 @@ export default {
         mileage_from: null,
         mileage_to: null
       }
-    };
-  },
+  }),
   mounted() {
     const temp = [];
     Object.keys(cars.cars).forEach(car => {
@@ -97,11 +110,17 @@ export default {
     },
     sendFilters() {
       this.loading = true;
+      this.error = null;
       axios.post(service + '/search', {
         userId: 1,
         params: this.params
-      }).then(() => {
-        this.loading = false
+      })        
+      .catch(e => {
+          this.error = e
+        })
+      .then(() => {
+        this.loading = false;
+        this.showInfo = true;
       })
     }
   }

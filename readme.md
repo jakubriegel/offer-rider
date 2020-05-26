@@ -16,7 +16,9 @@ See their readmes for more documentation
 
 ## deployment - Docker
 
-1. Set varaibles in `.env `:
+1. For `develop-stage` run `npm install` in `frontend` folder (must have node:13.13.0 installed locally)
+2. Then if you want to deploy app as `productions-stage` you must delete node_modules folder from `frontend` folder
+2. Set varaibles in `.env `:
     - `OFFER_RIDER_ARCHITECTURE` accordingly to your machine - `arm` or `x86`
     - `TARGET` accordingly to purpose - `develop-stage` or `production-stage`
 2. Run `docker-compose up --build`
