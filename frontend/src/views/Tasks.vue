@@ -3,7 +3,25 @@
     <v-row>
       <v-col cols="12">
         <v-card class="pt-4">
-          <v-select v-model="task" label="Task" class="pa-4" :items="tasks" item-text="startTime" item-value="id" @input="showTask"/>
+          <v-select 
+            v-model="searchId" 
+            label="Searches" 
+            class="pa-4" 
+            :items="searches" 
+            item-text="name" 
+            item-value="id" 
+            @input="getTasks"
+          />
+          <v-select 
+            v-model="task" 
+            label="Task" 
+            class="pa-4" 
+            :items="tasks"
+            item-text="startTime"
+            item-value="id" 
+            @input="showTask"
+            :disabled="!searchId"
+          />
           <v-card-title>
             Scrapped cars
             <v-spacer></v-spacer>
@@ -102,10 +120,25 @@ export default {
     expanded: [],
     tasks: [],
     loading: false,
-    task: null
+    task: null,
+    searches: [],
+    searchId: null
   }),
   mounted() {
-    axios.get(service.baseUrl + '/tasks?userId=1&searchId=1').then(response => (this.tasks = response.data.tasks,
+    axios.get(service.baseUrl + '/search?userId=1')
+      .then(response => {
+        this.searches = response.data.searches
+        this.searches = this.searches.map(search => ({
+          ...search,
+          name: `${search.id} - ${search.params.brand} - ${search.params.model}`
+        }))
+      })
+
+  },
+  methods: {
+    getTasks() {
+      axios.get(service.baseUrl + '/tasks?userId=1&searchId=' + this.searchId)
+        .then(response => (this.tasks = response.data.tasks,
                     this.tasks.sort(function(a,b){
                       if(a.startTime < b.startTime) { return 1; }
                       else if(a.startTime > b.startTime) {return -1;}
@@ -113,8 +146,7 @@ export default {
                     }),
                     this.formatDate(this.tasks)
     ))
-  },
-  methods: {
+    },
     showTask() {
       this.loading = true;
       axios
