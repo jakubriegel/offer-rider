@@ -99,7 +99,7 @@
 <script>
 import cars from "../mocks/cars.json";
 import axios from "axios";
-const service = "http://localhost:30001";
+import service from "../config/service.js";
 export default {
   name: "filters",
   data: () => ({
@@ -145,7 +145,7 @@ export default {
       this.loading = true;
       this.error = null;
       axios
-        .post(service + "/search", {
+        .post(service.baseUrl + "/search", {
           userId: 1,
           params: this.params
         })
