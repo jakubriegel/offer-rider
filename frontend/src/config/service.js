@@ -1,5 +1,5 @@
 const serviceConfig = {
-    baseUrl: "http://localhost:30001"
-}
+  baseUrl: "http://jrie.eu:30001"
+};
 
 export default serviceConfig;

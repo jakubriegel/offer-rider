@@ -16,17 +16,15 @@ services:
             - redis
         volumes:
             - ./scraper:/scrapper
-        command: npm start
     frontend:
         build: 
             context: ./frontend
             target: ${TARGET}
             dockerfile: docker/${OFFER_RIDER_ARCHITECTURE}/Dockerfile
         ports:
-            - "8080:8080"
+            - "30002:80"
         volumes:
-            - ./frontend:/frontend
-        command: /bin/sh -c "yarn serve"
+            - ./frontend/:/frontend/
     search-service:
         build: 
             context: ./search-service

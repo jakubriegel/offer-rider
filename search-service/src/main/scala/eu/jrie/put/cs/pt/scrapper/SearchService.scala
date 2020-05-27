@@ -1,28 +1,32 @@
 package eu.jrie.put.cs.pt.scrapper
 
-import java.util.concurrent.TimeUnit
-
 import akka.actor.typed.ActorSystem
+import akka.actor.typed.scaladsl.AskPattern._
 import akka.stream.alpakka.slick.scaladsl.SlickSession
+import akka.util.Timeout
 import com.redis.RedisClient
 import com.typesafe.config.ConfigFactory
 import eu.jrie.put.cs.pt.scrapper.api.RestApi
-import eu.jrie.put.cs.pt.scrapper.domain.search.SearchExecutor
-import eu.jrie.put.cs.pt.scrapper.domain.search.SearchExecutor.StartSearch
+import eu.jrie.put.cs.pt.scrapper.domain.search.SearchTaskCreator
+import eu.jrie.put.cs.pt.scrapper.domain.search.SearchTaskCreator.{CreateForAllActive, SearchTaskCreatorMsg}
 import eu.jrie.put.cs.pt.scrapper.redis.Subscriber
 import eu.jrie.put.cs.pt.scrapper.redis.Subscriber.Subscribe
 
-import scala.concurrent.duration.Duration
+import scala.concurrent.ExecutionContextExecutor
+import scala.concurrent.duration._
+import scala.util.Random
 
 class SearchService {
 
   private def redisClient = new RedisClient("redis", 6379)
   private implicit val session: SlickSession = SlickSession.forConfig("slick-mysql")
 
-  private val searchExecutor: ActorSystem[StartSearch] = ActorSystem(SearchExecutor(redisClient), "searchExecutor")
+  private val searchTaskCreator: ActorSystem[SearchTaskCreatorMsg] = ActorSystem(SearchTaskCreator(redisClient), "searchExecutor")
   private val subscriber: ActorSystem[Subscribe] = ActorSystem(Subscriber(redisClient), "subscriber")
 
   private val config = ConfigFactory.load().getConfig("service")
+
+  private implicit val timeout: Timeout = 15.seconds
 
   def start(): Unit = {
     scheduleSearches()
@@ -31,12 +35,33 @@ class SearchService {
   }
 
   private def scheduleSearches(): Unit = {
-    val delay = Duration(config.getInt("search.delay"), TimeUnit.SECONDS)
-    val rate = Duration(config.getInt("search.interval"), TimeUnit.SECONDS)
-    searchExecutor.scheduler.scheduleAtFixedRate(delay, rate) (() => {
-      searchExecutor ! StartSearch()
-    }) (searchExecutor.executionContext)
-    searchExecutor.log.info(s"scheduled searches with delay ${delay}s and interval ${rate}s")
+    implicit val system: ActorSystem[SearchTaskCreatorMsg] = searchTaskCreator
+    implicit val executionContext: ExecutionContextExecutor = searchTaskCreator.executionContext
+
+    val delay = config.getInt("search.delay")
+    val rate = config.getInt("search.interval")
+
+    scheduleSearch(delay, rate)
+    searchTaskCreator.log.info(s"scheduled tasks with delay ${delay}s and interval ${rate}s")
+  }
+
+  private def scheduleSearch(delay: Int, rate: Int)(implicit system: ActorSystem[SearchTaskCreatorMsg], executionContext: ExecutionContextExecutor): Unit = {
+   searchTaskCreator.scheduler.scheduleOnce(delay.seconds, () => {
+      (searchTaskCreator ? CreateForAllActive).onComplete { _ =>
+        scheduleNextSearch(rate)
+      }
+    })
+  }
+
+  private def scheduleNextSearch(rate: Int): Unit = {
+    implicit val system: ActorSystem[SearchTaskCreatorMsg] = searchTaskCreator
+    implicit val executionContext: ExecutionContextExecutor = searchTaskCreator.executionContext
+
+    val rateDiff = rate / 10
+    val delay = rate - rateDiff + Random.nextInt(2*rateDiff + 1)
+
+    scheduleSearch(delay, rate)
+    searchTaskCreator.log.info(s"scheduled next tasks with delay ${delay}s")
   }
 
   private def subscribeForEvents(): Unit = {
@@ -44,7 +69,7 @@ class SearchService {
   }
 
   private def initializeApi(): Unit = {
-    RestApi.run
+    RestApi.run(searchTaskCreator)
   }
 }
 

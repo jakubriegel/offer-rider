@@ -37,6 +37,7 @@ CREATE TABLE result (
     currency varchar(5) NOT NULL default 'PLN',
     url text NOT NULL,
     imgUrl text NULL default null,
+    newcomer bit NOT NULL default false,
 
     PRIMARY KEY (id),
     FOREIGN KEY (task_id) REFERENCES task(id)
@@ -77,9 +78,9 @@ SELECT id INTO @user3search FROM search WHERE user_id=@user3id;
 
 # params
 INSERT INTO search_param (search_id, name, value)
-VALUES (@user1search, 'brand', 'opel');
+VALUES (@user1search, 'brand', 'Opel');
 INSERT INTO search_param (search_id, name, value)
-VALUES (@user1search, 'model', 'astra');
+VALUES (@user1search, 'model', 'Astra');
 INSERT INTO search_param (search_id, name, value)
 VALUES (@user1search, 'mileage_to', '150000');
 INSERT INTO search_param (search_id, name, value)
@@ -94,8 +95,6 @@ INSERT INTO search_param (search_id, name, value)
 VALUES (@user1search, 'price_to', '75000');
 INSERT INTO search_param (search_id, name, value)
 VALUES (@user1search, 'fuel', 'petrol');
-INSERT INTO search_param (search_id, name, value)
-VALUES (@user1search, 'engine', 'V8');
 
 INSERT INTO search_param (search_id, name, value)
 VALUES (@user2search, 'brand', 'mercedes-benz');
