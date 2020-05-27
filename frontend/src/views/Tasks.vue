@@ -159,7 +159,7 @@ export default {
       this.loading = true;
       axios
         .get(
-          service.baseUrl + "/results?userId=1&searchId=1&taskId=" + this.task
+          service.baseUrl + "/results?userId=1&searchId=" + this.searchId + "&taskId=" + this.task
         )
         .then(response => {
           this.results = response.data;
