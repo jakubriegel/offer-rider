@@ -42,7 +42,15 @@ const getWebsiteContent = async (
                     publisher,
                     parsedResults
                 );
-                await getWebsiteContent(
+                if (appConfig.isSavingData)
+                    await getWebsiteContent(
+                        nextPageLink,
+                        taskId,
+                        publisher,
+                        parsedResults,
+                        ++pageCounter
+                    );
+                else getWebsiteContent(
                     nextPageLink,
                     taskId,
                     publisher,

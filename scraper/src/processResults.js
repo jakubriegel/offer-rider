@@ -1,3 +1,5 @@
+import appConfig from "../configs/appConfig.js";
+
 export const processResults = ($, elements, taskId, publisher, parsedResults, last = false) => {
     elements.map((_, el) => {
         const offerId = $(el).attr('data-ad-id');
@@ -34,7 +36,7 @@ export const processResults = ($, elements, taskId, publisher, parsedResults, la
             },
             last
         };
-        parsedResults.push(metadata);
+        if (appConfig.isSavingData) parsedResults.push(metadata);
         publisher.publish('pt-scraper-results', JSON.stringify(metadata));
     });
 };

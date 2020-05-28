@@ -3,6 +3,7 @@ import chalk from "chalk";
 import redis from "redis";
 import redisConfig from "../configs/redisConfig.js";
 import exportResults from "./exportResults.js";
+import appConfig from "../configs/appConfig.js";
 import getWebsiteContent from "./getWebsiteContent.js";
 import {
     buildUrlFromParams
@@ -25,8 +26,11 @@ const app = () => {
         );
 
         const parsedResults = [];
-        await getWebsiteContent(url, taskData.taskId, publisher, parsedResults);
-        await exportResults(parsedResults);
+
+        if (appConfig.isSavingData) {
+            await getWebsiteContent(url, taskData.taskId, publisher, parsedResults);
+            await exportResults(parsedResults);
+        } else getWebsiteContent(url, taskData.taskId, publisher, parsedResults);
     });
 
     subscriber.subscribe("pt-scraper-search-tasks");
