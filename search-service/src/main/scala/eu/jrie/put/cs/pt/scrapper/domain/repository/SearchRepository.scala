@@ -22,6 +22,8 @@ object SearchRepository {
   case class AddSearch(search: Search, replyTo: ActorRef[SearchAnswer]) extends SearchRepoMsg
   case class FindSearches(userId: Int, active: Option[Boolean], replyTo: ActorRef[SearchesAnswer]) extends SearchRepoMsg
   case class FindActiveSearches(replyTo: ActorRef[SearchesAnswer]) extends SearchRepoMsg
+  case class ActivateSearch(searchId: Int, replyTo: ActorRef[SearchAnswer]) extends SearchRepoMsg
+  case class DeactivateSearch(searchId: Int, replyTo: ActorRef[SearchAnswer]) extends SearchRepoMsg
 
   case class SearchAnswer(search: Future[Search]) extends SearchRepoMsg
   case class SearchesAnswer(searches: Source[Search, NotUsed]) extends SearchRepoMsg
@@ -56,6 +58,20 @@ private class SearchRepository(
         Behaviors.same
       case FindActiveSearches(replyTo) =>
         replyTo ! SearchesAnswer(findSearches(sql"SELECT * FROM search WHERE active = true"))
+        Behaviors.same
+      case ActivateSearch(searchId, replyTo) =>
+        replyTo ! SearchAnswer(
+          activate(searchId)
+            .map { _ => findSearches(sql"SELECT * FROM search WHERE id = $searchId") }
+            .flatMap { _.runWith(Sink.head) }
+        )
+        Behaviors.same
+      case DeactivateSearch(searchId, replyTo) =>
+        replyTo ! SearchAnswer(
+          deactivate(searchId)
+            .map { _ => findSearches(sql"SELECT * FROM search WHERE id = $searchId") }
+            .flatMap { _.runWith(Sink.head) }
+        )
         Behaviors.same
       case EndSearchRepo() =>
         Behaviors.stopped
@@ -116,4 +132,10 @@ private class SearchRepository(
         Search(Option(id), userId, params, active)
       }
   }
+
+  private def activate(searchId: Int) = Source.single { searchId }
+      .runWith(Slick.sink { id => sqlu"UPDATE search SET active = true WHERE id = $id" })
+
+  private def deactivate(searchId: Int) = Source.single { searchId }
+      .runWith(Slick.sink { id => sqlu"UPDATE search SET active = false WHERE id = $id" })
 }

@@ -20,7 +20,7 @@ object Cors {
   }
 
   def publicPath(url: String)(routes: Route*): Route = {
-    path(url) {
+    pathPrefix(url) {
       respondWithDefaultHeaders(corsResponseHeaders) {
         concat(preflightRequestRoute :: routes.toList:_*)
       }
