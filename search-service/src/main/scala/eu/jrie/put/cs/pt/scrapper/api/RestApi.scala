@@ -6,6 +6,7 @@ import akka.Done
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, ActorSystem}
 import akka.http.scaladsl.Http
+import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
@@ -56,8 +57,15 @@ object RestApi {
     implicit def parseRequest(search: String): Search = { mapper.readValue(search, classOf[Search]) }
     implicit def parseResponse(search: Search): String = { mapper.writeValueAsString(search) }
 
+    def searchResponse(answer: Future[SearchAnswer], status: StatusCode = OK) =
+      answer.flatMap { _.search }
+        .andThen { s => tasksCreator ! CreateForSearch(s.get) }
+        .map { HttpEntity(ContentTypes.`application/json`, _) }
+        .map { HttpResponse(status, Seq.empty, _) }
+
     import eu.jrie.put.cs.pt.scrapper.api.Cors.publicPath
     val searchRoutes = publicPath("search")(
+      concat(
         get {
           parameters(Symbol("userId").as[Int], Symbol("active").as[Boolean].?) { (userId, active) =>
             val data: Future[SearchesAnswer] = searchesRepo ? (FindSearches(userId, active, _))
@@ -67,29 +75,39 @@ object RestApi {
                 .map { SearchesMessage(userId, _) }
                 .map { mapper.writeValueAsString }
                 .map { HttpEntity(ContentTypes.`application/json`, _) }
-                .map { HttpResponse(StatusCodes.OK, Seq.empty, _) }
+                .map { HttpResponse(OK, Seq.empty, _) }
             )
           }
         },
         post {
-          entity(as[String]) { request =>
-            val created: Future[SearchAnswer] = searchesRepo ? (AddSearch(request, _))
-            completeOrRecoverWith(
-              created.flatMap { _.search }
-                .andThen { s => tasksCreator ! CreateForSearch(s.get) }
-                .map { HttpEntity(ContentTypes.`application/json`, _) }
-                .map { HttpResponse(StatusCodes.Created, Seq.empty, _) }
-            ) { case e: InvalidParamException =>
-              complete(
-                HttpResponse(
-                  StatusCodes.UnprocessableEntity,
-                  Seq.empty,
-                  HttpEntity(ContentTypes.`text/plain(UTF-8)`, e.asInstanceOf[Exception].getMessage)
-                )
+          concat(
+            pathEnd {
+              entity(as[String]) { request =>
+                val created: Future[SearchAnswer] = searchesRepo ? (AddSearch(request, _))
+                completeOrRecoverWith(searchResponse(created, Created)) { case e: InvalidParamException =>
+                  complete(
+                    HttpResponse(
+                      UnprocessableEntity,
+                      Seq.empty,
+                      HttpEntity(ContentTypes.`text/plain(UTF-8)`, e.asInstanceOf[Exception].getMessage)
+                    )
+                  )
+                }
+              }
+            },
+            pathPrefix(IntNumber) { searchId =>
+              concat(
+                path("activate") {
+                  complete(searchResponse(searchesRepo ? (ActivateSearch(searchId, _))))
+                },
+                path("deactivate") {
+                  complete(searchResponse(searchesRepo ? (DeactivateSearch(searchId, _))))
+                }
               )
             }
-          }
+          )
         }
+      )
     )
 
     val tasksRoutes = publicPath("tasks") {
@@ -101,7 +119,7 @@ object RestApi {
               .map { TasksMessage(userId, searchId, _) }
               .map { mapper.writeValueAsString }
               .map { HttpEntity(ContentTypes.`application/json`, _) }
-              .map { HttpResponse(StatusCodes.OK, Seq.empty, _) }
+              .map { HttpResponse(OK, Seq.empty, _) }
           )
         }
       }
@@ -119,7 +137,7 @@ object RestApi {
                 .map { ResultsMessage(userId, searchId, taskId, query, _, Instant.now) }
                 .map { mapper.writeValueAsString }
                 .map { HttpEntity(ContentTypes.`application/json`, _) }
-                .map { HttpResponse(StatusCodes.OK, Seq.empty, _) }
+                .map { HttpResponse(OK, Seq.empty, _) }
             )
           }
         }
