@@ -22,7 +22,7 @@
             Made with 💖 using
             <strong class="accent--text">Scala, Cheerio, Vue</strong> and
             <strong class="accent--text">Vuetify. </strong>
-            Scrapped magnificient from 
+            Scrapped magnificient from
             <a href="https://www.otomoto.pl/" class="accent--text">OtoMoto</a>
           </v-card-text>
         </v-col>

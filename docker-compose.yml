@@ -22,8 +22,7 @@ services:
             target: ${TARGET}
             dockerfile: docker/${OFFER_RIDER_ARCHITECTURE}/Dockerfile
         ports:
-            - "80:80"
-            - "8080:8080"
+            - "30002:80"
         volumes:
             - ./frontend/:/frontend/
     search-service:

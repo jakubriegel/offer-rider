@@ -2,15 +2,6 @@
   <v-app>
     <Toolbar />
     <Drawer />
-
-    <!-- <v-content>
-      <v-container class="fill-height">
-        <v-row align="center" justify="center">
-          <filters />
-          <table-result />
-        </v-row>
-      </v-container>
-    </v-content> -->
     <v-content>
       <router-view />
     </v-content>
