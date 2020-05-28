@@ -141,7 +141,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"userId\": 1,\n    \"params\": {\n        \"year_from\": \"1999\",\n        \"year_to\": 2018,\n        \"mileage_to\": \"250000\",\n        \"model\": \"Zafira\",\n        \"brand\": \"opel\"\n    }\n}",
+							"raw": "{\n    \"userId\": 1,\n    \"params\": {\n        \"year_from\": \"1999\",\n        \"year_to\": 2018,\n        \"mileage_to\": \"250000\",\n        \"model\": \"Zafira\",\n        \"brand\": \"Opel\"\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -243,7 +243,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{SERVICE}}/search?userId=1",
+							"raw": "{{SERVICE}}/search?userId={{userId}}",
 							"host": [
 								"{{SERVICE}}"
 							],
@@ -252,9 +252,120 @@
 							],
 							"query": [
 								{
-									"key": "userId",
-									"value": "1"
+									"key": "active",
+									"value": "false",
+									"description": "optional",
+									"disabled": true
 								},
+								{
+									"key": "userId",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deactivate search",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "373cd261-52da-44cb-b973-00d1fabb9ad6",
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Content-Type is present\", () => {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									"",
+									"pm.test(\"Content-Type is application/json\", () => {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.equal(\"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Search is not active\", () => {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData.active).to.eql(false);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{SERVICE}}/search/{{searchId}}/deactivate",
+							"host": [
+								"{{SERVICE}}"
+							],
+							"path": [
+								"search",
+								"{{searchId}}",
+								"deactivate"
+							],
+							"query": [
+								{
+									"key": "active",
+									"value": "false",
+									"description": "optional",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activate search",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e916d4ff-2fe4-44af-9da0-b694b9a4047c",
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Content-Type is present\", () => {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									"",
+									"pm.test(\"Content-Type is application/json\", () => {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.equal(\"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Search is active\", () => {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData.active).to.eql(true);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{SERVICE}}/search/{{searchId}}/activate",
+							"host": [
+								"{{SERVICE}}"
+							],
+							"path": [
+								"search",
+								"{{searchId}}",
+								"activate"
+							],
+							"query": [
 								{
 									"key": "active",
 									"value": "false",
@@ -306,7 +417,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{SERVICE}}/tasks?userId=1&searchId=1",
+							"raw": "{{SERVICE}}/tasks?userId={{userId}}&searchId={{searchId}}",
 							"host": [
 								"{{SERVICE}}"
 							],
@@ -316,11 +427,7 @@
 							"query": [
 								{
 									"key": "userId",
-									"value": "1"
-								},
-								{
-									"key": "searchId",
-									"value": "1"
+									"value": "{{userId}}"
 								},
 								{
 									"key": "taskId",
@@ -333,6 +440,10 @@
 									"value": "diesel",
 									"description": "optional",
 									"disabled": true
+								},
+								{
+									"key": "searchId",
+									"value": "{{searchId}}"
 								}
 							]
 						}
@@ -379,7 +490,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{SERVICE}}/results?userId=1&searchId=1",
+							"raw": "{{SERVICE}}/results?userId={{userId}}&searchId={{searchId}}",
 							"host": [
 								"{{SERVICE}}"
 							],
@@ -389,11 +500,11 @@
 							"query": [
 								{
 									"key": "userId",
-									"value": "1"
+									"value": "{{userId}}"
 								},
 								{
 									"key": "searchId",
-									"value": "1"
+									"value": "{{searchId}}"
 								},
 								{
 									"key": "taskId",
@@ -455,9 +566,21 @@
 	],
 	"variable": [
 		{
-			"id": "3b89b447-9f7c-4f3a-883c-1e498776c280",
+			"id": "f506291a-c5fa-44e3-b1bf-46bd1dab4aa2",
 			"key": "SERVICE",
 			"value": "{{HOST}}:30001",
+			"type": "string"
+		},
+		{
+			"id": "475ddb08-cd40-4da0-86c4-912a1e7bd717",
+			"key": "searchId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"id": "5cfee4c4-f728-474a-9d17-b4fb9c1f19b9",
+			"key": "userId",
+			"value": "1",
 			"type": "string"
 		}
 	],
