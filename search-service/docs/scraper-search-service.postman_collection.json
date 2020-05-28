@@ -298,7 +298,7 @@
 						}
 					],
 					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [],
 						"url": {
 							"raw": "{{SERVICE}}/search/{{searchId}}/deactivate",
@@ -353,7 +353,7 @@
 						}
 					],
 					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [],
 						"url": {
 							"raw": "{{SERVICE}}/search/{{searchId}}/activate",
@@ -566,19 +566,19 @@
 	],
 	"variable": [
 		{
-			"id": "f506291a-c5fa-44e3-b1bf-46bd1dab4aa2",
+			"id": "e15c33c4-f9aa-405d-9c79-55cd0cb60cf1",
 			"key": "SERVICE",
 			"value": "{{HOST}}:30001",
 			"type": "string"
 		},
 		{
-			"id": "475ddb08-cd40-4da0-86c4-912a1e7bd717",
+			"id": "7fad75ec-24f6-4010-b4e4-7a800e0b7e5a",
 			"key": "searchId",
 			"value": "1",
 			"type": "string"
 		},
 		{
-			"id": "5cfee4c4-f728-474a-9d17-b4fb9c1f19b9",
+			"id": "f5eb6980-23c8-43f9-8832-0b0e05836e52",
 			"key": "userId",
 			"value": "1",
 			"type": "string"

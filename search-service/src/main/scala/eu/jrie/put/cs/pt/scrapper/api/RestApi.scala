@@ -57,9 +57,9 @@ object RestApi {
     implicit def parseRequest(search: String): Search = { mapper.readValue(search, classOf[Search]) }
     implicit def parseResponse(search: Search): String = { mapper.writeValueAsString(search) }
 
-    def searchResponse(answer: Future[SearchAnswer], status: StatusCode = OK) =
+    def searchResponse(answer: Future[SearchAnswer], status: StatusCode = OK, triggerTask: Boolean = true) =
       answer.flatMap { _.search }
-        .andThen { s => tasksCreator ! CreateForSearch(s.get) }
+        .andThen { s => if (triggerTask) tasksCreator ! CreateForSearch(s.get) }
         .map { HttpEntity(ContentTypes.`application/json`, _) }
         .map { HttpResponse(status, Seq.empty, _) }
 
@@ -80,32 +80,30 @@ object RestApi {
           }
         },
         post {
-          concat(
-            pathEnd {
-              entity(as[String]) { request =>
-                val created: Future[SearchAnswer] = searchesRepo ? (AddSearch(request, _))
-                completeOrRecoverWith(searchResponse(created, Created)) { case e: InvalidParamException =>
-                  complete(
-                    HttpResponse(
-                      UnprocessableEntity,
-                      Seq.empty,
-                      HttpEntity(ContentTypes.`text/plain(UTF-8)`, e.asInstanceOf[Exception].getMessage)
-                    )
-                  )
-                }
-              }
-            },
-            pathPrefix(IntNumber) { searchId =>
-              concat(
-                path("activate") {
-                  complete(searchResponse(searchesRepo ? (ActivateSearch(searchId, _))))
-                },
-                path("deactivate") {
-                  complete(searchResponse(searchesRepo ? (DeactivateSearch(searchId, _))))
-                }
+          entity(as[String]) { request =>
+            val created: Future[SearchAnswer] = searchesRepo ? (AddSearch(request, _))
+            completeOrRecoverWith(searchResponse(created, Created)) { case e: InvalidParamException =>
+              complete(
+                HttpResponse(
+                  UnprocessableEntity,
+                  Seq.empty,
+                  HttpEntity(ContentTypes.`text/plain(UTF-8)`, e.asInstanceOf[Exception].getMessage)
+                )
               )
             }
-          )
+          }
+        },
+        put {
+          pathPrefix(IntNumber) { searchId =>
+            concat(
+              path("activate") {
+                complete(searchResponse(searchesRepo ? (ActivateSearch(searchId, _))))
+              },
+              path("deactivate") {
+                complete(searchResponse(searchesRepo ? (DeactivateSearch(searchId, _)), triggerTask = false))
+              }
+            )
+          }
         }
       )
     )
