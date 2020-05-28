@@ -1,7 +1,7 @@
 const config = {
     outputFile: "data.json",
-    isSavingData: true,
-    pageLimit: 5
+    isSavingData: false,
+    pageLimit: 20,
 };
 
 export default config;
