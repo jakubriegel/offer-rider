@@ -2,20 +2,22 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <v-card class="pt-4">
+        <v-card>
+          <v-card-title>Tasks</v-card-title>
           <v-select
             v-model="searchId"
             label="Searches"
-            class="pa-4"
+            class="px-4"
             :items="searches"
             item-text="name"
             item-value="id"
             @input="getTasks"
           />
+          <SearchParameters :parameters="parameters" />
           <v-select
             v-model="task"
             label="Task"
-            class="pa-4"
+            class="px-4"
             :items="tasks"
             item-text="startTime"
             item-value="id"
@@ -51,14 +53,15 @@
               /></a>
             </template>
             <template v-slot:item.url="{ item }">
-              <a :href="item.url" target="blank"
-                ><v-icon color="black">mdi-open-in-new</v-icon></a
-              >
+              <a :href="item.url" target="blank">
+                <v-icon color="black">mdi-open-in-new</v-icon>
+              </a>
             </template>
             <template v-slot:item.place="{ item }">
-              {{ item.params.town }}, {{ item.params.region }}
+              {{ item.params.town }}{{ !!item.params.town ? ", " : ""
+              }}{{ item.params.region }}
             </template>
-            <template v-slot:expanded-item="{ headers, item}">
+            <template v-slot:expanded-item="{ headers, item }">
               <td :colspan="headers.length">
                 <search-details :item="item" />
               </td>
@@ -75,10 +78,11 @@ import axios from "axios";
 import service from "../config/service.js";
 import moment from "moment";
 import SearchDetails from "../components/SearchDetails";
+import SearchParameters from "../components/SearchParameters";
 
 export default {
   name: "table-result",
-  components: {SearchDetails},
+  components: { SearchDetails, SearchParameters },
   data: () => ({
     search: "",
     headers: [
@@ -128,19 +132,28 @@ export default {
     loading: false,
     task: null,
     searches: [],
-    searchId: null
+    searchId: null,
+    parameters: null
   }),
   mounted() {
     axios.get(service.baseUrl + "/search?userId=1").then(response => {
       this.searches = response.data.searches;
       this.searches = this.searches.map(search => ({
         ...search,
-        name: `${search.id} - ${search.params.brand} - ${search.params.model}`
+        name: `
+        ${search.id}
+        ${search.params.brand ? "- " + search.params.brand : ""}
+        ${search.params.model ? "- " + search.params.model : ""}
+        `
       }));
     });
   },
   methods: {
     getTasks() {
+      this.parameters = this.searches.filter(
+        element => element.id == this.searchId
+      )[0];
+      this.task = null;
       axios
         .get(service.baseUrl + "/tasks?userId=1&searchId=" + this.searchId)
         .then(
