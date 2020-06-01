@@ -135,11 +135,14 @@ export default {
   },
   methods: {
     populateModels(test) {
-      test = test.toString().toLowerCase();
-      this.disabled = false;
-      this.models = cars.cars[test].map(function(obj) {
-        return obj.value;
-      });
+      this.params.model = null;
+      if (test) {
+        test = test.toString().toLowerCase();
+        this.disabled = false;
+        this.models = cars.cars[test].map(function(obj) {
+          return obj.value;
+        });
+      }
     },
     sendFilters() {
       this.loading = true;
