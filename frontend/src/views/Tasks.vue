@@ -61,6 +61,11 @@
               {{ item.params.town }}{{ !!item.params.town ? ", " : ""
               }}{{ item.params.region }}
             </template>
+            <template v-slot:item.newcomer="{ item }">
+              <v-icon v-if="item.newcomer" class="green--text">
+                mdi-new-box
+              </v-icon>
+            </template>
             <template v-slot:expanded-item="{ headers, item }">
               <td :colspan="headers.length">
                 <search-details :item="item" />
@@ -120,6 +125,11 @@ export default {
         text: "Link",
         value: "url",
         sortable: false
+      },
+      {
+        text: "New",
+        value: "newcomer",
+        width: 75
       },
       {
         text: "Parameters",
@@ -189,9 +199,9 @@ export default {
     },
     formatDate(tasks) {
       for (const id in tasks) {
-        tasks[id].startTime = moment
-          .utc(tasks[id].startTime)
-          .format("YYYY MMM D dddd, HH:mm");
+        tasks[id].startTime = moment(tasks[id].startTime).format(
+          "YYYY MMM D dddd, HH:mm"
+        );
       }
     }
   }
