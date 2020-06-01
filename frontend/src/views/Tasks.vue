@@ -58,9 +58,9 @@
             <template v-slot:item.place="{ item }">
               {{ item.params.town }}, {{ item.params.region }}
             </template>
-            <template v-slot:expanded-item="{ headers, item }">
+            <template v-slot:expanded-item="{ headers, item}">
               <td :colspan="headers.length">
-                More information: {{ item.params }}
+                <search-details :item="item" />
               </td>
             </template>
           </v-data-table>
@@ -74,9 +74,11 @@
 import axios from "axios";
 import service from "../config/service.js";
 import moment from "moment";
+import SearchDetails from "../components/SearchDetails";
 
 export default {
   name: "table-result",
+  components: {SearchDetails},
   data: () => ({
     search: "",
     headers: [
