@@ -44,15 +44,17 @@ The service listens for search results on `pt-scraper-results` channel. These ev
 Awaited message:
 ```json
 {
-    "taskId": "uuid, the id of task this result belongs to",
-    "title": "string",
-    "subtitle": "string?",
-    "url": "string?",
-    "imgUrl": "string?",
-    "params": {
-      "key1": "textValue",
-      "key2": "numberValueAsText"
-    },
+   "result" : {
+       "taskId": "uuid, the id of task this result belongs to",
+       "title": "string",
+       "subtitle": "string?",
+       "url": "string?",
+       "imgUrl": "string?",
+       "params": {
+         "key1": "textValue",
+         "key2": "numberValueAsText"
+       }
+    }
     "last": "bool, true if no further results will be emitted for this taskId"
 }
 ``` 
