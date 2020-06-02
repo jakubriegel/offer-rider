@@ -17,7 +17,7 @@ object ResultsWriter {
 private class ResultsWriter(ctx: ActorContext[WriteResult])
                            (implicit session: SlickSession) extends AbstractBehavior[WriteResult](ctx) {
 
-  private val resultsRepo = context.spawn(Routers.pool(20)(ResultsRepository()), "ResultsRepoPool-ResultsWriter")
+  private val resultsRepo = context.spawn(Routers.pool(10)(ResultsRepository()), "ResultsRepoPool-ResultsWriter")
   private val tasksRepo = context.spawn(TasksRepository(), "TasksRepo-ResultsWriter")
 
   override def onMessage(msg: WriteResult): Behavior[WriteResult] = {
