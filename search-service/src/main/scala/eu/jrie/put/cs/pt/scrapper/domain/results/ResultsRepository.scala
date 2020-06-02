@@ -6,13 +6,16 @@ import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, Behavior}
 import akka.stream.alpakka.slick.scaladsl.{Slick, SlickSession}
 import akka.stream.scaladsl.{Sink, Source}
+import akka.util.Timeout
 import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.ResultsRepoMsg
 import eu.jrie.put.cs.pt.scrapper.infra.Repository
 import eu.jrie.put.cs.pt.scrapper.infra.Repository.RepoMsg
 import eu.jrie.put.cs.pt.scrapper.infra.db.Tables.ResultsTable.{Results, getResult}
+import eu.jrie.put.cs.pt.scrapper.infra.json.Mapper
+import eu.jrie.put.cs.pt.scrapper.infra.redis.GetSet
+import eu.jrie.put.cs.pt.scrapper.infra.redis.GetSet.{Get, GetResponse, SetKey}
 
 import scala.collection.immutable.ListMap
-import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 
 object ResultsRepository {
@@ -31,8 +34,15 @@ private class ResultsRepository(
                                  implicit context: ActorContext[ResultsRepoMsg],
                                  protected implicit val session: SlickSession
                                ) extends Repository[ResultsRepoMsg] {
+  import akka.actor.typed.scaladsl.AskPattern._
   import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.{AddResult, FindResults, ResultsAnswer}
   import session.profile.api._
+
+  import scala.concurrent.duration._
+  private implicit val timeout: Timeout = 15.seconds
+
+  private val getSet = context.spawn(GetSet(null), s"ResultsRepositoryGetSet-$this")
+  private val mapper = Mapper()
 
   override def onMessage(msg: ResultsRepoMsg): Behavior[ResultsRepoMsg] = {
     msg match {
@@ -45,17 +55,31 @@ private class ResultsRepository(
   }
 
   private def addNewResult(result: Result): Behavior[ResultsRepoMsg] = {
-    val lastIds = Slick.source {
-      sql"""
-           SELECT offer_id FROM result
-           WHERE task_id = (
-            SELECT id FROM task
-            WHERE search_id = (SELECT search_id FROM task WHERE id = ${result.taskId})
-            AND id != ${result.taskId}
-            ORDER BY end_time DESC LIMIT 1
-          );
-          """.as[String]
-    } .runWith(Sink.seq)
+
+    val cachedIdsFuture: Future[GetResponse] = getSet ? (Get(s"lastIds-${result.taskId}", _))
+    val lastIds = cachedIdsFuture.map { _.value }
+      .map { _.map { raw => mapper.readValue(raw, classOf[Seq[String]]) } }
+      .flatMap { cached =>
+        if (cached.isEmpty) {
+          context.log.info(s"Getting new ids for ${result.taskId}")
+          Slick.source {
+            sql"""
+                  SELECT offer_id FROM result
+                  WHERE task_id = (
+                    SELECT id FROM task
+                    WHERE search_id = (SELECT search_id FROM task WHERE id = ${result.taskId})
+                    AND id != ${result.taskId}
+                    ORDER BY end_time DESC LIMIT 1
+                  );
+                  """.as[String]
+          }.runWith(Sink.seq)
+            .andThen { ids => getSet ! SetKey(s"lastIds-${result.taskId}", mapper.writeValueAsString(ids.get)) }
+        } else {
+          val ids = cached.get
+          context.log.info(s"Using cached ids for ${result.taskId} $ids")
+          Future { ids }
+        }
+      }
 
     val action = Future { result }
       .zipWith(lastIds) { case (result, lastOfferIds) =>
