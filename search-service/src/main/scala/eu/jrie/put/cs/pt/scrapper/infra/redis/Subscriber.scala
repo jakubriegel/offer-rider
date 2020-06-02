@@ -1,4 +1,4 @@
-package eu.jrie.put.cs.pt.scrapper.redis
+package eu.jrie.put.cs.pt.scrapper.infra.redis
 
 import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.Behaviors
@@ -7,11 +7,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PRO
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.redis.{M, PubSubMessage, RedisClient}
-import eu.jrie.put.cs.pt.scrapper.domain.repository.{ResultsRepository, TasksRepository}
-import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsWriter
 import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsWriter.WriteResult
-import eu.jrie.put.cs.pt.scrapper.model.Result
-import eu.jrie.put.cs.pt.scrapper.redis.Message.ResultMessage
+import eu.jrie.put.cs.pt.scrapper.domain.results.{ResultsRepository, ResultsWriter}
+import eu.jrie.put.cs.pt.scrapper.domain.tasks.TasksRepository
+import eu.jrie.put.cs.pt.scrapper.infra.redis.Message.ResultMessage
 
 object Subscriber {
   case class Subscribe(channel: String)

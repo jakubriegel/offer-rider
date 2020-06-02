@@ -1,4 +1,4 @@
-package eu.jrie.put.cs.pt.scrapper.domain.repository
+package eu.jrie.put.cs.pt.scrapper.domain.search
 
 import akka.NotUsed
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
@@ -6,10 +6,10 @@ import akka.actor.typed.{ActorRef, ActorSystem, Behavior}
 import akka.stream.alpakka.slick.scaladsl.{Slick, SlickSession}
 import akka.stream.scaladsl.{Sink, Source}
 import com.typesafe.config.ConfigFactory
-import eu.jrie.put.cs.pt.scrapper.domain.repository.Repository.RepoMsg
-import eu.jrie.put.cs.pt.scrapper.domain.repository.SearchRepository._
-import eu.jrie.put.cs.pt.scrapper.model.Search
-import eu.jrie.put.cs.pt.scrapper.model.db.Tables.SearchesTable.Searches
+import eu.jrie.put.cs.pt.scrapper.domain.search.SearchRepository.SearchRepoMsg
+import eu.jrie.put.cs.pt.scrapper.infra.Repository
+import eu.jrie.put.cs.pt.scrapper.infra.Repository.RepoMsg
+import eu.jrie.put.cs.pt.scrapper.infra.db.Tables.SearchesTable.Searches
 import slick.jdbc.SQLActionBuilder
 
 import scala.collection.immutable.ListMap
@@ -46,6 +46,7 @@ private class SearchRepository(
                                 implicit context: ActorContext[SearchRepoMsg],
                                 protected implicit val session: SlickSession
                               ) extends Repository[SearchRepoMsg] {
+  import eu.jrie.put.cs.pt.scrapper.domain.search.SearchRepository._
   import session.profile.api._
 
   override def onMessage(msg: SearchRepoMsg): Behavior[SearchRepoMsg] = {

@@ -1,6 +1,7 @@
-package eu.jrie.put.cs.pt.scrapper.model.db
+package eu.jrie.put.cs.pt.scrapper.infra.db
 
-import eu.jrie.put.cs.pt.scrapper.model.{Result, Task}
+import eu.jrie.put.cs.pt.scrapper.domain.results.Result
+import eu.jrie.put.cs.pt.scrapper.domain.tasks.Task
 import slick.jdbc.GetResult
 import slick.jdbc.MySQLProfile.api._
 import slick.lifted.Tag

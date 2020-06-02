@@ -1,4 +1,4 @@
-package eu.jrie.put.cs.pt.scrapper.model
+package eu.jrie.put.cs.pt.scrapper.domain.results
 
 case class Result (
                     id: Option[Long],

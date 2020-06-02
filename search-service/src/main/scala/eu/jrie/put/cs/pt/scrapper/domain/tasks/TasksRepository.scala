@@ -1,4 +1,4 @@
-package eu.jrie.put.cs.pt.scrapper.domain.repository
+package eu.jrie.put.cs.pt.scrapper.domain.tasks
 
 import java.sql.Timestamp
 
@@ -6,9 +6,9 @@ import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, Behavior}
 import akka.stream.alpakka.slick.scaladsl.{Slick, SlickSession}
 import akka.stream.scaladsl.{Sink, Source}
-import eu.jrie.put.cs.pt.scrapper.domain.repository.Repository.RepoMsg
-import eu.jrie.put.cs.pt.scrapper.domain.repository.TasksRepository._
-import eu.jrie.put.cs.pt.scrapper.model.Task
+import eu.jrie.put.cs.pt.scrapper.domain.tasks.TasksRepository.TasksRepoMsg
+import eu.jrie.put.cs.pt.scrapper.infra.Repository
+import eu.jrie.put.cs.pt.scrapper.infra.Repository.RepoMsg
 
 object TasksRepository {
   sealed trait TasksRepoMsg extends RepoMsg
@@ -32,6 +32,7 @@ private class TasksRepository(
                                protected implicit val session: SlickSession
                              ) extends Repository[TasksRepoMsg] {
 
+  import eu.jrie.put.cs.pt.scrapper.domain.tasks.TasksRepository._
   import session.profile.api._
 
   override def onMessage(msg: TasksRepoMsg): Behavior[TasksRepoMsg] = {
@@ -69,7 +70,7 @@ private class TasksRepository(
 
   private def findTasks(userId: Int, searchId: Int, replyTo: ActorRef[TasksRepository.TasksResponse]): Behavior[TasksRepoMsg] = {
     Slick.source {
-      import eu.jrie.put.cs.pt.scrapper.model.db.Tables.TasksTable.getTaskRow
+      import eu.jrie.put.cs.pt.scrapper.infra.db.Tables.TasksTable.getTaskRow
       sql"""SELECT * FROM task
             WHERE search_id = $searchId
             AND search_id IN (SELECT id FROM search WHERE user_id = $userId)""".as[Task]

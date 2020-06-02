@@ -11,14 +11,13 @@ import akka.stream.scaladsl.Source
 import akka.util.Timeout
 import akka.{Done, NotUsed}
 import com.redis.RedisClient
-import eu.jrie.put.cs.pt.scrapper.domain.repository.SearchRepository.{EndSearchRepo, FindActiveSearches}
-import eu.jrie.put.cs.pt.scrapper.domain.repository.TasksRepository._
-import eu.jrie.put.cs.pt.scrapper.domain.repository.{SearchRepository, TasksRepository}
+import eu.jrie.put.cs.pt.scrapper.domain.search.SearchRepository.{EndSearchRepo, FindActiveSearches}
 import eu.jrie.put.cs.pt.scrapper.domain.search.SearchTaskCreator.SearchTaskCreatorMsg
-import eu.jrie.put.cs.pt.scrapper.model.{Search, Task}
-import eu.jrie.put.cs.pt.scrapper.redis.Message.TaskMessage
-import eu.jrie.put.cs.pt.scrapper.redis.Publisher
-import eu.jrie.put.cs.pt.scrapper.redis.Publisher.{EndPublish, Publish}
+import eu.jrie.put.cs.pt.scrapper.domain.tasks.TasksRepository.{AddTask, CheckForNotEndedTasks, EndTasksRepo, TaskResponse}
+import eu.jrie.put.cs.pt.scrapper.domain.tasks.{Task, TasksRepository}
+import eu.jrie.put.cs.pt.scrapper.infra.redis.Message.TaskMessage
+import eu.jrie.put.cs.pt.scrapper.infra.redis.Publisher
+import eu.jrie.put.cs.pt.scrapper.infra.redis.Publisher.{EndPublish, Publish}
 
 import scala.concurrent.Future.failed
 import scala.concurrent.{Await, ExecutionContext, Future}

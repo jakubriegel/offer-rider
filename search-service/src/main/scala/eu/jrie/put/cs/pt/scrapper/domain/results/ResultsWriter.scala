@@ -2,9 +2,8 @@ package eu.jrie.put.cs.pt.scrapper.domain.results
 
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior}
-import eu.jrie.put.cs.pt.scrapper.domain.repository.ResultsRepository.{AddResult, ResultsRepoMsg}
-import eu.jrie.put.cs.pt.scrapper.domain.repository.TasksRepository.{EndTask, TasksRepoMsg}
-import eu.jrie.put.cs.pt.scrapper.model.Result
+import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.{AddResult, ResultsRepoMsg}
+import eu.jrie.put.cs.pt.scrapper.domain.tasks.TasksRepository.{EndTask, TasksRepoMsg}
 
 object ResultsWriter {
   case class WriteResult(result: Result, last: Boolean)
