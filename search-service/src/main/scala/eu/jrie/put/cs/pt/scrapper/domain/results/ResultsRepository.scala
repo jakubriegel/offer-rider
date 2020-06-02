@@ -43,7 +43,9 @@ private class ResultsRepository(
   import scala.concurrent.duration._
   private implicit val timeout: Timeout = 15.seconds
 
-  private val getSet = context.spawn(GetSet(redisClient), s"ResultsRepositoryGetSet-$this")
+  private val getSet = if (redisClient != null) {
+    context.spawn(GetSet(redisClient), s"ResultsRepositoryGetSet-$this")
+  } else null
   private val mapper = Mapper()
 
   override def onMessage(msg: ResultsRepoMsg): Behavior[ResultsRepoMsg] = {

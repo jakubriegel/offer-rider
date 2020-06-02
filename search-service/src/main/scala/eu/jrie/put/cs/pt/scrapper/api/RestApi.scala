@@ -149,7 +149,7 @@ object RestApi {
     val config = ConfigFactory.load().getConfig("service.api")
     val searchesRepo = ctx.spawn(SearchRepository(), "searchRepoAPI")
     val tasksRepo = ctx.spawn(TasksRepository(), "tasksRepoAPI")
-    val resultsRepo = ctx.spawn(ResultsRepository(), "resultRepoAPI")
+    val resultsRepo = ctx.spawn(ResultsRepository()(session, null), "resultRepoAPI")
 
     Http().bindAndHandle(
       routes(ctx.system, searchesRepo, tasksRepo, resultsRepo, tasksCreator: ActorRef[SearchTaskCreatorMsg]),

@@ -19,7 +19,7 @@ object Subscriber {
   def apply(client: RedisClient)(implicit session: SlickSession): Behavior[Subscribe] = Behaviors.receive { (context, msg) =>
     context.log.info("subscribing {}", msg.channel)
 
-    val resultsRepo = context.spawn(ResultsRepository(), "resultsRepoResultsWriter")
+    val resultsRepo = context.spawn(ResultsRepository()(session, client), "resultsRepoResultsWriter")
     val tasksRepo = context.spawn(TasksRepository(), "tasksRepoResultsWriter")
     val resultsWriter = context.spawn(ResultsWriter(resultsRepo, tasksRepo), "resultsWriter")
 
