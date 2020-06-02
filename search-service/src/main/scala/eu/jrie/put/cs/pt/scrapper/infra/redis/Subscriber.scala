@@ -4,9 +4,8 @@ import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.Behaviors
 import akka.stream.alpakka.slick.scaladsl.SlickSession
 import com.redis.{M, PubSubMessage}
+import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsWriter
 import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsWriter.WriteResult
-import eu.jrie.put.cs.pt.scrapper.domain.results.{ResultsRepository, ResultsWriter}
-import eu.jrie.put.cs.pt.scrapper.domain.tasks.TasksRepository
 import eu.jrie.put.cs.pt.scrapper.infra.json.Mapper
 import eu.jrie.put.cs.pt.scrapper.infra.redis.Message.ResultMessage
 
@@ -20,10 +19,7 @@ object Subscriber {
   def apply()(implicit session: SlickSession): Behavior[Subscribe] = Behaviors.receive { (context, msg) =>
     context.log.info("subscribing {}", msg.channel)
 
-    val resultsRepo = context.spawn(ResultsRepository()(session), "resultsRepoResultsWriter")
-    val tasksRepo = context.spawn(TasksRepository(), "tasksRepoResultsWriter")
-    val resultsWriter = context.spawn(ResultsWriter(resultsRepo, tasksRepo), "resultsWriter")
-
+    val resultsWriter = context.spawn(ResultsWriter(session), "ResultsWriter-Subscriber")
     client.subscribe(msg.channel) { m: PubSubMessage =>
       m match {
         case M(channel, rawMsg) =>
