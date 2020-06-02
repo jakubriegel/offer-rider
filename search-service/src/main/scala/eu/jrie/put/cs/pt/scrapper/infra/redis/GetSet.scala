@@ -11,10 +11,13 @@ object GetSet {
   case class SetKey(key: String, value: String) extends GetSetMsg
   case class EndGetSet() extends GetSetMsg
 
-  def apply(client: RedisClient): Behavior[GetSetMsg] = Behaviors.receive { (context, msg) =>
+  def apply(client: RedisClient): Behavior[GetSetMsg] = Behaviors.receive { (ctx, msg) =>
     msg match {
       case Get(key, replyTo) =>
-        replyTo ! GetResponse(client.getType(key))
+        client.get(key) match {
+          case Some(value) => replyTo ! GetResponse(Option(value))
+          case _ => replyTo ! GetResponse(Option.empty)
+        }
         Behaviors.same
       case SetKey(key, value) =>
         client.set(key, value)
