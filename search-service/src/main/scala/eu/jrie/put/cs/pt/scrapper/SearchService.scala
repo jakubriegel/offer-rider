@@ -9,8 +9,8 @@ import com.typesafe.config.ConfigFactory
 import eu.jrie.put.cs.pt.scrapper.api.RestApi
 import eu.jrie.put.cs.pt.scrapper.domain.search.SearchTaskCreator
 import eu.jrie.put.cs.pt.scrapper.domain.search.SearchTaskCreator.{CreateForAllActive, SearchTaskCreatorMsg}
-import eu.jrie.put.cs.pt.scrapper.redis.Subscriber
-import eu.jrie.put.cs.pt.scrapper.redis.Subscriber.Subscribe
+import eu.jrie.put.cs.pt.scrapper.infra.redis.Subscriber
+import eu.jrie.put.cs.pt.scrapper.infra.redis.Subscriber.Subscribe
 
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._

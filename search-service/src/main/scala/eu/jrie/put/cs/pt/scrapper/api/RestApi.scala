@@ -18,12 +18,13 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.typesafe.config.ConfigFactory
-import eu.jrie.put.cs.pt.scrapper.domain.repository.ResultsRepository.{FindResults, ResultsAnswer, ResultsRepoMsg}
-import eu.jrie.put.cs.pt.scrapper.domain.repository.SearchRepository._
-import eu.jrie.put.cs.pt.scrapper.domain.repository.TasksRepository.{FindTasks, TasksRepoMsg, TasksResponse}
-import eu.jrie.put.cs.pt.scrapper.domain.repository.{ResultsRepository, SearchRepository, TasksRepository}
+import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.{FindResults, ResultsAnswer, ResultsRepoMsg}
+import eu.jrie.put.cs.pt.scrapper.domain.results.{Result, ResultsRepository}
+import eu.jrie.put.cs.pt.scrapper.domain.search.SearchRepository._
 import eu.jrie.put.cs.pt.scrapper.domain.search.SearchTaskCreator.{CreateForSearch, SearchTaskCreatorMsg}
-import eu.jrie.put.cs.pt.scrapper.model.{Result, Search, Task}
+import eu.jrie.put.cs.pt.scrapper.domain.search.{Search, SearchRepository}
+import eu.jrie.put.cs.pt.scrapper.domain.tasks.TasksRepository.{FindTasks, TasksRepoMsg, TasksResponse}
+import eu.jrie.put.cs.pt.scrapper.domain.tasks.{Task, TasksRepository}
 
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContextExecutor, Future}

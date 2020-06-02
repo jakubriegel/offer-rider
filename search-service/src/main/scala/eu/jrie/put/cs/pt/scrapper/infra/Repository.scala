@@ -1,8 +1,8 @@
-package eu.jrie.put.cs.pt.scrapper.domain.repository
+package eu.jrie.put.cs.pt.scrapper.infra
 
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext}
-import eu.jrie.put.cs.pt.scrapper.domain.repository.Repository.RepoMsg
+import eu.jrie.put.cs.pt.scrapper.infra.Repository.RepoMsg
 
 import scala.concurrent.ExecutionContextExecutor
 
