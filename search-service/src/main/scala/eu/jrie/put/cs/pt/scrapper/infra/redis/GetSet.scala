@@ -14,7 +14,7 @@ object GetSet {
   def apply(client: RedisClient): Behavior[GetSetMsg] = Behaviors.receive { (context, msg) =>
     msg match {
       case Get(key, replyTo) =>
-        replyTo ! GetResponse(client.get(key))
+        replyTo ! GetResponse(client.getType(key))
         Behaviors.same
       case SetKey(key, value) =>
         client.set(key, value)
