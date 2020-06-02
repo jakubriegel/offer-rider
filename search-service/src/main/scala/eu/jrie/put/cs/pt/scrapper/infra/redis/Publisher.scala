@@ -1,11 +1,11 @@
-package eu.jrie.put.cs.pt.scrapper.redis
+package eu.jrie.put.cs.pt.scrapper.infra.redis
 
 import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.Behaviors
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.redis.RedisClient
-import eu.jrie.put.cs.pt.scrapper.redis.Message.RedisMessage
+import eu.jrie.put.cs.pt.scrapper.infra.redis.Message.RedisMessage
 
 
 object Publisher {

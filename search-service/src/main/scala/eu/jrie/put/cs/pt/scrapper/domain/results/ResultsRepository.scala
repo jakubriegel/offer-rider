@@ -1,4 +1,4 @@
-package eu.jrie.put.cs.pt.scrapper.domain.repository
+package eu.jrie.put.cs.pt.scrapper.domain.results
 
 import java.util.concurrent.TimeUnit
 
@@ -6,10 +6,10 @@ import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, Behavior}
 import akka.stream.alpakka.slick.scaladsl.{Slick, SlickSession}
 import akka.stream.scaladsl.{Sink, Source}
-import eu.jrie.put.cs.pt.scrapper.domain.repository.Repository.RepoMsg
-import eu.jrie.put.cs.pt.scrapper.domain.repository.ResultsRepository.{AddResult, FindResults, ResultsAnswer, ResultsRepoMsg}
-import eu.jrie.put.cs.pt.scrapper.model.Result
-import eu.jrie.put.cs.pt.scrapper.model.db.Tables.ResultsTable.{Results, getResult}
+import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.ResultsRepoMsg
+import eu.jrie.put.cs.pt.scrapper.infra.Repository
+import eu.jrie.put.cs.pt.scrapper.infra.Repository.RepoMsg
+import eu.jrie.put.cs.pt.scrapper.infra.db.Tables.ResultsTable.{Results, getResult}
 
 import scala.collection.immutable.ListMap
 import scala.concurrent.duration.Duration
@@ -31,6 +31,7 @@ private class ResultsRepository(
                                  implicit context: ActorContext[ResultsRepoMsg],
                                  protected implicit val session: SlickSession
                                ) extends Repository[ResultsRepoMsg] {
+  import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.{AddResult, FindResults, ResultsAnswer}
   import session.profile.api._
 
   override def onMessage(msg: ResultsRepoMsg): Behavior[ResultsRepoMsg] = {

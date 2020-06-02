@@ -1,6 +1,6 @@
-package eu.jrie.put.cs.pt.scrapper.redis
+package eu.jrie.put.cs.pt.scrapper.infra.redis
 
-import eu.jrie.put.cs.pt.scrapper.model.Result
+import eu.jrie.put.cs.pt.scrapper.domain.results.Result
 
 object Message {
   trait RedisMessage
