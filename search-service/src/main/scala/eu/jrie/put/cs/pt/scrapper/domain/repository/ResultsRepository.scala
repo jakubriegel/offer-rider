@@ -50,6 +50,7 @@ private class ResultsRepository(
            WHERE task_id = (
             SELECT id FROM task
             WHERE search_id = (SELECT search_id FROM task WHERE id = ${result.taskId})
+            AND id != ${result.taskId}
             ORDER BY end_time DESC LIMIT 1
           );
           """.as[String]
