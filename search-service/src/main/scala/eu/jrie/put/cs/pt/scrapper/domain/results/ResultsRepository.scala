@@ -7,13 +7,14 @@ import akka.actor.typed.{ActorRef, Behavior}
 import akka.stream.alpakka.slick.scaladsl.{Slick, SlickSession}
 import akka.stream.scaladsl.{Sink, Source}
 import akka.util.Timeout
+import com.redis.RedisClient
 import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.ResultsRepoMsg
 import eu.jrie.put.cs.pt.scrapper.infra.Repository
 import eu.jrie.put.cs.pt.scrapper.infra.Repository.RepoMsg
 import eu.jrie.put.cs.pt.scrapper.infra.db.Tables.ResultsTable.{Results, getResult}
 import eu.jrie.put.cs.pt.scrapper.infra.json.Mapper
 import eu.jrie.put.cs.pt.scrapper.infra.redis.GetSet
-import eu.jrie.put.cs.pt.scrapper.infra.redis.GetSet.{Get, GetResponse, SetKey}
+import eu.jrie.put.cs.pt.scrapper.infra.redis.GetSet.{EndGetSet, Get, GetResponse, SetKey}
 
 import scala.collection.immutable.ListMap
 import scala.concurrent.{Await, Future}
@@ -26,13 +27,14 @@ object ResultsRepository {
 
   case class ResultsAnswer(results: Seq[Result]) extends ResultsRepoMsg
 
-  def apply()(implicit session: SlickSession): Behavior[ResultsRepoMsg] =
-    Behaviors.setup[ResultsRepoMsg](implicit context => new ResultsRepository)
+  def apply()(implicit session: SlickSession, redisClient: RedisClient): Behavior[ResultsRepoMsg] =
+    Behaviors.setup[ResultsRepoMsg](implicit context => new ResultsRepository())
 }
 
 private class ResultsRepository(
                                  implicit context: ActorContext[ResultsRepoMsg],
-                                 protected implicit val session: SlickSession
+                                 protected implicit val session: SlickSession,
+                                 protected implicit val redisClient: RedisClient
                                ) extends Repository[ResultsRepoMsg] {
   import akka.actor.typed.scaladsl.AskPattern._
   import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.{AddResult, FindResults, ResultsAnswer}
@@ -41,7 +43,7 @@ private class ResultsRepository(
   import scala.concurrent.duration._
   private implicit val timeout: Timeout = 15.seconds
 
-  private val getSet = context.spawn(GetSet(null), s"ResultsRepositoryGetSet-$this")
+  private val getSet = context.spawn(GetSet(redisClient), s"ResultsRepositoryGetSet-$this")
   private val mapper = Mapper()
 
   override def onMessage(msg: ResultsRepoMsg): Behavior[ResultsRepoMsg] = {
@@ -50,6 +52,7 @@ private class ResultsRepository(
       case FindResults(userId, searchId, taskId, replyTo) => findResults(userId, searchId, taskId, replyTo)
       case _ =>
         context.log.info("unsupported repo msg")
+        getSet ! EndGetSet()
         Behaviors.stopped
     }
   }
