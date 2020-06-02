@@ -2,9 +2,8 @@ package eu.jrie.put.cs.pt.scrapper.infra.redis
 
 import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.Behaviors
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.redis.RedisClient
+import eu.jrie.put.cs.pt.scrapper.infra.json.Mapper
 import eu.jrie.put.cs.pt.scrapper.infra.redis.Message.RedisMessage
 
 
@@ -14,7 +13,7 @@ object Publisher {
   case class Publish(channel: String, msg: RedisMessage) extends PublisherMsg
   case class EndPublish() extends PublisherMsg
 
-  private val mapper = new ObjectMapper().registerModule(new DefaultScalaModule())
+  private val mapper = Mapper()
 
   def apply(implicit client: RedisClient): Behavior[PublisherMsg] = Behaviors.receive { (ctx, message) =>
     message match {

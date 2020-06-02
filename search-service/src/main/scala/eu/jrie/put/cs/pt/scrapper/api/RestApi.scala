@@ -13,10 +13,6 @@ import akka.http.scaladsl.server.Route
 import akka.stream.alpakka.slick.scaladsl.SlickSession
 import akka.stream.scaladsl.Sink
 import akka.util.Timeout
-import com.fasterxml.jackson.databind.{ObjectMapper, SerializationFeature}
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.typesafe.config.ConfigFactory
 import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.{FindResults, ResultsAnswer, ResultsRepoMsg}
 import eu.jrie.put.cs.pt.scrapper.domain.results.{Result, ResultsRepository}
@@ -25,6 +21,7 @@ import eu.jrie.put.cs.pt.scrapper.domain.search.SearchTaskCreator.{CreateForSear
 import eu.jrie.put.cs.pt.scrapper.domain.search.{Search, SearchRepository}
 import eu.jrie.put.cs.pt.scrapper.domain.tasks.TasksRepository.{FindTasks, TasksRepoMsg, TasksResponse}
 import eu.jrie.put.cs.pt.scrapper.domain.tasks.{Task, TasksRepository}
+import eu.jrie.put.cs.pt.scrapper.infra.json.Mapper
 
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContextExecutor, Future}
@@ -49,11 +46,7 @@ object RestApi {
     implicit val timeout: Timeout = 15.seconds
     implicit val executionContext: ExecutionContextExecutor = actorSystem.executionContext
 
-    val mapper = new ObjectMapper()
-      .registerModule(new DefaultScalaModule)
-      .registerModule(new JavaTimeModule)
-      .registerModule(new Jdk8Module)
-      .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+    val mapper = Mapper()
 
     implicit def parseRequest(search: String): Search = { mapper.readValue(search, classOf[Search]) }
     implicit def parseResponse(search: Search): String = { mapper.writeValueAsString(search) }
