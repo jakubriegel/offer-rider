@@ -10,7 +10,6 @@ import akka.stream.alpakka.slick.scaladsl.SlickSession
 import akka.stream.scaladsl.Source
 import akka.util.Timeout
 import akka.{Done, NotUsed}
-import com.redis.RedisClient
 import eu.jrie.put.cs.pt.scrapper.domain.search.SearchRepository.{EndSearchRepo, FindActiveSearches}
 import eu.jrie.put.cs.pt.scrapper.domain.search.SearchTaskCreator.SearchTaskCreatorMsg
 import eu.jrie.put.cs.pt.scrapper.domain.tasks.TasksRepository.{AddTask, CheckForNotEndedTasks, EndTasksRepo, TaskResponse}
@@ -29,16 +28,15 @@ object SearchTaskCreator {
   final case class CreateForSearch(search: Search) extends SearchTaskCreatorMsg
   final val SEARCH_TASKS_CHANNEL = "pt-scraper-search-tasks"
 
-  def apply(redis: RedisClient)(implicit session: SlickSession): Behavior[SearchTaskCreatorMsg] =
-    Behaviors.setup[SearchTaskCreatorMsg](implicit context => new SearchTaskCreator(redis))
+  def apply()(implicit session: SlickSession): Behavior[SearchTaskCreatorMsg] =
+    Behaviors.setup[SearchTaskCreatorMsg](implicit context => new SearchTaskCreator)
 
 }
 
-private class SearchTaskCreator (redis: RedisClient)
-                                (
-                                  implicit ctx: ActorContext[SearchTaskCreatorMsg],
-                                  session: SlickSession
-                                ) extends AbstractBehavior[SearchTaskCreatorMsg](ctx) {
+private class SearchTaskCreator(
+                                 implicit ctx: ActorContext[SearchTaskCreatorMsg],
+                                 session: SlickSession
+                               ) extends AbstractBehavior[SearchTaskCreatorMsg](ctx) {
   import akka.actor.typed.scaladsl.AskPattern._
   import eu.jrie.put.cs.pt.scrapper.domain.search.SearchTaskCreator.{CreateForAllActive, CreateForSearch, SEARCH_TASKS_CHANNEL}
 
@@ -48,7 +46,7 @@ private class SearchTaskCreator (redis: RedisClient)
   private implicit val executionContext: ExecutionContext = ctx.system.executionContext
   private implicit val timeout: Timeout = 15.seconds
 
-  private val publisher = ctx.spawn(Publisher(redis), "publisherSearchTaskCreator")
+  private val publisher = ctx.spawn(Publisher(), "publisherSearchTaskCreator")
   private val searchRepo = ctx.spawn(SearchRepository(), "searchRepositorySearchTaskCreator")
   private val tasksRepo = ctx.spawn(TasksRepository(), "tasksRepositorySearchTaskCreator")
 

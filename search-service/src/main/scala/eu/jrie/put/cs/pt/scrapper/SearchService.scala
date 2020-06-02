@@ -4,7 +4,6 @@ import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.AskPattern._
 import akka.stream.alpakka.slick.scaladsl.SlickSession
 import akka.util.Timeout
-import com.redis.RedisClient
 import com.typesafe.config.ConfigFactory
 import eu.jrie.put.cs.pt.scrapper.api.RestApi
 import eu.jrie.put.cs.pt.scrapper.domain.search.SearchTaskCreator
@@ -18,11 +17,10 @@ import scala.util.Random
 
 class SearchService {
 
-  private def redisClient = new RedisClient("redis", 6379)
   private implicit val session: SlickSession = SlickSession.forConfig("slick-mysql")
 
-  private val searchTaskCreator: ActorSystem[SearchTaskCreatorMsg] = ActorSystem(SearchTaskCreator(redisClient), "searchExecutor")
-  private val subscriber: ActorSystem[Subscribe] = ActorSystem(Subscriber(redisClient), "subscriber")
+  private val searchTaskCreator: ActorSystem[SearchTaskCreatorMsg] = ActorSystem(SearchTaskCreator(), "searchExecutor")
+  private val subscriber: ActorSystem[Subscribe] = ActorSystem(Subscriber(), "subscriber")
 
   private val config = ConfigFactory.load().getConfig("service")
 

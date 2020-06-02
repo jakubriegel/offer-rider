@@ -2,7 +2,6 @@ package eu.jrie.put.cs.pt.scrapper.infra.redis
 
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior}
-import com.redis.RedisClient
 
 object GetSet {
   sealed trait GetSetMsg
@@ -11,19 +10,25 @@ object GetSet {
   case class SetKey(key: String, value: String) extends GetSetMsg
   case class EndGetSet() extends GetSetMsg
 
-  def apply(client: RedisClient): Behavior[GetSetMsg] = Behaviors.receive { (ctx, msg) =>
+  private val client = Client()
+
+  def apply(): Behavior[GetSetMsg] = Behaviors.receive { (ctx, msg) =>
     msg match {
       case Get(key, replyTo) =>
-        client.get(key) match {
-          case Some(value) => replyTo ! GetResponse(Option(value))
-          case _ => replyTo ! GetResponse(Option.empty)
-        }
+        replyTo ! GetResponse(
+          if (client.exists(key)) client.get(key)
+          else Option.empty
+        )
         Behaviors.same
       case SetKey(key, value) =>
         client.set(key, value)
         client.expire(key, 600)
         Behaviors.same
       case EndGetSet() =>
+        client.close()
+        Behaviors.stopped
+      case _ =>
+        ctx.log.error("Invalid message")
         Behaviors.stopped
     }
   }

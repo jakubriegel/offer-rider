@@ -7,7 +7,6 @@ import akka.actor.typed.{ActorRef, Behavior}
 import akka.stream.alpakka.slick.scaladsl.{Slick, SlickSession}
 import akka.stream.scaladsl.{Sink, Source}
 import akka.util.Timeout
-import com.redis.RedisClient
 import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.ResultsRepoMsg
 import eu.jrie.put.cs.pt.scrapper.infra.Repository
 import eu.jrie.put.cs.pt.scrapper.infra.Repository.RepoMsg
@@ -27,14 +26,13 @@ object ResultsRepository {
 
   case class ResultsAnswer(results: Seq[Result]) extends ResultsRepoMsg
 
-  def apply()(implicit session: SlickSession, redisClient: RedisClient): Behavior[ResultsRepoMsg] =
-    Behaviors.setup[ResultsRepoMsg](implicit context => new ResultsRepository())
+  def apply()(implicit session: SlickSession): Behavior[ResultsRepoMsg] =
+    Behaviors.setup[ResultsRepoMsg](implicit context => new ResultsRepository)
 }
 
 private class ResultsRepository(
                                  implicit context: ActorContext[ResultsRepoMsg],
-                                 protected implicit val session: SlickSession,
-                                 protected implicit val redisClient: RedisClient
+                                 protected implicit val session: SlickSession
                                ) extends Repository[ResultsRepoMsg] {
   import akka.actor.typed.scaladsl.AskPattern._
   import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.{AddResult, FindResults, ResultsAnswer}
@@ -43,9 +41,7 @@ private class ResultsRepository(
   import scala.concurrent.duration._
   private implicit val timeout: Timeout = 15.seconds
 
-  private val getSet = if (redisClient != null) {
-    context.spawn(GetSet(redisClient), s"ResultsRepositoryGetSet-$this")
-  } else null
+  private val getSet = context.spawn(GetSet(), s"ResultsRepositoryGetSet-$this")
   private val mapper = Mapper()
 
   override def onMessage(msg: ResultsRepoMsg): Behavior[ResultsRepoMsg] = {
@@ -66,7 +62,6 @@ private class ResultsRepository(
       .map { _.map { raw => mapper.readValue(raw, classOf[Seq[String]]) } }
       .flatMap { cached =>
         if (cached.isEmpty) {
-          context.log.info(s"Getting new ids for ${result.taskId}")
           Slick.source {
             sql"""
                   SELECT offer_id FROM result
@@ -80,9 +75,7 @@ private class ResultsRepository(
           }.runWith(Sink.seq)
             .andThen { ids => getSet ! SetKey(s"lastIds-${result.taskId}", mapper.writeValueAsString(ids.get)) }
         } else {
-          val ids = cached.get
-          context.log.info(s"Using cached ids for ${result.taskId} $ids")
-          Future { ids }
+          Future { cached.get }
         }
       }
 
