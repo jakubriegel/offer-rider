@@ -3,27 +3,23 @@ package eu.jrie.put.cs.pt.scrapper.infra.redis
 import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.Behaviors
 import akka.stream.alpakka.slick.scaladsl.SlickSession
-import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import com.redis.{M, PubSubMessage, RedisClient}
+import com.redis.{M, PubSubMessage}
+import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsWriter
 import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsWriter.WriteResult
-import eu.jrie.put.cs.pt.scrapper.domain.results.{ResultsRepository, ResultsWriter}
-import eu.jrie.put.cs.pt.scrapper.domain.tasks.TasksRepository
+import eu.jrie.put.cs.pt.scrapper.infra.json.Mapper
 import eu.jrie.put.cs.pt.scrapper.infra.redis.Message.ResultMessage
 
 object Subscriber {
   case class Subscribe(channel: String)
 
   val SEARCH_RESULTS_CHANNEL = "pt-scraper-results"
+  private val mapper = Mapper()
+  private val client = Client()
 
-  def apply(client: RedisClient)(implicit session: SlickSession): Behavior[Subscribe] = Behaviors.receive { (context, msg) =>
+  def apply()(implicit session: SlickSession): Behavior[Subscribe] = Behaviors.receive { (context, msg) =>
     context.log.info("subscribing {}", msg.channel)
 
-    val resultsRepo = context.spawn(ResultsRepository(), "resultsRepoResultsWriter")
-    val tasksRepo = context.spawn(TasksRepository(), "tasksRepoResultsWriter")
-    val resultsWriter = context.spawn(ResultsWriter(resultsRepo, tasksRepo), "resultsWriter")
-
+    val resultsWriter = context.spawn(ResultsWriter(session), "ResultsWriter-Subscriber")
     client.subscribe(msg.channel) { m: PubSubMessage =>
       m match {
         case M(channel, rawMsg) =>
@@ -38,9 +34,6 @@ object Subscriber {
   }
 
   private def asMsg(json: String): ResultMessage = {
-    val mapper = new ObjectMapper()
-    mapper.registerModule(new DefaultScalaModule())
-    mapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
     mapper.readValue(json, classOf[ResultMessage])
   }
 }
