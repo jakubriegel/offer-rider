@@ -67,7 +67,7 @@ private class ResultsRepository(
         val action = withNewcomerFlag(withId, lastIds)
           .flatMap { addResultsOfTask }
           .flatMap { addParamsOfResults }
-        Await.ready(action, Duration.create(360, TimeUnit.SECONDS))
+        Await.ready(action, Duration.create(360, TimeUnit.MINUTES))
       }
   }
 
