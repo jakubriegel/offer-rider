@@ -12,7 +12,7 @@ import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsWriter.WriteResult
 import eu.jrie.put.cs.pt.scrapper.domain.tasks.TasksRepository
 import eu.jrie.put.cs.pt.scrapper.domain.tasks.TasksRepository.EndTask
 
-import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.concurrent.ExecutionContextExecutor
 
 object ResultsWriter {
   case class WriteResult(result: Result, last: Boolean)
@@ -42,8 +42,7 @@ private class ResultsWriter(ctx: ActorContext[WriteResult])
     bufferSize = config.getInt("bufferSize"),
     overflowStrategy = OverflowStrategy.fail
   ).groupedWithin(config.getInt("chunkSize"), config.getInt("chunkInterval").seconds)
-//    .to(Sink.foreach { resultsRepo ! AddResults(_) })
-    .to(Sink.foreachAsync(1) (_ => Future { resultsRepo ! AddResults(_) }))
+    .to(Sink.foreach { resultsRepo ! AddResults(_) })
     .run()
 
   override def onMessage(msg: WriteResult): Behavior[WriteResult] = {
