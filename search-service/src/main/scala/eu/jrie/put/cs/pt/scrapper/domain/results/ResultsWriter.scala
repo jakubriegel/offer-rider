@@ -1,6 +1,6 @@
 package eu.jrie.put.cs.pt.scrapper.domain.results
 
-import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors, Routers}
+import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
 import akka.actor.typed.{ActorSystem, Behavior}
 import akka.stream.OverflowStrategy
 import akka.stream.alpakka.slick.javadsl.SlickSession
@@ -27,7 +27,8 @@ private class ResultsWriter(ctx: ActorContext[WriteResult])
 
   import scala.concurrent.duration._
 
-  private val resultsRepo = context.spawn(Routers.pool(3)(ResultsRepository()), "ResultsRepoPool-ResultsWriter")
+//  private val resultsRepo = context.spawn(Routers.pool(3)(ResultsRepository()), "ResultsRepoPool-ResultsWriter")
+  private val resultsRepo = context.spawn(ResultsRepository(), "ResultsRepoPool-ResultsWriter")
   private val tasksRepo = context.spawn(TasksRepository(), "TasksRepo-ResultsWriter")
 
   private implicit val system: ActorSystem[Nothing] = ctx.system
