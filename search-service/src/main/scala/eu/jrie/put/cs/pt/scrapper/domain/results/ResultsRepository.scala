@@ -61,7 +61,7 @@ private class ResultsRepository(
   }
 
   private def addResults(results: Seq[Result]): Unit = {
-    results.groupBy { r => r.taskId }
+    results.groupBy { _.taskId }
       .foreachEntry { case (taskId, withId) =>
         val lastIds = findLastIds(taskId)
         val action = withNewcomerFlag(withId, lastIds)
@@ -115,10 +115,12 @@ private class ResultsRepository(
       .map { case (row, params) => (row, params, TableQuery[Results]) }
       .map { case (row, params, table) => ((table returning table.map(_.id)) += row, params) }
 
-    session.db.run(DBIO.sequence(actionToParams.map { _._1 }))
+    val queries = actionToParams.map { _._1 }
+    val params = actionToParams.map { _._2 }
+    session.db.run(DBIO.sequence(queries))
       .map { ids =>
         ids.map { _.get }
-          .zip(actionToParams.map { _._2 })
+          .zip(params)
       }
   }
 
