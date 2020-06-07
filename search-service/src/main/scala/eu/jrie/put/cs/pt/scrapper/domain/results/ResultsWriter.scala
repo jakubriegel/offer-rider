@@ -27,7 +27,7 @@ private class ResultsWriter(ctx: ActorContext[WriteResult])
 
   import scala.concurrent.duration._
 
-  private val resultsRepo = context.spawn(Routers.pool(10)(ResultsRepository()), "ResultsRepoPool-ResultsWriter")
+  private val resultsRepo = context.spawn(Routers.pool(3)(ResultsRepository()), "ResultsRepoPool-ResultsWriter")
   private val tasksRepo = context.spawn(TasksRepository(), "TasksRepo-ResultsWriter")
 
   private implicit val system: ActorSystem[Nothing] = ctx.system
