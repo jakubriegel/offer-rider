@@ -1,0 +1,40 @@
+<configuration>
+    <!-- This is a development logging configuration that logs to standard out, for an example of a production
+        logging config, see the Akka docs: https://doc.akka.io/docs/akka/2.6/typed/logging.html#logback -->
+    <appender name="STDOUT" target="System.out" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[%d{HH:mm:ss.SSS}] [%level] [%logger] [%thread] [%X{akkaSource}] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>1024</queueSize>
+        <neverBlock>true</neverBlock>
+        <appender-ref ref="STDOUT" />
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="ASYNC"/>
+    </root>
+
+<!--    uncomment for debugging -->
+<!--    <root level="DEBUG">-->
+<!--        <appender-ref ref="ASYNC"/>-->
+<!--    </root>-->
+
+<!--    <logger name="slick.jdbc.JdbcBackend.parameter" level="OFF"/>-->
+<!--    <logger name="slick.jdbc.JdbcBackend.statement" level="OFF"/>-->
+<!--    <logger name="slick.jdbc.JdbcBackend.statementAndParameter" level="OFF"/>-->
+<!--    <logger name="slick.jdbc.JdbcBackend.benchmark" level="OFF"/>-->
+<!--    <logger name="slick.jdbc.StatementInvoker.result" level="OFF"/>-->
+<!--    <logger name="slick.relational.ResultConverterCompiler" level="OFF"/>-->
+
+<!--    <logger name="slick.basic.BasicBackend.action" level="OFF"/>-->
+<!--    <logger name="slick.basic.BasicBackend.stream" level="OFF"/>-->
+<!--    <logger name="slick.compiler.QueryCompiler" level="OFF"/>-->
+<!--    <logger name="slick.compiler.CodeGen" level="OFF"/>-->
+<!--    <logger name="slick.compiler.AssignUniqueSymbols" level="OFF"/>-->
+<!--    <logger name="slick.compiler.QueryCompilerBenchmark" level="OFF"/>-->
+<!--    <logger name="slick.util.ManagedArrayBlockingQueue" level="OFF"/>-->
+
+</configuration>

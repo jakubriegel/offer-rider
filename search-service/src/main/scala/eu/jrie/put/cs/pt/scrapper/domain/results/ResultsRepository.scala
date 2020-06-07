@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, Behavior}
 import akka.stream.alpakka.slick.scaladsl.{Slick, SlickSession}
-import akka.stream.scaladsl.{Sink, Source}
+import akka.stream.scaladsl.Sink
 import akka.util.Timeout
 import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.ResultsRepoMsg
 import eu.jrie.put.cs.pt.scrapper.infra.Repository
@@ -15,13 +15,14 @@ import eu.jrie.put.cs.pt.scrapper.infra.json.Mapper
 import eu.jrie.put.cs.pt.scrapper.infra.redis.GetSet
 import eu.jrie.put.cs.pt.scrapper.infra.redis.GetSet.{EndGetSet, Get, GetResponse, SetKey}
 
+import scala.collection.immutable
 import scala.collection.immutable.ListMap
 import scala.concurrent.{Await, Future}
 
 object ResultsRepository {
   sealed trait ResultsRepoMsg extends RepoMsg
 
-  case class AddResult(result: Result) extends ResultsRepoMsg
+  case class AddResults(results: Seq[Result]) extends ResultsRepoMsg
   case class FindResults(userId: Int, searchId: Long, taskId: Option[String], replyTo: ActorRef[ResultsAnswer]) extends ResultsRepoMsg
 
   case class ResultsAnswer(results: Seq[Result]) extends ResultsRepoMsg
@@ -35,7 +36,7 @@ private class ResultsRepository(
                                  protected implicit val session: SlickSession
                                ) extends Repository[ResultsRepoMsg] {
   import akka.actor.typed.scaladsl.AskPattern._
-  import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.{AddResult, FindResults, ResultsAnswer}
+  import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.{AddResults, FindResults, ResultsAnswer}
   import session.profile.api._
 
   import scala.concurrent.duration._
@@ -46,8 +47,12 @@ private class ResultsRepository(
 
   override def onMessage(msg: ResultsRepoMsg): Behavior[ResultsRepoMsg] = {
     msg match {
-      case AddResult(result) => addNewResult(result)
-      case FindResults(userId, searchId, taskId, replyTo) => findResults(userId, searchId, taskId, replyTo)
+      case AddResults(results) =>
+        addResults(results)
+        Behaviors.same
+      case FindResults(userId, searchId, taskId, replyTo) =>
+        findResults(userId, searchId, taskId, replyTo)
+        Behaviors.same
       case _ =>
         context.log.info("unsupported repo msg")
         getSet ! EndGetSet()
@@ -55,10 +60,20 @@ private class ResultsRepository(
     }
   }
 
-  private def addNewResult(result: Result): Behavior[ResultsRepoMsg] = {
+  private def addResults(results: Seq[Result]): Unit = {
+    results.groupBy { r => r.taskId }
+      .foreachEntry { case (taskId, withId) =>
+        val lastIds = findLastIds(taskId)
+        val action = withNewcomerFlag(withId, lastIds)
+          .flatMap { addResultsOfTask }
+          .flatMap { addParamsOfResults }
+        Await.ready(action, Duration.create(360, TimeUnit.SECONDS))
+      }
+  }
 
-    val cachedIdsFuture: Future[GetResponse] = getSet ? (Get(s"lastIds-${result.taskId}", _))
-    val lastIds = cachedIdsFuture.map { _.value }
+  private def findLastIds(taskId: String): Future[Seq[String]] = {
+    val cachedIdsFuture: Future[GetResponse] = getSet ? (Get(s"lastIds-$taskId", _))
+    cachedIdsFuture.map { _.value }
       .map { _.map { raw => mapper.readValue(raw, classOf[Seq[String]]) } }
       .flatMap { cached =>
         if (cached.isEmpty) {
@@ -67,46 +82,59 @@ private class ResultsRepository(
                   SELECT offer_id FROM result
                   WHERE task_id = (
                     SELECT id FROM task
-                    WHERE search_id = (SELECT search_id FROM task WHERE id = ${result.taskId})
-                    AND id != ${result.taskId}
+                    WHERE search_id = (SELECT search_id FROM task WHERE id = $taskId)
+                    AND id != $taskId
                     ORDER BY end_time DESC LIMIT 1
                   );
                   """.as[String]
           }.runWith(Sink.seq)
-            .andThen { ids => getSet ! SetKey(s"lastIds-${result.taskId}", mapper.writeValueAsString(ids.get)) }
+            .andThen { ids => getSet ! SetKey(s"lastIds-$taskId", mapper.writeValueAsString(ids.get)) }
         } else {
           Future { cached.get }
         }
       }
-
-    val action = Future { result }
-      .zipWith(lastIds) { case (result, lastOfferIds) =>
-        val newcomer = result.offerId
-          .map { lastOfferIds.contains }
-          .forall { !_ }
-        (result, newcomer)
-      }
-      .map { case (r, newcomer) =>
-        (None, r.taskId, r.offerId, r.title, r.subtitle, r.price, r.currency, r.url, r.imgUrl, newcomer)
-      }
-      .map { (_, TableQuery[Results]) }
-      .flatMap { case (row, table) =>
-        session.db.run((table returning table.map(_.id)) += row)
-      }
-      .map { _.get }
-      .flatMap { resultId =>
-        Source(result.params)
-          .filter { case (_, value) => value != null }
-          .runWith(Slick.sink { case (name, value) =>
-            sqlu"INSERT INTO result_param VALUES ($resultId, $name, $value)"
-          })
-      }
-
-    Await.ready(action, Duration.create(15, TimeUnit.SECONDS))
-    Behaviors.same
   }
 
-  private def findResults(userId: Int, searchId: Long, taskId: Option[String], replyTo: ActorRef[ResultsAnswer]): Behavior[ResultsRepoMsg] = {
+  private def withNewcomerFlag(results: Seq[Result], lastIds: Future[Seq[String]]): Future[Seq[Result]] = {
+    val withNewcomer = results.map { Future(_) }
+      .map { result =>
+        result.zipWith(lastIds) { case (r, lastOfferIds) =>
+          val newcomer = r.offerId
+            .map { lastOfferIds.contains }
+            .forall { !_ }
+          Result(None, r.taskId, r.offerId, r.title, r.subtitle, r.price, r.currency, r.url, r.imgUrl, newcomer, r.params)
+        }
+      }
+    Future.sequence(withNewcomer)
+  }
+
+  private def addResultsOfTask(results: Seq[Result]): Future[Seq[(Long, Map[String, String])]] = {
+    val actionToParams = results.map { r =>
+      ((None, r.taskId, r.offerId, r.title, r.subtitle, r.price, r.currency, r.url, r.imgUrl, r.newcomer), r.params)
+    }
+      .map { case (row, params) => (row, params, TableQuery[Results]) }
+      .map { case (row, params, table) => ((table returning table.map(_.id)) += row, params) }
+
+    session.db.run(DBIO.sequence(actionToParams.map { _._1 }))
+      .map { ids =>
+        ids.map { _.get }
+          .zip(actionToParams.map { _._2 })
+      }
+  }
+
+  private def addParamsOfResults(idsToParams: Seq[(Long, Map[String, String])]): Future[Seq[immutable.Iterable[Int]]] = {
+    Future.sequence(
+      idsToParams.map { case (resultId, params) => addParamsOfResult(resultId, params) }
+    )
+  }
+
+  private def addParamsOfResult(resultId: Long, params: Map[String, String]): Future[immutable.Iterable[Int]] = {
+    val query = params.filter { case (_, value) => value != null }
+      .map { case (name, value) => sqlu"INSERT INTO result_param VALUES ($resultId, $name, $value)" }
+    session.db.run(DBIO.sequence(query))
+  }
+
+  private def findResults(userId: Int, searchId: Long, taskId: Option[String], replyTo: ActorRef[ResultsAnswer]): Unit = {
     Slick.source {
       taskId match {
         case Some(id) =>
@@ -136,7 +164,5 @@ private class ResultsRepository(
       .flatMap { a => Future.sequence(a) }
       .map { ResultsAnswer }
       .andThen { replyTo ! _.get }
-
-    Behaviors.same
   }
 }
