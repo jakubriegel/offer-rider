@@ -2,10 +2,11 @@ package eu.jrie.put.cs.pt.scrapper.domain.results
 
 import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.{AbstractBehavior, ActorContext, Behaviors}
+import akka.event.Logging
 import akka.stream.alpakka.slick.javadsl.SlickSession
 import akka.stream.scaladsl.Sink
 import akka.stream.typed.scaladsl.ActorSource
-import akka.stream.{Materializer, OverflowStrategy}
+import akka.stream.{Attributes, Materializer, OverflowStrategy}
 import com.typesafe.config.ConfigFactory
 import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsRepository.AddResults
 import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsWriter.WriteResult
@@ -40,7 +41,13 @@ private class ResultsWriter(mat: Materializer, ctx: ActorContext[WriteResult])
     failureMatcher = PartialFunction.empty,
     bufferSize = config.getInt("bufferSize"),
     overflowStrategy = OverflowStrategy.fail
-  ).groupedWithin(config.getInt("chunkSize"), config.getInt("chunkInterval").seconds)
+  ).withAttributes(
+    Attributes.logLevels(onElement = Logging.InfoLevel, onFinish = Logging.InfoLevel, onFailure = Logging.InfoLevel
+    ))
+    .log("result").withAttributes(
+    Attributes.logLevels(onElement = Logging.InfoLevel, onFinish = Logging.InfoLevel, onFailure = Logging.InfoLevel
+    ))
+    .groupedWithin(config.getInt("chunkSize"), config.getInt("chunkInterval").seconds)
     .to(Sink.foreach { resultsRepo ! AddResults(_) })
     .run()(mat)
 
