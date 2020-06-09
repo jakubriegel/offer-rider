@@ -2,6 +2,7 @@ package eu.jrie.put.cs.pt.scrapper.infra.redis
 
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorSystem, Behavior}
+import akka.stream.Materializer
 import akka.stream.alpakka.slick.scaladsl.SlickSession
 import com.redis.{M, PubSubMessage}
 import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsWriter
@@ -19,7 +20,7 @@ object Subscriber {
   def apply()(implicit session: SlickSession): Behavior[Subscribe] = Behaviors.receive { (ctx, msg) =>
     ctx.log.info("subscribing {}", msg.channel)
 
-    val resultsWriter = ctx.spawn(ResultsWriter(session), "ResultsWriter-Subscriber")
+    val resultsWriter = ctx.spawn(ResultsWriter(Materializer(ctx)), "ResultsWriter-Subscriber")
     implicit val system: ActorSystem[Nothing] = ctx.system
     client.subscribe(msg.channel) { m: PubSubMessage =>
       m match {
