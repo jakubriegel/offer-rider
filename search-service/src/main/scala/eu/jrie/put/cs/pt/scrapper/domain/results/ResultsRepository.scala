@@ -16,6 +16,7 @@ import eu.jrie.put.cs.pt.scrapper.infra.redis.GetSet.{EndGetSet, Get, GetRespons
 import scala.collection.immutable
 import scala.collection.immutable.ListMap
 import scala.concurrent.{Await, Future}
+import scala.util.Try
 
 object ResultsRepository {
   sealed trait ResultsRepoMsg extends RepoMsg
@@ -72,7 +73,9 @@ private class ResultsRepository(
   private def findLastIds(taskId: String): Future[Seq[String]] = {
     val cachedIdsFuture: Future[GetResponse] = getSet ? (Get(s"lastIds-$taskId", _))
     cachedIdsFuture.map { _.value }
-      .map { _.map { raw => mapper.readValue(raw, classOf[Seq[String]]) } }
+      .map {
+        _.flatMap { raw => Try { mapper.readValue(raw, classOf[Seq[String]]) } .toOption }
+      }
       .flatMap { cached =>
         if (cached.isEmpty) {
           Slick.source {
