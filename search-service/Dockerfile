@@ -16,6 +16,7 @@ COPY ./logback.xml logback.xml
 WORKDIR /
 
 # build service
+RUN sbt update
 RUN sbt assembly
 # cleanup
 RUN apt purge -y sbt gnupg apt-transport-https ca-certificates
