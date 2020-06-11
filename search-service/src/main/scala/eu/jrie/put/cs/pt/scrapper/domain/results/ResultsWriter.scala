@@ -31,9 +31,6 @@ private class ResultsWriter(mat: Materializer, ctx: ActorContext[WriteResult])
   private val resultsRepo = context.spawn(Routers.pool(10)(ResultsRepository()), "ResultsRepoPool-ResultsWriter")
   private val tasksRepo = context.spawn(TasksRepository(), "TasksRepo-ResultsWriter")
 
-//  private implicit val system: ActorSystem[Nothing] = ctx.system
-//  private implicit val executionContext: ExecutionContextExecutor = ctx.executionContext
-
   private val writer = ActorSource.actorRef[Result](
     completionMatcher = PartialFunction.empty,
     failureMatcher = PartialFunction.empty,
