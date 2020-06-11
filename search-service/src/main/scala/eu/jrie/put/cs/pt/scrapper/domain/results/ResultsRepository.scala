@@ -1,7 +1,5 @@
 package eu.jrie.put.cs.pt.scrapper.domain.results
 
-import java.util.concurrent.TimeUnit
-
 import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.actor.typed.{ActorRef, Behavior}
 import akka.stream.alpakka.slick.scaladsl.{Slick, SlickSession}
@@ -48,6 +46,7 @@ private class ResultsRepository(
   override def onMessage(msg: ResultsRepoMsg): Behavior[ResultsRepoMsg] = {
     msg match {
       case AddResults(results) =>
+        context.log.info(s"Adding ${results.length} results")
         addResults(results)
         Behaviors.same
       case FindResults(userId, searchId, taskId, replyTo) =>
@@ -64,10 +63,10 @@ private class ResultsRepository(
     results.groupBy { _.taskId }
       .foreachEntry { case (taskId, withId) =>
         val lastIds = findLastIds(taskId)
-        val action = withNewcomerFlag(withId, lastIds)
-          .flatMap { addResultsOfTask }
-          .flatMap { addParamsOfResults }
-        Await.ready(action, Duration.create(360, TimeUnit.MINUTES))
+        val withFlag: Seq[Result] = Await.result(withNewcomerFlag(withId, lastIds), Duration.Inf)
+        val added = Await.result(addResultsOfTask(withFlag), Duration.Inf)
+        Await.ready(addParamsOfResults(added), Duration.Inf)
+//        Await.ready(action, Duration.create(360, TimeUnit.MINUTES))
       }
   }
 
@@ -125,6 +124,7 @@ private class ResultsRepository(
   }
 
   private def addParamsOfResults(idsToParams: Seq[(Long, Map[String, String])]): Future[Seq[immutable.Iterable[Int]]] = {
+    context.log.info(s"Adding ${idsToParams.length} params")
     Future.sequence(
       idsToParams.map { case (resultId, params) => addParamsOfResult(resultId, params) }
     )
