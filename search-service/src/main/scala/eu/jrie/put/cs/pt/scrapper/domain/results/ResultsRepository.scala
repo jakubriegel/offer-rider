@@ -46,7 +46,6 @@ private class ResultsRepository(
   override def onMessage(msg: ResultsRepoMsg): Behavior[ResultsRepoMsg] = {
     msg match {
       case AddResults(results) =>
-        context.log.info(s"Adding ${results.length} results")
         addResults(results)
         Behaviors.same
       case FindResults(userId, searchId, taskId, replyTo) =>
@@ -60,13 +59,13 @@ private class ResultsRepository(
   }
 
   private def addResults(results: Seq[Result]): Unit = {
+    context.log.debug(s"Adding ${results.length} results")
     results.groupBy { _.taskId }
       .foreachEntry { case (taskId, withId) =>
         val lastIds = findLastIds(taskId)
-        val withFlag: Seq[Result] = Await.result(withNewcomerFlag(withId, lastIds), Duration.Inf)
-        val added = Await.result(addResultsOfTask(withFlag), Duration.Inf)
-        Await.ready(addParamsOfResults(added), Duration.Inf)
-//        Await.ready(action, Duration.create(360, TimeUnit.MINUTES))
+        val flaggedResults: Seq[Result] = Await.result(withNewcomerFlag(withId, lastIds), Duration.Inf)
+        val addedIdsWithParams = Await.result(addResultsOfTask(flaggedResults), Duration.Inf)
+        Await.ready(addParamsOfResults(addedIdsWithParams), Duration.Inf)
       }
   }
 
@@ -124,7 +123,6 @@ private class ResultsRepository(
   }
 
   private def addParamsOfResults(idsToParams: Seq[(Long, Map[String, String])]): Future[Seq[immutable.Iterable[Int]]] = {
-    context.log.info(s"Adding ${idsToParams.length} params")
     Future.sequence(
       idsToParams.map { case (resultId, params) => addParamsOfResult(resultId, params) }
     )
