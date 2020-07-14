@@ -1,46 +1,26 @@
 digraph bigstore {
     
-    label="offer-rider"
+    label="Offer Rider"
     labelloc=t
     fontname="JetBrains Mono Medium"
 
     graph [fontsize=45 ranksep=2]
-    node [fontname="JetBrains Mono Medium" fontcolor=white]
-    edge [dir=both penwidth=7] 
-    nodesep=2
+    node [fontname="JetBrains Mono Medium" fontcolor=white fontsize=24 padding=5]
+    edge [dir=both penwidth=5] 
+    nodesep=3
 
-    subgraph scraper {
-        node [padding=5 fontsize=24 shape=doubleoctagon style=filled color=cyan4 height=2]
-
-        "scraper"
-    }
-    
-    subgraph searchservice {
-        node [padding=5 fontsize=24 shape=octagon style=filled color=chocolate height=2 colorsheme=paired12]
-        edge [style=bold colorscheme="paired12"]
-
-        "search-service"
+    "OTOMOTO" [shape=circle style=filled color=crimson colorsheme=paired12]
+    "scraper" [shape=octagon style=filled color=cyan4 height=2 width=3 xlabel=<<font color="cyan4">JS</font>>]
+    "search-service" [shape=octagon style=filled color=cyan4 height=2 colorsheme=paired12 xlabel=<<font color="cyan4">Scala | Akka</font>>]
+    "store" [shape=doublecircle style=filled color=dodgerblue1 height=2 colorsheme=paired12 xlabel=<<font color="dodgerblue1">MySQL</font>>]
+    { rank=sink; 
+        "frontend" [shape=circle style=filled color=darkgoldenrod3 colorsheme=paired12 xlabel=<<font color="darkgoldenrod3">Vue.js</font>>]
+        "message\nbroker" [shape=doublecircle style=filled color=dodgerblue1 xlabel=<<font color="dodgerblue1">Redis</font>>]
     }
 
-    subgraph frontend {
-        node [padding=5 fontsize=24 shape=circle style=filled color=darkgoldenrod3 colorsheme=paired12]
-        edge [style=bold colorscheme="paired12"]
-
-        { rank=sink; "frontend" }
-    }
-
-    subgraph eventbroker {
-        node [fontsize=24 shape=doublecircle style=filled color=dodgerblue1]
-
-        { rank=sink; "Redis" }
-    }
-
-    subgraph backend_connections {
-        "scraper" -> "Redis" [color=grey11 style=dashed]
-        "search-service" -> "Redis" [color=grey11 style=dashed]
-    }
-
-    subgraph frontend_connections {
-        "frontend" -> "search-service" [color=grey11]
-    }
+    "OTOMOTO" -> "scraper" [dir=LR]
+    "scraper" -> "message\nbroker" [style=dashed]
+    "search-service" -> "message\nbroker" [style=dashed]
+    "store" -> "search-service"
+    "frontend" -> "search-service"
 }
