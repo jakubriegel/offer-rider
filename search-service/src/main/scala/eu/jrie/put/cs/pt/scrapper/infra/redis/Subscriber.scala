@@ -1,7 +1,8 @@
 package eu.jrie.put.cs.pt.scrapper.infra.redis
 
-import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.Behaviors
+import akka.actor.typed.{ActorSystem, Behavior}
+import akka.stream.Materializer
 import akka.stream.alpakka.slick.scaladsl.SlickSession
 import com.redis.{M, PubSubMessage}
 import eu.jrie.put.cs.pt.scrapper.domain.results.ResultsWriter
@@ -16,15 +17,16 @@ object Subscriber {
   private val mapper = Mapper()
   private val client = Client()
 
-  def apply()(implicit session: SlickSession): Behavior[Subscribe] = Behaviors.receive { (context, msg) =>
-    context.log.info("subscribing {}", msg.channel)
+  def apply()(implicit session: SlickSession): Behavior[Subscribe] = Behaviors.receive { (ctx, msg) =>
+    ctx.log.info("subscribing {}", msg.channel)
 
-    val resultsWriter = context.spawn(ResultsWriter(session), "ResultsWriter-Subscriber")
+    val resultsWriter = ctx.spawn(ResultsWriter(Materializer(ctx)), "ResultsWriter-Subscriber")
+    implicit val system: ActorSystem[Nothing] = ctx.system
     client.subscribe(msg.channel) { m: PubSubMessage =>
       m match {
         case M(channel, rawMsg) =>
           val msg: ResultMessage = asMsg(rawMsg)
-          context.log.debug ("received {} for task {} from {}", msg.result.title, msg.result.taskId, channel)
+          ctx.log.debug ("received {} for task {} from {}", msg.result.title, msg.result.taskId, channel)
           resultsWriter ! WriteResult(msg.result, msg.last)
         case _ =>
       }

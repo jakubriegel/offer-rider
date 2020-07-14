@@ -7,6 +7,7 @@ mainClass in assembly := Some("eu.jrie.put.cs.pt.scrapper.SearchService")
 // akka
 libraryDependencies += "com.typesafe.akka" %% "akka-actor-typed" % "2.6.4"
 libraryDependencies += "com.typesafe.akka" %% "akka-stream" % "2.6.4"
+libraryDependencies += "com.typesafe.akka" %% "akka-stream-typed" % "2.6.4"
 libraryDependencies += "com.lightbend.akka" %% "akka-stream-alpakka-slick" % "2.0.0-RC1"
 libraryDependencies += "com.typesafe.akka" %% "akka-http"   % "10.1.11"
 

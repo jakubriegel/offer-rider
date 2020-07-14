@@ -31,8 +31,8 @@ CREATE TABLE result (
     id bigint unsigned unique KEY AUTO_INCREMENT,
     task_id varchar(36) NOT NULL,
     offer_id varchar(64) NULl default null,
-    title varchar(256) NOT NULL,
-    subtitle text NULL default null,
+    title varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+    subtitle varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL default null,
     price decimal(12, 2) NOT NULL,
     currency varchar(5) NOT NULL default 'PLN',
     url text NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE result (
 CREATE TABLE result_param (
     result_id bigint unsigned NOT NULL,
     name varchar(255) NOT NULL,
-    value varchar(255) NOT NULL,
+    value varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
 
     FOREIGN KEY (result_id) REFERENCES result(id)
 );

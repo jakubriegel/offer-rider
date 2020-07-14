@@ -8,13 +8,16 @@ RUN curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E4
 RUN apt update
 RUN apt install -y sbt
 
-# build service
 COPY ./project project
 COPY ./build.sbt build.sbt
 COPY ./src /src
-WORKDIR /
-RUN sbt assembly
+COPY ./logback.xml logback.xml
 
+WORKDIR /
+
+# build service
+RUN sbt update
+RUN sbt assembly
 # cleanup
 RUN apt purge -y sbt gnupg apt-transport-https ca-certificates
 RUN apt autoremove -y
@@ -25,10 +28,10 @@ FROM build-stage as develop-stage
 
 EXPOSE 30001
 
-CMD java -jar target/scala-2.13/scrapper-search-service-assembly-0.1.jar
+CMD java "-Dlogback.configurationFile=logback.xml" -jar target/scala-2.13/scrapper-search-service-assembly-0.1.jar
 
 FROM build-stage as production-stage
 
 EXPOSE 30001
 
-CMD java -jar target/scala-2.13/scrapper-search-service-assembly-0.1.jar
+CMD java "-Dlogback.configurationFile=logback.xml" -jar target/scala-2.13/scrapper-search-service-assembly-0.1.jar
